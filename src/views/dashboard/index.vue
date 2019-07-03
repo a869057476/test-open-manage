@@ -1,6 +1,51 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <!-- <div class="dashboard-text">name: {{ name }}</div> -->
+    <el-row :gutter="20" class="dashboard-row">
+      <el-col :span="10" class="dashboard-row-col">
+        <div class="dashboard-row-col-item">
+          <div class="dashboard-row-col-item-title">消息看板</div>
+          <div class="dashboard-row-col-item-main msg-contain">
+            <div v-for="item in messageList" :key="item.id" class="msg-contain-item"><span class="msg-contain-item-type">{{ item.type }}</span>{{ item.msg }}</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="14" class="dashboard-row-col">
+        <div class="dashboard-row-col-item">
+          <div class="dashboard-row-col-item-title">工作日历</div>
+          <div class="dashboard-row-col-item-main calendar-contain">
+            <div>20190703</div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20" class="dashboard-row mt20">
+      <el-col :span="14" class="dashboard-row-col">
+        <div class="dashboard-row-col-item">
+          <div class="dashboard-row-col-item-title">个人任务</div>
+          <div class="dashboard-row-col-item-main calendar-contain">
+            <div>20190703</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="10" class="dashboard-row-col">
+        <div class="dashboard-row-col-item">
+          <div class="dashboard-row-col-item-title">必知必会</div>
+          <div class="dashboard-row-col-item-main know-contain">
+            <p>需求疑问要早提，业务答疑留痕迹。</p>
+            <p>缺陷回归定范围，影响评估是依据。</p>
+            <p>交叉互补是良习，既提质量又消疲。</p>
+            <p>接口数据须留底，有头有绪有意义。</p>
+            <p>如有问题录 CQ ，不让缺陷悄溜走。</p>
+            <p>严重程度定等级，缺陷指南讲道理。</p>
+            <p>若有争议怎么办？邀请各方来评议。</p>
+            <p>模拟测试遇问题，等同生产来处理。</p>
+            <p>报告信息要正确，缺陷风险不遗弃。</p>
+            <p>独立自主有原则，提高效率靠科技。</p>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -9,6 +54,32 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
+  data() {
+    return {
+      messageList: [
+        {
+          id: 0,
+          type: '公告',
+          msg: '35号楼模拟环境使用规范'
+        },
+        {
+          id: 1,
+          type: '公告',
+          msg: '35号楼模拟环境使用规范'
+        },
+        {
+          id: 2,
+          type: '通知',
+          msg: '35号楼模拟环境使用规范'
+        },
+        {
+          id: 3,
+          type: '公告',
+          msg: '35号楼模拟环境使用规范'
+        }
+      ]
+    }
+  },
   computed: {
     ...mapGetters([
       'name'
@@ -20,11 +91,60 @@ export default {
 <style lang="scss" scoped>
 .dashboard {
   &-container {
-    margin: 30px;
+    padding: 20px 0 40px 20px;
+    height: 100%;
   }
   &-text {
     font-size: 30px;
     line-height: 46px;
+  }
+  &-row {
+    width: 100%;
+    height: 50%;
+    &-col {
+      height: 100%;
+      &-item {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        box-shadow: 0px 0px 8px 4px #e5ecff;
+        &-title {
+          height: 50px;
+          line-height: 50px;
+          padding-left: 20px;
+          font-size: 16px;
+          color: #5b94ff;
+        }
+        &-main {
+          height: calc(100% - 50px);
+          overflow: auto;
+        }
+        & .msg-contain {
+          &-item {
+            margin: 0 0 10px 20px;
+            &-type {
+              width: auto;
+              height: 24px;
+              line-height: 24px;
+              text-align: center;
+              color: #5b94ff;
+              border: 1px solid #5b94ff;
+              border-radius: 5px;
+              display: inline-block;
+              padding: 0 5px;
+              margin-right: 10px;
+            }
+          }
+        }
+        & .know-contain {
+          text-align: center;
+          font-size: 14px;
+          &>p {
+            text-align: center;
+          }
+        }
+      }
+    }
   }
 }
 </style>

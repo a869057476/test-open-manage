@@ -19,6 +19,7 @@ label {
 html {
   height: 100%;
   box-sizing: border-box;
+  font-size: 12px;
 }
 
 #app {
@@ -62,4 +63,8 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+}
+
+.mt20 {
+  margin-top: 20px;
 }

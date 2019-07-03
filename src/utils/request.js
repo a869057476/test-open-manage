@@ -46,7 +46,7 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if ((response.request.responseURL.indexOf('mock-api')  >= 0 && res.code !== 200) || (response.request.responseURL.indexOf('mock-api') < 0 && !res.IsSuccess)) {
+    if ((response.request.responseURL.indexOf('mock-api') >= 0 && res.code !== 200) || (response.request.responseURL.indexOf('mock-api') < 0 && !res.IsSuccess)) {
       Message({
         message: res.message || 'Error',
         type: 'error',
