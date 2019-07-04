@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Center from '@/layout/center'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -57,390 +58,796 @@ export const constantRoutes = [
   },
 
   {
-    path: '/need_manage',
+    path: '/quality_manage',
     component: Layout,
-    redirect: '/need_manage/xqtm_list',
-    name: 'need_manage',
-    meta: { title: '需求管理', icon: 'example' },
+    redirect: '/quality_manage/defect_manages',
+    name: 'quality_manage',
+    meta: { title: '质量管理', icon: 'example' },
     children: [
       {
-        path: 'xqtm_list',
-        name: 'xqtm_list',
-        component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list'),
-        meta: { title: '需求条目列表', icon: 'table' }
+        path: 'test_manage',
+        name: 'test_manage',
+        component: () => import('@/views/table/index'),
+        meta: { title: '测试管理', icon: 'table' }
       },
       {
-        path: 'redmine_work',
-        name: 'redmine_work',
-        component: () => import('@/views/table/index'),
-        meta: { title: '报工量汇总情况', icon: 'table' }
-      },
-      {
-        path: 'cq_release',
-        name: 'cq_release',
-        component: () => import('@/views/table/index'),
-        meta: { title: '缺陷Reopen统计报表', icon: 'table' }
-      },
-      {
-        path: 'cq_release_all',
-        name: 'cq_release_all',
-        component: () => import('@/views/table/index'),
-        meta: { title: '缺陷Release统计报表', icon: 'table' }
-      },
-      {
-        path: 'edit_group_project',
-        name: 'edit_group_project',
-        component: () => import('@/views/table/index'),
-        meta: { title: '编辑或新增组-系统间权限', icon: 'table' }
-      },
-      {
-        path: 'manage_year',
-        name: 'manage_year',
-        component: () => import('@/views/table/index'),
-        meta: { title: '测试管理汇总表', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/weekly_info_manage',
-    component: Layout,
-    redirect: '/weekly_info_manage/add_weekreport',
-    name: 'weekly_info_manage',
-    meta: { title: '周报信息管理', icon: 'example' },
-    children: [
-      {
-        path: 'add_weekreport',
-        name: 'add_weekreport',
-        component: () => import('@/views/table/index'),
-        meta: { title: '新增周报信息', icon: 'table' }
-      },
-      {
-        path: 'weekreport_list',
-        name: 'weekreport_list',
-        component: () => import('@/views/table/index'),
-        meta: { title: '联测主系统列表', icon: 'table' }
-      },
-      {
-        path: 'weekreport_all',
-        name: 'weekreport_all',
-        component: () => import('@/views/table/index'),
-        meta: { title: '测试周报信息列表', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/project_process_quality',
-    component: Layout,
-    redirect: '/project_process_quality/analyze',
-    name: 'project_process_quality',
-    meta: { title: '项目过程质量', icon: 'example' },
-    children: [
-      {
-        path: 'analyze',
-        component: () => import('@/views/nested/menu1/index'),
-        name: 'analyze',
-        meta: { title: '项目过程质量分析', icon: 'table' },
-        redirect: '/project_process_quality/analyze/QA_singlepro_DRE',
+        path: 'project_manage',
+        redirect: '/quality_manage/project_manage/need_manage/xqtm_list',
+        name: 'project_manage',
+        component: Center,
+        meta: { title: '项目管理', icon: 'table' },
         children: [
           {
-            path: 'QA_singleproj_DRE',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'QA_singleproj_DRE',
-            meta: { title: '单项目DRE', icon: 'nested' }
+            path: 'need_manage',
+            redirect: '/quality_manage/project_manage/need_manage/xqtm_list',
+            name: 'need_manage',
+            component: Center,
+            meta: { title: '需求管理', icon: 'example' },
+            children: [
+              {
+                path: 'xqtm_list',
+                name: 'xqtm_list',
+                component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list.vue'),
+                meta: { title: '需求条目列表', icon: 'table' }
+              },
+              {
+                path: 'redmine_work',
+                name: 'redmine_work',
+                component: () => import('@/views/main/need_manage/redmine_work/redmine_work.vue'),
+                meta: { title: '报工量汇总情况', icon: 'table' }
+              },
+              {
+                path: 'cq_release',
+                name: 'cq_release',
+                component: () => import('@/views/main/need_manage/cq_release/cq_release.vue'),
+                meta: { title: '缺陷Reopen统计报表', icon: 'table' }
+              },
+              {
+                path: 'cq_release_all',
+                name: 'cq_release_all',
+                component: () => import('@/views/main/need_manage/cq_release_all/cq_release_all.vue'),
+                meta: { title: '缺陷Release统计报表', icon: 'table' }
+              },
+              {
+                path: 'edit_group_project',
+                name: 'edit_group_project',
+                component: () => import('@/views/main/need_manage/edit_group_project/edit_group_project.vue'),
+                meta: { title: '编辑或新增组-系统间权限', icon: 'table' }
+              },
+              {
+                path: 'manage_year',
+                name: 'manage_year',
+                component: () => import('@/views/table/index'),
+                meta: { title: '测试管理汇总表', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'weekly_info_manage',
+            component: Layout,
+            redirect: '/weekly_info_manage/add_weekreport',
+            name: 'weekly_info_manage',
+            meta: { title: '周报信息管理', icon: 'example' },
+            children: [
+              {
+                path: 'add_weekreport',
+                name: 'add_weekreport',
+                component: () => import('@/views/table/index'),
+                meta: { title: '新增周报信息', icon: 'table' }
+              },
+              {
+                path: 'weekreport_list',
+                name: 'weekreport_list',
+                component: () => import('@/views/table/index'),
+                meta: { title: '联测主系统列表', icon: 'table' }
+              },
+              {
+                path: 'weekreport_all',
+                name: 'weekreport_all',
+                component: () => import('@/views/table/index'),
+                meta: { title: '测试周报信息列表', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'project_process_quality',
+            component: Layout,
+            redirect: '/project_process_quality/analyze',
+            name: 'project_process_quality',
+            meta: { title: '项目过程质量', icon: 'example' },
+            children: [
+              {
+                path: 'analyze',
+                component: () => import('@/views/nested/menu1/index'),
+                name: 'analyze',
+                meta: { title: '项目过程质量分析', icon: 'table' },
+                redirect: '/project_process_quality/analyze/QA_singlepro_DRE',
+                children: [
+                  {
+                    path: 'QA_singleproj_DRE',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'QA_singleproj_DRE',
+                    meta: { title: '单项目DRE', icon: 'nested' }
+                  }
+                ]
+              },
+              {
+                path: 'check',
+                component: () => import('@/views/nested/menu2/index'),
+                name: 'check',
+                meta: { title: '项目过程质量检查', icon: 'table' },
+                redirect: '/project_process_quality/check/QA_table',
+                children: [
+                  {
+                    path: 'QA_table',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'QA_table',
+                    meta: { title: '项目过程质量检查', icon: 'nested' }
+                  },
+                  {
+                    path: 'QA_weekreport',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'QA_weekreport',
+                    meta: { title: '项目审计周报', icon: 'nested' }
+                  },
+                  {
+                    path: 'plot_QA_weekreport',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'plot_QA_weekreport',
+                    meta: { title: '项目审计周报（测试）', icon: 'nested' }
+                  },
+                  {
+                    path: 'QA_auth',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'QA_auth',
+                    meta: { title: '项目人员权限管理', icon: 'nested' }
+                  },
+                  {
+                    path: 'Test_auth',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'Test_auth',
+                    meta: { title: '过程审计员权限管理', icon: 'nested' }
+                  },
+                  {
+                    path: 'Proj_all',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'Proj_all',
+                    meta: { title: '项目基础信息', icon: 'nested' }
+                  },
+                  {
+                    path: 'Sys_all',
+                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    name: 'Sys_all',
+                    meta: { title: '系统基础信息', icon: 'nested' }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            path: 'Smartbi_report_info',
+            component: Layout,
+            redirect: '/Smartbi_report_info/testreport_sys',
+            name: 'Smartbi_report_info',
+            meta: { title: 'Smartbi报表信息', icon: 'example' },
+            children: [
+              {
+                path: 'testreport_sys',
+                name: 'testreport_sys',
+                component: () => import('@/views/table/index'),
+                meta: { title: '第三方测试报告', icon: 'table' }
+              },
+              {
+                path: 'testreport',
+                name: 'testreport',
+                component: () => import('@/views/table/index'),
+                meta: { title: '验收/模拟测试报告', icon: 'table' }
+              },
+              {
+                path: 'testdayreport_all',
+                name: 'testdayreport_all',
+                component: () => import('@/views/table/index'),
+                meta: { title: '测试日报(52\\56\\206库测试版)', icon: 'table' }
+              },
+              {
+                path: 'testdayreport_zhichi',
+                name: 'testdayreport_zhichi',
+                component: () => import('@/views/table/index'),
+                meta: { title: '支持组测试周报', icon: 'table' }
+              },
+              {
+                path: 'cqlist1',
+                name: 'cqlist1',
+                component: () => import('@/views/table/index'),
+                meta: { title: '缺陷详情查看(52\\56\\206库)_新', icon: 'table' }
+              },
+              {
+                path: 'bpminformation1',
+                name: 'bpminformation1',
+                component: () => import('@/views/table/index'),
+                meta: { title: 'BPM立项工作量占比情况_新', icon: 'table' }
+              },
+              {
+                path: 'testlc1',
+                name: 'testlc1',
+                component: () => import('@/views/table/index'),
+                meta: { title: '测试轮次准入准出详情(系统\\验收\\模拟)_新', icon: 'table' }
+              },
+              {
+                path: 'testlc_YXPT',
+                name: 'testlc_YXPT',
+                component: () => import('@/views/table/index'),
+                meta: { title: '精益系统测试轮次准入准出详情', icon: 'table' }
+              },
+              {
+                path: 'PMO_in_out',
+                name: 'PMO_in_out',
+                component: () => import('@/views/table/index'),
+                meta: { title: '系统测试准入准出详情', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'version_plan_manage',
+            component: Layout,
+            redirect: '/version_plan_manage/version_plan',
+            name: 'version_plan_manage',
+            meta: { title: '版本计划', icon: 'example' },
+            children: [
+              {
+                path: 'version_plan',
+                name: 'version_plan',
+                component: () => import('@/views/table/index'),
+                meta: { title: '版本计划查看', icon: 'table' }
+              },
+              {
+                path: 'version_plan_add',
+                name: 'version_plan_add',
+                component: () => import('@/views/table/index'),
+                meta: { title: '新增版本计划', icon: 'table' }
+              },
+              {
+                path: 'version_risk',
+                name: 'version_risk',
+                component: () => import('@/views/table/index'),
+                meta: { title: '版本风险', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'workload_calendar_manage',
+            component: Layout,
+            redirect: '/workload_calendar_manage/workload_calendar',
+            name: 'workload_calendar_manage',
+            meta: { title: '工作日历', icon: 'example' },
+            children: [
+              {
+                path: 'workload_calendar',
+                name: 'workload_calendar',
+                component: () => import('@/views/table/index'),
+                meta: { title: '工作日历', icon: 'table' }
+              },
+              {
+                path: 'my_staff',
+                name: 'my_staff',
+                component: () => import('@/views/table/index'),
+                meta: { title: '负责人员情况', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'version_staff_manage',
+            component: Layout,
+            redirect: '/version_staff_manage/staff_manage',
+            name: 'version_staff_manage',
+            meta: { title: '版本人员管理', icon: 'example' },
+            children: [
+              {
+                path: 'staff_manage',
+                name: 'staff_manage',
+                component: () => import('@/views/table/index'),
+                meta: { title: '人员分配', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'board_manage',
+            component: Layout,
+            redirect: '/board_manage/message_list',
+            name: 'board_manage',
+            meta: { title: '看板管理', icon: 'example' },
+            children: [
+              {
+                path: 'message_list',
+                name: 'message_list',
+                component: () => import('@/views/table/index'),
+                meta: { title: '消息查看', icon: 'table' }
+              },
+              {
+                path: 'download_manage',
+                name: 'download_manage',
+                component: () => import('@/views/table/index'),
+                meta: { title: '下载管理', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'setting_manage',
+            component: Layout,
+            redirect: '/setting_manage/group_user',
+            name: 'setting_manage',
+            meta: { title: '设置', icon: 'example' },
+            children: [
+              {
+                path: 'group_user',
+                name: 'group_user',
+                component: () => import('@/views/table/index'),
+                meta: { title: '组人员管理', icon: 'table' }
+              },
+              {
+                path: 'group_sys',
+                name: 'group_sys',
+                component: () => import('@/views/table/index'),
+                meta: { title: '组关联系统管理', icon: 'table' }
+              },
+              {
+                path: 'user_auth',
+                name: 'user_auth',
+                component: () => import('@/views/table/index'),
+                meta: { title: '人员权限管理', icon: 'table' }
+              },
+              {
+                path: 'set_staff_leader',
+                name: 'set_staff_leader',
+                component: () => import('@/views/table/index'),
+                meta: { title: '负责人设置', icon: 'table' }
+              },
+              {
+                path: 'email_change',
+                name: 'email_change',
+                component: () => import('@/views/table/index'),
+                meta: { title: '个人信息管理', icon: 'table' }
+              },
+              {
+                path: 'group_send_email',
+                name: 'group_send_email',
+                component: () => import('@/views/table/index'),
+                meta: { title: '邮件发送功能', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'defect_requir_manage',
+            component: Layout,
+            redirect: '/defect_requir_manage/defect_manages',
+            name: 'defect_requir_manage',
+            meta: { title: '缺陷与需求', icon: 'example' },
+            children: [
+              {
+                path: 'defect_manages',
+                name: 'defect_manages',
+                component: () => import('@/views/table/index'),
+                meta: { title: '缺陷管理', icon: 'table' }
+              },
+              {
+                path: 'requir_manages',
+                name: 'requir_manages',
+                component: () => import('@/views/table/index'),
+                meta: { title: '需求管理', icon: 'table' }
+              }
+            ]
+          },
+          {
+            path: 'bata_entrance_manage',
+            component: Layout,
+            redirect: '/bata_entrance_manage/clms_project',
+            name: 'bata_entrance_manage',
+            meta: { title: '报工公测入口', icon: 'example' },
+            children: [
+              {
+                path: 'clms_project',
+                name: 'clms_project',
+                component: () => import('@/views/table/index'),
+                meta: { title: '精益系统项目情况', icon: 'table' }
+              }
+            ]
           }
         ]
       },
       {
-        path: 'check',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'check',
-        meta: { title: '项目过程质量检查', icon: 'table' },
-        redirect: '/project_process_quality/check/QA_table',
-        children: [
-          {
-            path: 'QA_table',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'QA_table',
-            meta: { title: '项目过程质量检查', icon: 'nested' }
-          },
-          {
-            path: 'QA_weekreport',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'QA_weekreport',
-            meta: { title: '项目审计周报', icon: 'nested' }
-          },
-          {
-            path: 'plot_QA_weekreport',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'plot_QA_weekreport',
-            meta: { title: '项目审计周报（测试）', icon: 'nested' }
-          },
-          {
-            path: 'QA_auth',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'QA_auth',
-            meta: { title: '项目人员权限管理', icon: 'nested' }
-          },
-          {
-            path: 'Test_auth',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Test_auth',
-            meta: { title: '过程审计员权限管理', icon: 'nested' }
-          },
-          {
-            path: 'Proj_all',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Proj_all',
-            meta: { title: '项目基础信息', icon: 'nested' }
-          },
-          {
-            path: 'Sys_all',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Sys_all',
-            meta: { title: '系统基础信息', icon: 'nested' }
-          }
-        ]
+        path: 'statistic_analyze',
+        name: 'statistic_analyze',
+        component: () => import('@/views/table/index'),
+        meta: { title: '统计分析', icon: 'table' }
       }
     ]
   },
 
-  {
-    path: '/Smartbi_report_info',
-    component: Layout,
-    redirect: '/Smartbi_report_info/testreport_sys',
-    name: 'Smartbi_report_info',
-    meta: { title: 'Smartbi报表信息', icon: 'example' },
-    children: [
-      {
-        path: 'testreport_sys',
-        name: 'testreport_sys',
-        component: () => import('@/views/table/index'),
-        meta: { title: '第三方测试报告', icon: 'table' }
-      },
-      {
-        path: 'testreport',
-        name: 'testreport',
-        component: () => import('@/views/table/index'),
-        meta: { title: '验收/模拟测试报告', icon: 'table' }
-      },
-      {
-        path: 'testdayreport_all',
-        name: 'testdayreport_all',
-        component: () => import('@/views/table/index'),
-        meta: { title: '测试日报(52\\56\\206库测试版)', icon: 'table' }
-      },
-      {
-        path: 'testdayreport_zhichi',
-        name: 'testdayreport_zhichi',
-        component: () => import('@/views/table/index'),
-        meta: { title: '支持组测试周报', icon: 'table' }
-      },
-      {
-        path: 'cqlist1',
-        name: 'cqlist1',
-        component: () => import('@/views/table/index'),
-        meta: { title: '缺陷详情查看(52\\56\\206库)_新', icon: 'table' }
-      },
-      {
-        path: 'bpminformation1',
-        name: 'bpminformation1',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'BPM立项工作量占比情况_新', icon: 'table' }
-      },
-      {
-        path: 'testlc1',
-        name: 'testlc1',
-        component: () => import('@/views/table/index'),
-        meta: { title: '测试轮次准入准出详情(系统\\验收\\模拟)_新', icon: 'table' }
-      },
-      {
-        path: 'testlc_YXPT',
-        name: 'testlc_YXPT',
-        component: () => import('@/views/table/index'),
-        meta: { title: '精益系统测试轮次准入准出详情', icon: 'table' }
-      },
-      {
-        path: 'PMO_in_out',
-        name: 'PMO_in_out',
-        component: () => import('@/views/table/index'),
-        meta: { title: '系统测试准入准出详情', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/need_manage',
+  //   component: Layout,
+  //   redirect: '/need_manage/xqtm_list',
+  //   name: 'need_manage',
+  //   meta: { title: '需求管理', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'xqtm_list',
+  //       name: 'xqtm_list',
+  //       component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list.vue'),
+  //       meta: { title: '需求条目列表', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'redmine_work',
+  //       name: 'redmine_work',
+  //       component: () => import('@/views/main/need_manage/redmine_work/redmine_work.vue'),
+  //       meta: { title: '报工量汇总情况', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'cq_release',
+  //       name: 'cq_release',
+  //       component: () => import('@/views/main/need_manage/cq_release/cq_release.vue'),
+  //       meta: { title: '缺陷Reopen统计报表', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'cq_release_all',
+  //       name: 'cq_release_all',
+  //       component: () => import('@/views/main/need_manage/cq_release_all/cq_release_all.vue'),
+  //       meta: { title: '缺陷Release统计报表', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'edit_group_project',
+  //       name: 'edit_group_project',
+  //       component: () => import('@/views/main/need_manage/edit_group_project/edit_group_project.vue'),
+  //       meta: { title: '编辑或新增组-系统间权限', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'manage_year',
+  //       name: 'manage_year',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '测试管理汇总表', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/version_plan_manage',
-    component: Layout,
-    redirect: '/version_plan_manage/version_plan',
-    name: 'version_plan_manage',
-    meta: { title: '版本计划', icon: 'example' },
-    children: [
-      {
-        path: 'version_plan',
-        name: 'version_plan',
-        component: () => import('@/views/table/index'),
-        meta: { title: '版本计划查看', icon: 'table' }
-      },
-      {
-        path: 'version_plan_add',
-        name: 'version_plan_add',
-        component: () => import('@/views/table/index'),
-        meta: { title: '新增版本计划', icon: 'table' }
-      },
-      {
-        path: 'version_risk',
-        name: 'version_risk',
-        component: () => import('@/views/table/index'),
-        meta: { title: '版本风险', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/weekly_info_manage',
+  //   component: Layout,
+  //   redirect: '/weekly_info_manage/add_weekreport',
+  //   name: 'weekly_info_manage',
+  //   meta: { title: '周报信息管理', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'add_weekreport',
+  //       name: 'add_weekreport',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '新增周报信息', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'weekreport_list',
+  //       name: 'weekreport_list',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '联测主系统列表', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'weekreport_all',
+  //       name: 'weekreport_all',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '测试周报信息列表', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/workload_calendar_manage',
-    component: Layout,
-    redirect: '/workload_calendar_manage/workload_calendar',
-    name: 'workload_calendar_manage',
-    meta: { title: '工作日历', icon: 'example' },
-    children: [
-      {
-        path: 'workload_calendar',
-        name: 'workload_calendar',
-        component: () => import('@/views/table/index'),
-        meta: { title: '工作日历', icon: 'table' }
-      },
-      {
-        path: 'my_staff',
-        name: 'my_staff',
-        component: () => import('@/views/table/index'),
-        meta: { title: '负责人员情况', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/project_process_quality',
+  //   component: Layout,
+  //   redirect: '/project_process_quality/analyze',
+  //   name: 'project_process_quality',
+  //   meta: { title: '项目过程质量', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'analyze',
+  //       component: () => import('@/views/nested/menu1/index'),
+  //       name: 'analyze',
+  //       meta: { title: '项目过程质量分析', icon: 'table' },
+  //       redirect: '/project_process_quality/analyze/QA_singlepro_DRE',
+  //       children: [
+  //         {
+  //           path: 'QA_singleproj_DRE',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'QA_singleproj_DRE',
+  //           meta: { title: '单项目DRE', icon: 'nested' }
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: 'check',
+  //       component: () => import('@/views/nested/menu2/index'),
+  //       name: 'check',
+  //       meta: { title: '项目过程质量检查', icon: 'table' },
+  //       redirect: '/project_process_quality/check/QA_table',
+  //       children: [
+  //         {
+  //           path: 'QA_table',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'QA_table',
+  //           meta: { title: '项目过程质量检查', icon: 'nested' }
+  //         },
+  //         {
+  //           path: 'QA_weekreport',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'QA_weekreport',
+  //           meta: { title: '项目审计周报', icon: 'nested' }
+  //         },
+  //         {
+  //           path: 'plot_QA_weekreport',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'plot_QA_weekreport',
+  //           meta: { title: '项目审计周报（测试）', icon: 'nested' }
+  //         },
+  //         {
+  //           path: 'QA_auth',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'QA_auth',
+  //           meta: { title: '项目人员权限管理', icon: 'nested' }
+  //         },
+  //         {
+  //           path: 'Test_auth',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Test_auth',
+  //           meta: { title: '过程审计员权限管理', icon: 'nested' }
+  //         },
+  //         {
+  //           path: 'Proj_all',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Proj_all',
+  //           meta: { title: '项目基础信息', icon: 'nested' }
+  //         },
+  //         {
+  //           path: 'Sys_all',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Sys_all',
+  //           meta: { title: '系统基础信息', icon: 'nested' }
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/version_staff_manage',
-    component: Layout,
-    redirect: '/version_staff_manage/staff_manage',
-    name: 'version_staff_manage',
-    meta: { title: '版本人员管理', icon: 'example' },
-    children: [
-      {
-        path: 'staff_manage',
-        name: 'staff_manage',
-        component: () => import('@/views/table/index'),
-        meta: { title: '人员分配', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/Smartbi_report_info',
+  //   component: Layout,
+  //   redirect: '/Smartbi_report_info/testreport_sys',
+  //   name: 'Smartbi_report_info',
+  //   meta: { title: 'Smartbi报表信息', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'testreport_sys',
+  //       name: 'testreport_sys',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '第三方测试报告', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'testreport',
+  //       name: 'testreport',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '验收/模拟测试报告', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'testdayreport_all',
+  //       name: 'testdayreport_all',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '测试日报(52\\56\\206库测试版)', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'testdayreport_zhichi',
+  //       name: 'testdayreport_zhichi',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '支持组测试周报', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'cqlist1',
+  //       name: 'cqlist1',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '缺陷详情查看(52\\56\\206库)_新', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'bpminformation1',
+  //       name: 'bpminformation1',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: 'BPM立项工作量占比情况_新', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'testlc1',
+  //       name: 'testlc1',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '测试轮次准入准出详情(系统\\验收\\模拟)_新', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'testlc_YXPT',
+  //       name: 'testlc_YXPT',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '精益系统测试轮次准入准出详情', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'PMO_in_out',
+  //       name: 'PMO_in_out',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '系统测试准入准出详情', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/board_manage',
-    component: Layout,
-    redirect: '/board_manage/message_list',
-    name: 'board_manage',
-    meta: { title: '看板管理', icon: 'example' },
-    children: [
-      {
-        path: 'message_list',
-        name: 'message_list',
-        component: () => import('@/views/table/index'),
-        meta: { title: '消息查看', icon: 'table' }
-      },
-      {
-        path: 'download_manage',
-        name: 'download_manage',
-        component: () => import('@/views/table/index'),
-        meta: { title: '下载管理', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/version_plan_manage',
+  //   component: Layout,
+  //   redirect: '/version_plan_manage/version_plan',
+  //   name: 'version_plan_manage',
+  //   meta: { title: '版本计划', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'version_plan',
+  //       name: 'version_plan',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '版本计划查看', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'version_plan_add',
+  //       name: 'version_plan_add',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '新增版本计划', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'version_risk',
+  //       name: 'version_risk',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '版本风险', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/setting_manage',
-    component: Layout,
-    redirect: '/setting_manage/group_user',
-    name: 'setting_manage',
-    meta: { title: '设置', icon: 'example' },
-    children: [
-      {
-        path: 'group_user',
-        name: 'group_user',
-        component: () => import('@/views/table/index'),
-        meta: { title: '组人员管理', icon: 'table' }
-      },
-      {
-        path: 'group_sys',
-        name: 'group_sys',
-        component: () => import('@/views/table/index'),
-        meta: { title: '组关联系统管理', icon: 'table' }
-      },
-      {
-        path: 'user_auth',
-        name: 'user_auth',
-        component: () => import('@/views/table/index'),
-        meta: { title: '人员权限管理', icon: 'table' }
-      },
-      {
-        path: 'set_staff_leader',
-        name: 'set_staff_leader',
-        component: () => import('@/views/table/index'),
-        meta: { title: '负责人设置', icon: 'table' }
-      },
-      {
-        path: 'email_change',
-        name: 'email_change',
-        component: () => import('@/views/table/index'),
-        meta: { title: '个人信息管理', icon: 'table' }
-      },
-      {
-        path: 'group_send_email',
-        name: 'group_send_email',
-        component: () => import('@/views/table/index'),
-        meta: { title: '邮件发送功能', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/workload_calendar_manage',
+  //   component: Layout,
+  //   redirect: '/workload_calendar_manage/workload_calendar',
+  //   name: 'workload_calendar_manage',
+  //   meta: { title: '工作日历', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'workload_calendar',
+  //       name: 'workload_calendar',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '工作日历', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'my_staff',
+  //       name: 'my_staff',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '负责人员情况', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/defect_requir_manage',
-    component: Layout,
-    redirect: '/defect_requir_manage/defect_manages',
-    name: 'defect_requir_manage',
-    meta: { title: '缺陷与需求', icon: 'example' },
-    children: [
-      {
-        path: 'defect_manages',
-        name: 'defect_manages',
-        component: () => import('@/views/table/index'),
-        meta: { title: '缺陷管理', icon: 'table' }
-      },
-      {
-        path: 'requir_manages',
-        name: 'requir_manages',
-        component: () => import('@/views/table/index'),
-        meta: { title: '需求管理', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/version_staff_manage',
+  //   component: Layout,
+  //   redirect: '/version_staff_manage/staff_manage',
+  //   name: 'version_staff_manage',
+  //   meta: { title: '版本人员管理', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'staff_manage',
+  //       name: 'staff_manage',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '人员分配', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/bata_entrance_manage',
-    component: Layout,
-    redirect: '/bata_entrance_manage/clms_project',
-    name: 'bata_entrance_manage',
-    meta: { title: '报工公测入口', icon: 'example' },
-    children: [
-      {
-        path: 'clms_project',
-        name: 'clms_project',
-        component: () => import('@/views/table/index'),
-        meta: { title: '精益系统项目情况', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/board_manage',
+  //   component: Layout,
+  //   redirect: '/board_manage/message_list',
+  //   name: 'board_manage',
+  //   meta: { title: '看板管理', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'message_list',
+  //       name: 'message_list',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '消息查看', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'download_manage',
+  //       name: 'download_manage',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '下载管理', icon: 'table' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/setting_manage',
+  //   component: Layout,
+  //   redirect: '/setting_manage/group_user',
+  //   name: 'setting_manage',
+  //   meta: { title: '设置', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'group_user',
+  //       name: 'group_user',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '组人员管理', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'group_sys',
+  //       name: 'group_sys',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '组关联系统管理', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'user_auth',
+  //       name: 'user_auth',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '人员权限管理', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'set_staff_leader',
+  //       name: 'set_staff_leader',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '负责人设置', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'email_change',
+  //       name: 'email_change',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '个人信息管理', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'group_send_email',
+  //       name: 'group_send_email',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '邮件发送功能', icon: 'table' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/defect_requir_manage',
+  //   component: Layout,
+  //   redirect: '/defect_requir_manage/defect_manages',
+  //   name: 'defect_requir_manage',
+  //   meta: { title: '缺陷与需求', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'defect_manages',
+  //       name: 'defect_manages',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '缺陷管理', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'requir_manages',
+  //       name: 'requir_manages',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '需求管理', icon: 'table' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/bata_entrance_manage',
+  //   component: Layout,
+  //   redirect: '/bata_entrance_manage/clms_project',
+  //   name: 'bata_entrance_manage',
+  //   meta: { title: '报工公测入口', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'clms_project',
+  //       name: 'clms_project',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '精益系统项目情况', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
   // {
   //   path: '/example',
