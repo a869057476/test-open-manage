@@ -66,7 +66,7 @@ export const constantRoutes = [
       {
         path: 'xqtm_list',
         name: 'xqtm_list',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list'),
         meta: { title: '需求条目列表', icon: 'table' }
       },
       {

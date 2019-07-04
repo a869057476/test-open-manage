@@ -7,7 +7,3 @@ export function getList(params) {
     params
   })
 }
-
-export function getTest(params) {
-  return request.get(`/oms/user/account/trade/list?accountName=${params}`)
-}
