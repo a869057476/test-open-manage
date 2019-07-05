@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" :model="formSearch" label-width="110px" class="demo-form-inline">
+    <el-form :inline="true" :model="formSearch" label-width="110px">
       <el-form-item label="状态">
         <el-select v-model="formSearch.region" placeholder="请选择" clearable>
           <el-option label="close-submit" value="0"></el-option>
@@ -26,7 +26,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Release时间" label-width="180px">
-        <el-date-picker v-model="formSearch.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
       <div class="mb20">

@@ -87,44 +87,44 @@ export const constantRoutes = [
               {
                 path: 'xqtm_list',
                 name: 'xqtm_list',
-                component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list.vue'),
+                component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list'),
                 meta: { title: '需求条目列表', icon: 'table' }
               },
               {
                 path: 'redmine_work',
                 name: 'redmine_work',
-                component: () => import('@/views/main/need_manage/redmine_work/redmine_work.vue'),
+                component: () => import('@/views/main/need_manage/redmine_work/redmine_work'),
                 meta: { title: '报工量汇总情况', icon: 'table' }
               },
               {
                 path: 'cq_release',
                 name: 'cq_release',
-                component: () => import('@/views/main/need_manage/cq_release/cq_release.vue'),
+                component: () => import('@/views/main/need_manage/cq_release/cq_release'),
                 meta: { title: '缺陷Reopen统计报表', icon: 'table' }
               },
               {
                 path: 'cq_release_all',
                 name: 'cq_release_all',
-                component: () => import('@/views/main/need_manage/cq_release_all/cq_release_all.vue'),
+                component: () => import('@/views/main/need_manage/cq_release_all/cq_release_all'),
                 meta: { title: '缺陷Release统计报表', icon: 'table' }
               },
               {
                 path: 'edit_group_project',
                 name: 'edit_group_project',
-                component: () => import('@/views/main/need_manage/edit_group_project/edit_group_project.vue'),
+                component: () => import('@/views/main/need_manage/edit_group_project/edit_group_project'),
                 meta: { title: '编辑或新增组-系统间权限', icon: 'table' }
               },
               {
                 path: 'manage_year',
                 name: 'manage_year',
-                component: () => import('@/views/table/index'),
+                component: () => import('@/views/main/need_manage/manage_year/manage_year'),
                 meta: { title: '测试管理汇总表', icon: 'table' }
               }
             ]
           },
           {
             path: 'weekly_info_manage',
-            component: Layout,
+            component: Center,
             redirect: '/weekly_info_manage/add_weekreport',
             name: 'weekly_info_manage',
             meta: { title: '周报信息管理', icon: 'example' },
@@ -151,29 +151,35 @@ export const constantRoutes = [
           },
           {
             path: 'project_process_quality',
-            component: Layout,
-            redirect: '/project_process_quality/analyze',
+            component: Center,
+            redirect: '/quality_manage/project_manage/project_process_quality/analyze/QA_singleproj_DRE',
             name: 'project_process_quality',
             meta: { title: '项目过程质量', icon: 'example' },
             children: [
               {
                 path: 'analyze',
-                component: () => import('@/views/nested/menu1/index'),
+                component: Center,
                 name: 'analyze',
                 meta: { title: '项目过程质量分析', icon: 'table' },
-                redirect: '/project_process_quality/analyze/QA_singlepro_DRE',
+                redirect: '/quality_manage/project_manage/project_process_quality/analyze/QA_singleproj_DRE',
                 children: [
                   {
                     path: 'QA_singleproj_DRE',
-                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/QA_singleproj_DRE/QA_singleproj_DRE'),
                     name: 'QA_singleproj_DRE',
                     meta: { title: '单项目DRE', icon: 'nested' }
+                  },
+                  {
+                    path: 'QA_singlesys_DRE',
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/QA_singlesys_DRE/QA_singlesys_DRE'),
+                    name: 'QA_singlesys_DRE',
+                    meta: { title: '单系统DRE', icon: 'nested' }
                   }
                 ]
               },
               {
                 path: 'check',
-                component: () => import('@/views/nested/menu2/index'),
+                component: Center,
                 name: 'check',
                 meta: { title: '项目过程质量检查', icon: 'table' },
                 redirect: '/project_process_quality/check/QA_table',

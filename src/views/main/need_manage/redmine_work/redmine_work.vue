@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" :model="formSearch" label-width="110px" class="demo-form-inline">
+    <el-form :inline="true" :model="formSearch" label-width="110px">
       <el-form-item label="系统名">
         <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
       </el-form-item>
@@ -65,7 +65,7 @@
         <el-table-column label="工作量汇总" prop="author" width="120" align="center">
         </el-table-column>
         <el-table-column label="操作" prop="author" width="120" align="center">
-          <template slot-scope="scope">
+          <template>
             <el-button size="mini" type="primary" plain>查看</el-button>
           </template>
         </el-table-column>

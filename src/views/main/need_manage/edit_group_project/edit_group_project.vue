@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item title="新增组-PDB系统间权限(报工量汇总相关)" name="1">
-        <el-form :inline="true" :model="formSearch" label-width="140px" class="demo-form-inline">
+        <el-form :inline="true" :model="formSearch" label-width="140px">
           <el-form-item label="小组名称">
             <el-select v-model="formSearch.region" placeholder="请选择" clearable>
               <el-option label="close-submit" value="0"></el-option>
@@ -28,7 +28,7 @@
         </el-form>
       </el-collapse-item>
       <el-collapse-item title="新增组-全流程系统间权限(需求条目相关)" name="2">
-        <el-form :inline="true" :model="formSearch" label-width="140px" class="demo-form-inline">
+        <el-form :inline="true" :model="formSearch" label-width="140px">
           <el-form-item label="小组名称">
             <el-select v-model="formSearch.region" placeholder="请选择" clearable>
               <el-option label="close-submit" value="0"></el-option>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { getTestList, getTest } from '@/api/local'
+import { getTestList } from '@/api/local'
 
 export default {
   filters: {

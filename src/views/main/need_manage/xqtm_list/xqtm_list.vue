@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" :model="formSearch" label-width="110px" class="demo-form-inline">
+    <el-form :inline="true" :model="formSearch" label-width="110px">
       <el-form-item label="系统名称">
         <el-select v-model="formSearch.region" placeholder="请选择" clearable>
           <el-option label="债券基础信息系统" value="0"></el-option>
