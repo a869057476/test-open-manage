@@ -13,16 +13,7 @@
         <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      v-if="formSearch.type === '当月采购详情'"
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-      :max-height="autoHeight"
-    >
+    <el-table v-if="formSearch.type === '当月采购详情'" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight">
       <el-table-column label="负责人" min-width="120" align="center">
         <template slot-scope="scope">
           {{ scope.$index }}
@@ -74,16 +65,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-table
-      v-if="formSearch.type === '当月采购汇总'"
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-      :max-height="autoHeight"
-    >
+    <el-table v-if="formSearch.type === '当月采购汇总'" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight">
       <el-table-column label="员工姓名" min-width="120" align="center">
         <template slot-scope="scope">
           {{ scope.$index }}

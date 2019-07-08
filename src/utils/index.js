@@ -108,3 +108,114 @@ export function param2Obj(url) {
       '"}'
   )
 }
+
+export class Calendar {
+  static now = new Date() // 当前日期
+  static nowDayOfWeek = Calendar.now.getDay() // 今天本周的第几天
+  static nowDay = Calendar.now.getDate() // 当前日
+  static nowMonth = Calendar.now.getMonth() // 当前月
+  static nowYear = Calendar.now.getYear() < 2000 ? Calendar.now.getYear() + 1900 : Calendar.now.getYear() // 当前年
+
+  static lastMonthDate = new Date(Calendar.nowYear, Calendar.nowMonth - 1, 1) // 上月日期
+  static lastYear = Calendar.lastMonthDate.getYear()
+  static lastMonth = Calendar.lastMonthDate.getMonth()
+
+  static nextMonthDate = new Date(Calendar.nowYear, Calendar.nowMonth + 1, 1) // 下月日期
+  static nextYear = Calendar.nextMonthDate.getYear()
+  static nextMonth = Calendar.nextMonthDate.getMonth()
+  constructor() {
+    this.startDate = null
+    this.endDate = null
+  }
+
+  /**
+   * Parse the time to string, 'YY-MM-DD'
+   * @param {(Date)} value
+   * @returns {string}
+   */
+  formatDate(value) {
+    const date = value
+    const seperator = '-'
+    const joinYear = date.getFullYear()
+    let joinMonth = date.getMonth() + 1
+    let joinDate = date.getDate()
+    if (joinMonth >= 1 && joinMonth <= 9) {
+      joinMonth = '0' + joinMonth
+    }
+    if (joinDate >= 0 && joinDate <= 9) {
+      joinDate = '0' + joinDate
+    }
+    return joinYear + seperator + joinMonth + seperator + joinDate
+  }
+
+  // 获得某月的天数
+  getMonthDays(myMonth) {
+    const monthStartDate = new Date(Calendar.nowYear, myMonth, 1)
+    const monthEndDate = new Date(Calendar.nowYear, myMonth + 1, 1)
+    const days = (monthEndDate - monthStartDate) / (1000 * 60 * 60 * 24)
+    return days
+  }
+
+  // 本周
+  getNowWeek() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 1)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 7)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 上周
+  getLastWeek() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek - 6)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 下周
+  getNextWeek() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 8)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 14)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 下两周
+  getNextTwoWeek() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 15)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 21)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 本月
+  getNowMonth() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, 1)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, this.getMonthDays(Calendar.nowMonth))
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 上月
+  getLastMonth() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.lastMonth, 1)
+    this.endDate = new Date(Calendar.nowYear, Calendar.lastMonth, this.getMonthDays(Calendar.lastMonth))
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 下月
+  getNextMonth() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nextMonth, 1)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nextMonth, this.getMonthDays(Calendar.nextMonth))
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 本年
+  getNowYear() {
+    this.startDate = new Date(Calendar.nowYear, 0, 1)
+    this.endDate = new Date(Calendar.nowYear, 11, 31)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 全部
+  getAll() {
+    this.startDate = new Date(2010, 0, 1)
+    this.endDate = new Date(Calendar.nowYear + 1, 0, 1)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+}

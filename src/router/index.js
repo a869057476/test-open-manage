@@ -124,30 +124,9 @@ export const constantRoutes = [
           },
           {
             path: 'weekly_info_manage',
-            component: Center,
-            redirect: '/weekly_info_manage/add_weekreport',
             name: 'weekly_info_manage',
-            meta: { title: '周报信息管理', icon: 'example' },
-            children: [
-              {
-                path: 'add_weekreport',
-                name: 'add_weekreport',
-                component: () => import('@/views/table/index'),
-                meta: { title: '新增周报信息', icon: 'table' }
-              },
-              {
-                path: 'weekreport_list',
-                name: 'weekreport_list',
-                component: () => import('@/views/table/index'),
-                meta: { title: '联测主系统列表', icon: 'table' }
-              },
-              {
-                path: 'weekreport_all',
-                name: 'weekreport_all',
-                component: () => import('@/views/table/index'),
-                meta: { title: '测试周报信息列表', icon: 'table' }
-              }
-            ]
+            component: () => import('@/views/main/quality_manage/project_manage/weekly_info_manage/weekly_info_manage'),
+            meta: { title: '周报信息管理', icon: 'example' }
           },
           {
             path: 'project_process_quality',

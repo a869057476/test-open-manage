@@ -43,15 +43,7 @@
         <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
       </div>
     </el-form>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-      :max-height="autoHeight"
-    >
+    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight">
       <!-- <el-table-column
         type="selection"
         width="55">

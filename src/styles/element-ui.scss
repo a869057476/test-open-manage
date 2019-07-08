@@ -22,6 +22,12 @@
   left: 0;
   position: relative;
   margin: 0 auto;
+  &__header {
+    border-bottom: 1px solid #eaeaea;
+  }
+  &__footer {
+    border-top: 1px solid #eaeaea;
+  }
 }
 
 // refine element ui upload
