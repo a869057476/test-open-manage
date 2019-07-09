@@ -558,7 +558,7 @@
         <el-row>
           <el-col :span="18">
             <el-form-item label="原因说明">
-              <el-input type="textarea" v-model="dialogObj.form.user" :rows="6" :style="{ width: '600px'}"></el-input>
+              <el-input v-model="dialogObj.form.user" type="textarea" :rows="6" :style="{ width: '600px'}"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -612,7 +612,7 @@
     <el-dialog title="系统关系树状图" :visible.sync="dialogObj3.visible" :fullscreen="true">
       <div id="myChart" :style="{width: '100%', height: '400px'}"></div>
       <div>项目整体进度：正常----延期----暂停----作废----NA</div>
-      <div id="myChart2" :style="{width: '100%', height: '400px'}"></div>
+      <div id="myChart2" :style="{width: '100%', height: '580px'}"></div>
     </el-dialog>
   </div>
 </template>
@@ -776,48 +776,82 @@ export default {
         this.dialogObj.title = '修改'
       } else if (type === 'detail') {
         this.dialogObj2.visible = true
-        this.dialogObj2.list = [{"item_req_list_id": "XQTM1808270068", "item_req_title": "\u57fa\u51c6\u7cfb\u7edf\u65b0\u589e\u4e00\u4e2a\u680f\u76ee\u201c\u56fd\u9645\u8d27\u5e01\u7ecf\u7eaa\u5916\u6c47\u671f\u6743\u5b9e\u65f6\u62a5\u4ef7\u201d", "flag": 1}, {"item_req_list_id": "XQTM1808270069", "item_req_title": "\u57fa\u51c6\u901a\u8fc7DEP\u8ba2\u9605\u8d27\u5e01\u7ecf\u7eaa\u5916\u6c47\u671f\u6743\u5b9e\u65f6\u62a5\u4ef7", "flag": 1}, {"item_req_list_id": "XQTM1808270072", "item_req_title": "\u5916\u6c47\u671f\u6743\u6210\u4ea4\u660e\u7ec6\u4e2d\u589e\u52a0\u4fee\u6b63\u6ce2\u52a8\u7387\u7b49\u5b57\u6bb5", "flag": 1}, {"item_req_list_id": "XQTM1808270073", "item_req_title": "\u65b0\u589e\u6210\u4ea4\u4ef7\u548c\u8d27\u5e01\u7ecf\u7eaa\u62a5\u4ef7\u6837\u672c", "flag": 1}, {"item_req_list_id": "XQTM1808270074", "item_req_title": "\u5c55\u793a\u9875\u9762\u65b0\u589e\u6570\u636e\u6e90\u5b57\u6bb5", "flag": 1}, {"item_req_list_id": "XQTM1808270075", "item_req_title": "\u5c55\u793a\u9875\u9762\u5c06\u201c\u6ce2\u52a8\u7387\uff08Mid\uff09%\u201d\u6539\u4e3a\u201c\u6ce2\u52a8\u7387%\u201d", "flag": 1}, {"item_req_list_id": "XQTM1808270076", "item_req_title": "\u6ce2\u52a8\u7387\u6a21\u578b\u53c2\u6570\u67e5\u8be2\u5c06MID\u8c03\u6574\u4e3a\u6ce2\u52a8\u7387\u53c2\u6570", "flag": 1}, {"item_req_list_id": "XQTM1808270077", "item_req_title": "\u6807\u51c6\u671f\u9650\u6ce2\u52a8\u7387\u6570\u636e\u4e2d\u5c06\u201c\u6ce2\u52a8\u7387\uff08Mid\uff09\u201d\u6539\u4e3a\u201c\u6ce2\u52a8\u7387\u201d", "flag": 1}, {"item_req_list_id": "XQTM1808270078", "item_req_title": "\u8c03\u6574\u5916\u6c47\u671f\u6743\u9690\u542b\u6ce2\u52a8\u7387\u66f2\u7ebf\u5e94\u6025\u6a21\u677f", "flag": 1}, {"item_req_list_id": "XQTM1808270079", "item_req_title": "\u5916\u6c47\u671f\u6743\u9690\u542b\u6ce2\u52a8\u7387\u66f2\u7ebf\u65b0\u589e\u90e8\u5206\u53c2\u6570", "flag": 1}, {"item_req_list_id": "XQTM1808270080", "item_req_title": "\u5916\u6c47\u6389\u671f\u66f2\u7ebf\u5e94\u6025\u8ba1\u7b97\u65f6\u523b\u7531\u4e0b\u62c9\u6846\u6539\u4e3a\u7a7a\u767d\uff0c\u53ef\u4ee5\u8f93\u5165\u66f2\u7ebf\u4efb\u610f\u65f6\u523b\u3002", "flag": 1}, {"item_req_list_id": "XQTM1808270081", "item_req_title": "\u5916\u5e01\u9690\u542b\u5229\u7387\u66f2\u7ebf\u680f\u76eeON\u6807\u8bc6\u7edf\u4e00\u8c03\u6574\u4e3a1D\uff0c\u5bf9\u5916\u53d1\u6d88\u606f\u4e5f\u7531ON\u8c03\u6574\u4e3a1D", "flag": 1}, {"item_req_list_id": "XQTM1808270084", "item_req_title": "\u4eceDEP\u8ba2\u9605\u5916\u6c47\u6389\u671f\u3001\u8d27\u5e01\u6389\u671f\u3001\u5916\u6c47\u671f\u6743\u51b2\u9500\u4fe1\u606f", "flag": 1}, {"item_req_list_id": "XQTM1808270085", "item_req_title": "\u76f8\u5173\u5408\u7ea6\u5b58\u91cf\u4f30\u503c\u8ba1\u7b97\u65f6\u4e0d\u8ba1\u7b97\u5df2\u7ecf\u51b2\u9500\u6389\u7684\u5408\u7ea6", "flag": 1}, {"item_req_list_id": "XQTM1810180011", "item_req_title": "\u65b0\u589e\u5916\u6c47\u671f\u6743\u4f30\u503c\u5f15\u64ce", "flag": 1}, {"item_req_list_id": "XQTM1810180012", "item_req_title": "\u65b0\u589e\u201c\u5916\u6c47\u671f\u6743\u4f30\u503c\u5f15\u64ce\u201d\u4e8c\u7ea7\u5b50\u83dc\u5355\uff0c\u5176\u4e2d\u5305\u62ec\u201c\u5916\u6c47\u671f\u6743\u5408\u7ea6\u5bfc\u5165\u548c\u8ba1\u7b97\u201d", "flag": 1}, {"item_req_list_id": "XQTM1810180013", "item_req_title": "\u754c\u9762\u65b0\u589e\u201c\u6307\u5b9aMDE\u65e5\u671f\u201d\u7684\u65e5\u671f\u63a7\u4ef6\u3001\u201c\u8d34\u73b0\u66f2\u7ebf\u201d\u6309\u94ae\u3001\u201c\u6ce2\u52a8\u7387\u63d2\u503c\u201d\u6309\u94ae\u3001\u201c\u5373\u671f\u6c47\u7387\u201d\u6309\u94ae\uff08\u7f6e\u7070\uff09\u3001\u201c\u51b2\u9500\u4f30\u503c\u5bfc\u5165\u201d\u6309\u94ae\u3001\u201c\u4e0b\u8f7d\u201d\u6309\u94ae\u3001\u201c\u8ba1\u7b97\u201d\u6309\u94ae\u53ca\u4e0b\u65b9\u6570\u636e\u8868", "flag": 1}, {"item_req_list_id": "XQTM1810180014", "item_req_title": "\u65b0\u589e\u201c\u5916\u6c47\u671f\u6743\u5b58\u91cf\u5408\u7ea6\u4f30\u503c\u67e5\u8be2\u201d\u4e09\u7ea7\u5b50\u83dc\u5355\uff0c\n\u5e76\u5728\u6b64\u4e09\u7ea7\u5b50\u83dc\u5355\u4e0b\u589e\u52a0\u201c\u5168\u5e02\u573a\u5916\u6c47\u671f\u6743\u5b58\u91cf\u5408\u7ea6\u4f30\u503c\u201d\u548c\u201c\u5355\u673a\u6784\u5916\u6c47\u671f\u6743\u5b58\u91cf\u5408\u7ea6\u4f30\u503c\u201d\u4e24\u4e2a\u56db\u7ea7\u5b50\u83dc\u5355\uff0c\u6839\u636e\u5168\u5e02\u573a\u4f30\u503c\u7ed3\u679c\u5c55\u793a\uff0c\u5e76\u65b0\u589e\u76f8\u5e94\u7684\u7cfb\u7edf\u529f\u80fd\u548c\u903b\u8f91\u3002", "flag": 1}, {"item_req_list_id": "XQTM1810180016", "item_req_title": "\u5b8c\u5584\u5916\u6c47\u671f\u6743Delta\u53c2\u6570\u8ba1\u7b97\u529f\u80fd\uff0c\u57fa\u51c6\u7cfb\u7edf\u4e0d\u518d\u8ba1\u7b97delta\u53c2\u6570\uff0c\u4ece\u5b9a\u4ef7\u5de5\u5177\u83b7\u53d6\uff0c\u65b0\u589edelta\u503c\u548c\u8d27\u5e01\u5bf9\uff0c\u5e76\u4fee\u6539\u5c55\u793a\u754c\u9762", "flag": 1}, {"item_req_list_id": "XQTM1810180017", "item_req_title": "\u5b8c\u5584\u5916\u6c47\u671f\u6743Delta\u8ba1\u91cf\u53c2\u6570\u65e5\u62a5\uff0c\u4fee\u6539\u8bf4\u660e\u6587\u6863\uff0c\u4fee\u6539\u76f8\u5e94\u7684\u6570\u636e\u5c55\u793a", "flag": 1}, {"item_req_list_id": "XQTM1810180025", "item_req_title": "\u65b0\u589eDEP\u670d\u52a1\uff0c\u5b58\u91cf\u5916\u6c47\u671f\u6743\u5408\u7ea6\u53d1\u9001\uff0c\u5b58\u91cf\u5916\u6c47\u671f\u6743\u5408\u7ea6\u4f30\u503c\u7ed3\u679c\uff0cdelta\u53c2\u6570\u670d\u52a1\uff0c\u5f85\u4f30\u503c\u5408\u7ea6\u670d\u52a1", "flag": 1}, {"item_req_list_id": "XQTM1810180027", "item_req_title": "\u8ba2\u9605DEP\u5916\u6c47\u671f\u6743\u6210\u4ea4\u660e\u7ec6\u670d\u52a1", "flag": 1}, {"item_req_list_id": "XQTM1905160041", "item_req_title": "\u5728\u73b0\u6709\u5206\u673a\u6784\u5916\u6c47\u6389\u671f\u5b58\u91cf\u5408\u7ea6\u4f30\u503c\u4e2d\u65b0\u589e\u201c\u6e05\u7b97\u65b9\u5f0f\u201d\u5b57\u6bb5\u7684\u8f93\u51fa", "flag": 1}, {"item_req_list_id": "XQTM1905160049", "item_req_title": "\u57fa\u51c6\u63d0\u4f9b\u5916\u6c47\u8282\u5047\u65e5\u7ed9\u671f\u6743\u5b9a\u4ef7\u5de5\u5177", "flag": 1}]
+        this.dialogObj2.list = [
+          {
+            'item_req_list_id': 'XQTM1808270068',
+            'item_req_title': '基准系统新增一个栏目“国际货币经纪外汇期权实时报价”',
+            'flag': 1
+          },
+          {
+            'item_req_list_id': 'XQTM1808270069',
+            'item_req_title': '基准通过DEP订阅货币经纪外汇期权实时报价',
+            'flag': 1
+          },
+          {
+            'item_req_list_id': 'XQTM1808270072',
+            'item_req_title': '外汇期权成交明细中增加修正波动率等字段',
+            'flag': 1
+          }
+        ]
         // getRequirementEntryInfoReq().then(response => {
         //   this.dialogObj2.list = response.data
         // })
-      }  else if (type === 'tree') {
+      } else if (type === 'tree') {
         this.dialogObj3.visible = true
         this.$nextTick(() => {
           // 基于准备好的dom，初始化echarts实例
           const myChart = echarts.init(document.getElementById('myChart'))
-          let data = {
-            "name": "flare",
-            "children": [
-                {
-                    "name": "data",
-                    "children": [
-                        {
-                            "name": "converters",
-                            "children": [
-                              {"name": "Converters", "value": 721},
-                              {"name": "DelimitedTextConverter", "value": 4294}
-                            ]
-                        },
-                        {
-                            "name": "DataUtil",
-                            "value": 3322
-                        }
+          const data = {
+            'name': 'flare',
+            'children': [
+              {
+                'name': 'data',
+                'children': [
+                  {
+                    'name': 'converters',
+                    'children': [
+                      {
+                        'name': 'Converters',
+                        'value': 721
+                      },
+                      {
+                        'name': 'DelimitedTextConverter',
+                        'value': 4294
+                      }
                     ]
-                },
-                {
-                    "name": "display",
-                    "children": [
-                        {"name": "DirtySprite", "value": 8833},
-                        {"name": "LineSprite", "value": 1732},
-                        {"name": "RectSprite", "value": 3623}
-                  ]
-                },
-                {
-                    "name": "flex",
-                    "children": [
-                        {"name": "FlareVis", "value": 4116}
-                    ]
-                }
+                  },
+                  {
+                    'name': 'DataUtil',
+                    'value': 3322
+                  }
+                ]
+              },
+              {
+                'name': 'display',
+                'children': [
+                  {
+                    'name': 'DirtySprite',
+                    'value': 8833
+                  },
+                  {
+                    'name': 'LineSprite',
+                    'value': 1732
+                  },
+                  {
+                    'name': 'RectSprite',
+                    'value': 3623
+                  }
+                ]
+              },
+              {
+                'name': 'flex',
+                'children': [
+                  {
+                    'name': 'FlareVis',
+                    'value': 4116
+                  }
+                ]
+              }
             ]
           }
           myChart.setOption({
@@ -825,13 +859,19 @@ export default {
               trigger: 'item',
               triggerOn: 'mousemove'
             },
+            toolbox: {
+              show: true,
+              feature: {
+                saveAsImage: {}
+              }
+            },
             legend: {
               top: '2%',
               left: '3%',
               orient: 'vertical',
               borderColor: '#c23531'
             },
-            series:[
+            series: [
               {
                 type: 'tree',
                 data: [data],
@@ -867,29 +907,37 @@ export default {
           const myChart2 = echarts.init(document.getElementById('myChart2'))
           // 绘制图表
           myChart2.setOption({
-            title: { text: '测试轮次红榜' },
+            title: { text: '项目目前阶段' },
             tooltip: {
+              formatter: (params, ticket, callback) => {
+                // console.log(params)
+                let res = params[0].name
+                for (var i = 0, l = params.length; i < l; i++) {
+                  res += '<br/>' + params[i].seriesName
+                  res += ' : '
+                  res += ['', '测试准备', 'UAT1测试', 'UAT1完成', '验收流程', '验收测试', '验收完成', '模拟流程', '模拟测试', '模拟完成', '已上线'][parseInt(params[i].value)]
+                }
+                setTimeout(() => {
+                  // 仅为了模拟异步回调
+                  callback(ticket, res)
+                }, 0)
+                return 'loading'
+              },
               trigger: 'axis',
-              axisPointer: {
-                type: 'shadow'
+              axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
               }
             },
             toolbox: {
               show: true,
               feature: {
-                dataView: {
-                  readOnly: false
-                },
-                magicType: {
-                  type: ['line', 'bar', 'stack', 'tiled']
-                },
-                restore: {},
                 saveAsImage: {}
               }
             },
             legend: {
-              data: ['系统测试']
+              data: ['项目阶段']
             },
+            calculable: true,
             grid: {
               left: '3%',
               right: '4%',
@@ -898,61 +946,49 @@ export default {
             },
             xAxis: {
               type: 'value',
+              splitNumber: 10,
+              axisTick: {
+                show: true,
+                interval: 0
+              },
               axisLabel: {
-                formatter: function (value, index) {
-                  let texts = []
-                  switch(value) {
-                    case 0:
-                      texts.push('测试准备')
-                      break
-                    case 1:
-                      texts.push('UAT1测试')
-                      break
-                    case 2:
-                      texts.push('UAT1完成')
-                      break
-                    case 3:
-                      texts.push('验收流程')
-                      break
-                    case 4:
-                      texts.push('验收测试')
-                      break
-                    case 5:
-                      texts.push('验收完成')
-                      break
-                    case 6:
-                      texts.push('模拟流程')
-                      break
-                    case 7:
-                      texts.push('模拟测试')
-                      break
-                    case 8:
-                      texts.push('模拟完成')
-                      break
-                    case 9:
-                      texts.push('已上线')
-                      break
-                    default:
-                      texts.push('')
-                  } 
-                    return texts
+                show: true,
+                margin: 8,
+                formatter: function(value, index) {
+                  return ['    ', '测试准备', 'UAT1测试', 'UAT1完成', '验收流程', '验收测试', '验收完成', '模拟流程', '模拟测试', '模拟完成', '已上线'][value]
+                },
+                textStyle: {
+                  color: 'blue',
+                  fontFamily: 'sans-serif',
+                  fontSize: 15,
+                  fontStyle: 'italic',
+                  fontWeight: 'bold'
                 }
               }
             },
             yAxis: {
               show: false,
               type: 'category',
-              data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+              axisTick: {
+                show: false
+              },
+              data: ['test1V1.1.1', 'test2V2.1.1', 'test3V2.1.1', 'test4V1.3.1', 'test5V5.1.1', 'test6V1.6.1', 'test7V4.1.1']
             },
             series: [
               {
                 name: '系统测试',
                 type: 'bar',
-                stack: '总量',
-                label: {
+                barWidth: 35,
+                itemStyle: {
                   normal: {
-                    show: true,
-                    position: 'insideRight'
+                    label: {
+                      show: true,
+                      position: 'insideBottom',
+                      formatter: '{b} ',
+                      textStyle: {
+                        fontSize: 16
+                      }
+                    }
                   }
                 },
                 data: [9, 9, 9, 8, 7, 6, 9]
