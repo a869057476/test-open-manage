@@ -60,7 +60,7 @@ export const constantRoutes = [
   {
     path: '/quality_manage',
     component: Layout,
-    redirect: '/quality_manage/defect_manages',
+    redirect: '/quality_manage/test_manage',
     name: 'quality_manage',
     meta: { title: '质量管理', icon: 'example' },
     children: [
@@ -87,37 +87,37 @@ export const constantRoutes = [
               {
                 path: 'xqtm_list',
                 name: 'xqtm_list',
-                component: () => import('@/views/main/need_manage/xqtm_list/xqtm_list'),
+                component: () => import('@/views/main/quality_manage/project_manage/need_manage/xqtm_list/xqtm_list'),
                 meta: { title: '需求条目列表', icon: 'table' }
               },
               {
                 path: 'redmine_work',
                 name: 'redmine_work',
-                component: () => import('@/views/main/need_manage/redmine_work/redmine_work'),
+                component: () => import('@/views/main/quality_manage/project_manage/need_manage/redmine_work/redmine_work'),
                 meta: { title: '报工量汇总情况', icon: 'table' }
               },
               {
                 path: 'cq_release',
                 name: 'cq_release',
-                component: () => import('@/views/main/need_manage/cq_release/cq_release'),
+                component: () => import('@/views/main/quality_manage/project_manage/need_manage/cq_release/cq_release'),
                 meta: { title: '缺陷Reopen统计报表', icon: 'table' }
               },
               {
                 path: 'cq_release_all',
                 name: 'cq_release_all',
-                component: () => import('@/views/main/need_manage/cq_release_all/cq_release_all'),
+                component: () => import('@/views/main/quality_manage/project_manage/need_manage/cq_release_all/cq_release_all'),
                 meta: { title: '缺陷Release统计报表', icon: 'table' }
               },
               {
                 path: 'edit_group_project',
                 name: 'edit_group_project',
-                component: () => import('@/views/main/need_manage/edit_group_project/edit_group_project'),
+                component: () => import('@/views/main/quality_manage/project_manage/need_manage/edit_group_project/edit_group_project'),
                 meta: { title: '编辑或新增组-系统间权限', icon: 'table' }
               },
               {
                 path: 'manage_year',
                 name: 'manage_year',
-                component: () => import('@/views/main/need_manage/manage_year/manage_year'),
+                component: () => import('@/views/main/quality_manage/project_manage/need_manage/manage_year/manage_year'),
                 meta: { title: '测试管理汇总表', icon: 'table' }
               }
             ]
@@ -195,13 +195,13 @@ export const constantRoutes = [
                   },
                   {
                     path: 'Proj_all',
-                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/check/Proj_all/Proj_all'),
                     name: 'Proj_all',
                     meta: { title: '项目基础信息', icon: 'nested' }
                   },
                   {
                     path: 'Sys_all',
-                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/check/Sys_all/Sys_all'),
                     name: 'Sys_all',
                     meta: { title: '系统基础信息', icon: 'nested' }
                   }
