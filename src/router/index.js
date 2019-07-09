@@ -144,13 +144,13 @@ export const constantRoutes = [
                 children: [
                   {
                     path: 'QA_singleproj_DRE',
-                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/QA_singleproj_DRE/QA_singleproj_DRE'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/analyze/QA_singleproj_DRE/QA_singleproj_DRE'),
                     name: 'QA_singleproj_DRE',
                     meta: { title: '单项目DRE', icon: 'nested' }
                   },
                   {
                     path: 'QA_singlesys_DRE',
-                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/QA_singlesys_DRE/QA_singlesys_DRE'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/analyze/QA_singlesys_DRE/QA_singlesys_DRE'),
                     name: 'QA_singlesys_DRE',
                     meta: { title: '单系统DRE', icon: 'nested' }
                   }
@@ -161,17 +161,17 @@ export const constantRoutes = [
                 component: Center,
                 name: 'check',
                 meta: { title: '项目过程质量检查', icon: 'table' },
-                redirect: '/project_process_quality/check/QA_table',
+                redirect: '/quality_manage/project_manage/project_process_quality/check/QA_table',
                 children: [
                   {
                     path: 'QA_table',
-                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/check/QA_table/QA_table'),
                     name: 'QA_table',
                     meta: { title: '项目过程质量检查', icon: 'nested' }
                   },
                   {
                     path: 'QA_weekreport',
-                    component: () => import('@/views/nested/menu1/menu1-1'),
+                    component: () => import('@/views/main/quality_manage/project_manage/project_process_quality/check/QA_weekreport/QA_weekreport'),
                     name: 'QA_weekreport',
                     meta: { title: '项目审计周报', icon: 'nested' }
                   },

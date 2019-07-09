@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
     <el-form :inline="true" :model="formSearch" label-width="110px">
       <el-form-item label="展示汇总情况表">
         <el-radio-group v-model="formSearch.type" size="medium" @change="onChange">
