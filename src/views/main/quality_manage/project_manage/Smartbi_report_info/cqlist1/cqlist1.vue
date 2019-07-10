@@ -52,12 +52,6 @@
       <el-form-item label="缺陷编号">
         <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
       </el-form-item>
-      <el-form-item label="子系统名称或版本号存在差异" label-width="200px">
-        <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-          <el-option label="本币交易直通式处理系统" value="0"></el-option>
-          <el-option label="中国货币网" value="1"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="原子系统名称">
         <el-select v-model="formSearch.region" placeholder="请选择" clearable>
           <el-option label="本币交易直通式处理系统" value="0"></el-option>
@@ -65,6 +59,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="原子系统版本">
+        <el-select v-model="formSearch.region" placeholder="请选择" clearable>
+          <el-option label="本币交易直通式处理系统" value="0"></el-option>
+          <el-option label="中国货币网" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="子系统名称或版本号存在差异" label-width="200px">
         <el-select v-model="formSearch.region" placeholder="请选择" clearable>
           <el-option label="本币交易直通式处理系统" value="0"></el-option>
           <el-option label="中国货币网" value="1"></el-option>

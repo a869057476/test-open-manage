@@ -16,8 +16,21 @@
             <el-button type="success" size="small" @click="onSearch">添加会议记录</el-button>
             <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
           </el-form-item>
+          <el-form-item label="展开">
+            <el-switch v-model="formSearch.expand" @change="onChangeExpandAll"></el-switch>
+          </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight1">
+        <el-table v-loading="listLoading" :data="weekReportList" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight1">
+          <el-table-column label="" min-width="60" align="center">
+            <template v-if="scope.row.status === '主系统' && scope.row.isExpand" slot-scope="scope">
+              <div v-if="!scope.row.expand" @click="onChangeExpandOne(true, scope.row)">
+                <i class="el-icon-arrow-down"></i>
+              </div>
+              <div v-if="scope.row.expand" @click="onChangeExpandOne(false, scope.row)">
+                <i class="el-icon-arrow-up"></i>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="上线日期" min-width="120" align="center">
             <template slot-scope="scope">
               {{ scope.$index }}
@@ -25,7 +38,8 @@
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <el-button type="text" size="mini" @click="onOperate('tree', scope.row)">{{ scope.row.title }}</el-button>
+              <el-button v-if="scope.row.status === '主系统'" type="text" size="mini" @click="onOperate('tree', scope.row)">{{ scope.row.title }}</el-button>
+              <span v-if="scope.row.status !== '主系统'">{{ scope.row.title }}</span>
             </template>
           </el-table-column>
           <el-table-column label="项目名称" min-width="300" align="center">
@@ -35,7 +49,7 @@
           </el-table-column>
           <el-table-column label="变更类型" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.status }}</span>
             </template>
           </el-table-column>
           <el-table-column label="主系统项目整体进度" min-width="150" align="center">
@@ -182,16 +196,20 @@
               <el-option label="NA" value="1"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="生产上线日期">
+          <el-form-item label="负责人">
+            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="生产上线日期">
             <el-select v-model="formSearch.region" placeholder="请选择" clearable>
               <el-option label="今天" value="0"></el-option>
               <el-option label="过去7天" value="1"></el-option>
               <el-option label="本月" value="0"></el-option>
               <el-option label="今年" value="1"></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="负责人">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+          </el-form-item> -->
+          <el-form-item label="生产上线时间">
+            <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+            </el-date-picker>
           </el-form-item>
           <div class="mb20">
             <el-button type="primary" size="small" @click="onSearch">查询</el-button>
@@ -201,6 +219,8 @@
           </div>
         </el-form>
         <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight2">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
               {{ scope.row.title }}
@@ -208,12 +228,12 @@
           </el-table-column>
           <el-table-column label="版本号" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.id }}</span>
             </template>
           </el-table-column>
           <el-table-column label="主系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.$index }}</span>
             </template>
           </el-table-column>
           <el-table-column label="主系统版本号" min-width="120" align="center">
@@ -618,7 +638,7 @@
 </template>
 
 <script>
-import { getTestList } from '@/api/local'
+import { getWeekReportList, getTestList } from '@/api/local'
 import { Calendar } from '@/utils'
 import echarts from 'echarts'
 
@@ -637,6 +657,8 @@ export default {
         type: '当月采购详情'
       },
       list: [],
+      weekReportList: [],
+      weekReportOriginList: [],
       listLoading: true,
       dialogObj: {
         title: '新增',
@@ -646,7 +668,8 @@ export default {
           date: '',
           user: '',
           region: '',
-          checked: false
+          checked: false,
+          expand: false
         }
       },
       dialogObj2: {
@@ -681,8 +704,8 @@ export default {
             text: '下周',
             onClick(picker) {
               const calendar = new Calendar()
-              const start = calendar.getNextWeek().startDate
-              const end = calendar.getNextWeek().endDate
+              const start = calendar.getNextWeekOther().startDate
+              const end = calendar.getNextWeekOther().endDate
               picker.$emit('pick', [start, end])
             }
           },
@@ -690,8 +713,8 @@ export default {
             text: '下两周',
             onClick(picker) {
               const calendar = new Calendar()
-              const start = calendar.getNextTwoWeek().startDate
-              const end = calendar.getNextTwoWeek().endDate
+              const start = calendar.getNextTwoWeekOther().startDate
+              const end = calendar.getNextTwoWeekOther().endDate
               picker.$emit('pick', [start, end])
             }
           },
@@ -757,6 +780,7 @@ export default {
         this.autoHeight1 = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
         this.autoHeight3 = this.$root.$el.clientHeight - 380
         this.dialogObj.height = this.$root.$el.clientHeight - 280
+        this.autoHeight2 = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 160
       }
     })
   },
@@ -1004,6 +1028,89 @@ export default {
         })
       }
     },
+    // 设置table行的class
+    tableRowClassName({ row, rowIndex }) {
+      if (row.status === '主系统') {
+        return row.bgcolor
+      }
+      return ''
+    },
+    /**
+     * 单个展开/收起
+     * @method onChangeExpandAll
+     * @param {Boolean} status false:收起;true:展开
+     * @param {Object} row 当前行数据
+     * @return 无
+     */
+    onChangeExpandOne(status, row) {
+      console.log(status)
+      console.log(row)
+      // 获取当前主系统的index
+      let currentIndex = 0
+      this.weekReportList.some((e, i) => {
+        if (e.id === row.id) {
+          currentIndex = i
+          return true
+        }
+        return false
+      })
+      // 把当前的expand反转过来
+      this.weekReportList[currentIndex].expand = status
+      if (status) {
+        // 获取当前主系统下面的主系统
+        const tempArr = []
+        this.weekReportOriginList.some((e, i) => {
+          if (i > row.index) {
+            if (e.status !== '主系统') {
+              tempArr.push(e)
+              return false
+            }
+            return true
+          }
+          return false
+        })
+        console.log(tempArr)
+        this.weekReportList.splice(currentIndex + 1, 0, ...tempArr)
+        console.log(this.weekReportList)
+      } else {
+        // 获取当前主系统下的子系统个数
+        let childLength = 0
+        this.weekReportList.some((e, i) => {
+          if (i > currentIndex) {
+            if (e.status !== '主系统') {
+              childLength++
+              return false
+            }
+            return true
+          }
+          return false
+        })
+        this.weekReportList.splice(currentIndex + 1, childLength)
+      }
+    },
+    /**
+     * 全部展开/收起
+     * @method onChangeExpandAll
+     * @param {Boolean} type false:收起;true:展开
+     * @return 无
+     */
+    onChangeExpandAll(type) {
+      console.log(type)
+      const weekReportOriginList = JSON.parse(JSON.stringify(this.weekReportOriginList))
+      if (type) {
+        this.weekReportList = weekReportOriginList
+      } else {
+        this.weekReportList = weekReportOriginList.filter(e => {
+          return e.status === '主系统'
+        })
+      }
+      // 能展开的行expand变化
+      this.weekReportList.map(e => {
+        if (e.isExpand) {
+          e.expand = type
+        }
+      })
+    },
     // 每页条数选择
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -1015,9 +1122,27 @@ export default {
     // 查询
     onSearch() {
       console.log('submit!')
+      this.fetchData()
     },
     fetchData() {
       this.listLoading = true
+      getWeekReportList().then(response => {
+        console.log(response.data.items)
+        this.weekReportOriginList = response.data.items
+        // 设置能展开的行
+        this.weekReportOriginList.forEach((e, i) => {
+          if (e.status !== '主系统') {
+            if (this.weekReportOriginList[i - 1].status === '主系统') {
+              this.weekReportOriginList[i - 1].isExpand = true
+            }
+          }
+        })
+        // this.weekReportList = response.data.items
+        this.weekReportList = this.weekReportOriginList.filter(e => {
+          return e.status === '主系统'
+        })
+        this.listLoading = false
+      })
       getTestList().then(response => {
         this.list = response.data.items
         this.listLoading = false

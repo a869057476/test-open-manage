@@ -184,6 +184,20 @@ export class Calendar {
     return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
   }
 
+  // 下周other
+  getNextWeekOther() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 2)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 8)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
+  // 下两周other
+  getNextTwoWeekOther() {
+    this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 9)
+    this.endDate = new Date(Calendar.nowYear, Calendar.nowMonth, Calendar.nowDay - Calendar.nowDayOfWeek + 22)
+    return { startDate: this.formatDate(this.startDate), endDate: this.formatDate(this.endDate) }
+  }
+
   // 本月
   getNowMonth() {
     this.startDate = new Date(Calendar.nowYear, Calendar.nowMonth, 1)
