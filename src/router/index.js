@@ -211,7 +211,7 @@ export const constantRoutes = [
           },
           {
             path: 'Smartbi_report_info',
-            component: Layout,
+            component: Center,
             redirect: '/Smartbi_report_info/testreport_sys',
             name: 'Smartbi_report_info',
             meta: { title: 'Smartbi报表信息', icon: 'example' },
@@ -220,55 +220,55 @@ export const constantRoutes = [
                 path: 'testreport_sys',
                 name: 'testreport_sys',
                 component: () => import('@/views/table/index'),
-                meta: { title: '第三方测试报告', icon: 'table' }
+                meta: { title: '第三方测试报告' }
               },
               {
                 path: 'testreport',
                 name: 'testreport',
                 component: () => import('@/views/table/index'),
-                meta: { title: '验收/模拟测试报告', icon: 'table' }
+                meta: { title: '验收/模拟测试报告' }
               },
               {
                 path: 'testdayreport_all',
                 name: 'testdayreport_all',
                 component: () => import('@/views/table/index'),
-                meta: { title: '测试日报(52\\56\\206库测试版)', icon: 'table' }
+                meta: { title: '测试日报(52\\56\\206库测试版)' }
               },
               {
                 path: 'testdayreport_zhichi',
                 name: 'testdayreport_zhichi',
                 component: () => import('@/views/table/index'),
-                meta: { title: '支持组测试周报', icon: 'table' }
+                meta: { title: '支持组测试周报' }
               },
               {
                 path: 'cqlist1',
                 name: 'cqlist1',
-                component: () => import('@/views/table/index'),
-                meta: { title: '缺陷详情查看(52\\56\\206库)_新', icon: 'table' }
+                component: () => import('@/views/main/quality_manage/project_manage/Smartbi_report_info/cqlist1/cqlist1'),
+                meta: { title: '缺陷详情查看(52\\56\\206库)_新' }
               },
               {
                 path: 'bpminformation1',
                 name: 'bpminformation1',
                 component: () => import('@/views/table/index'),
-                meta: { title: 'BPM立项工作量占比情况_新', icon: 'table' }
+                meta: { title: 'BPM立项工作量占比情况_新' }
               },
               {
                 path: 'testlc1',
                 name: 'testlc1',
                 component: () => import('@/views/table/index'),
-                meta: { title: '测试轮次准入准出详情(系统\\验收\\模拟)_新', icon: 'table' }
+                meta: { title: '测试轮次准入准出详情(系统\\验收\\模拟)_新' }
               },
               {
                 path: 'testlc_YXPT',
                 name: 'testlc_YXPT',
                 component: () => import('@/views/table/index'),
-                meta: { title: '精益系统测试轮次准入准出详情', icon: 'table' }
+                meta: { title: '精益系统测试轮次准入准出详情' }
               },
               {
                 path: 'PMO_in_out',
                 name: 'PMO_in_out',
                 component: () => import('@/views/table/index'),
-                meta: { title: '系统测试准入准出详情', icon: 'table' }
+                meta: { title: '系统测试准入准出详情' }
               }
             ]
           },
