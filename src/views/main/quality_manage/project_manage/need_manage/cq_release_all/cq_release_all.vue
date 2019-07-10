@@ -78,12 +78,9 @@
           {{ scope.row.pageviews }}
         </template>
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="150">
+      <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain>查看release缺陷</el-button>
+          <el-button size="mini" type="primary" plain @click="onDetail(scope.row)">查看release缺陷</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -137,6 +134,9 @@ export default {
     })
   },
   methods: {
+    onDetail(row) {
+      console.log(row)
+    },
     // 每页条数选择
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)

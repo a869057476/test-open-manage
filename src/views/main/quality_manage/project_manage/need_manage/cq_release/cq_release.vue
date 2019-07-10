@@ -28,15 +28,7 @@
         <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
       </div>
     </el-form>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-      :max-height="autoHeight"
-    >
+    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight">
       <!-- <el-table-column
         type="selection"
         width="55">
@@ -66,13 +58,10 @@
           {{ scope.row.pageviews }}
         </template>
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="300">
+      <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain>查看close-submit</el-button>
-          <el-button size="mini" type="primary" plain>查看release-open</el-button>
+          <el-button size="mini" type="primary" plai @click="onDetail(scope.row)">查看close-submit</el-button>
+          <el-button size="mini" type="primary" plain @click="onDetail(scope.row)">查看release-open</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -125,6 +114,9 @@ export default {
     })
   },
   methods: {
+    onDetail(row) {
+      console.log(row)
+    },
     // 每页条数选择
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)

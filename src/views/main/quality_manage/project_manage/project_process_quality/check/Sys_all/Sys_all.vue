@@ -24,7 +24,6 @@
         type="selection"
         width="55">
       </el-table-column> -->
-      
       <el-table-column label="系统名称" min-width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.title }}

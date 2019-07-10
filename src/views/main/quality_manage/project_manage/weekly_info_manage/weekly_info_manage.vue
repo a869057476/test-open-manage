@@ -752,6 +752,12 @@ export default {
       this.autoHeight1 = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
       this.autoHeight3 = this.$root.$el.clientHeight - 380
       this.dialogObj.height = this.$root.$el.clientHeight - 280
+
+      window.onresize = () => {
+        this.autoHeight1 = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
+        this.autoHeight3 = this.$root.$el.clientHeight - 380
+        this.dialogObj.height = this.$root.$el.clientHeight - 280
+      }
     })
   },
   methods: {
