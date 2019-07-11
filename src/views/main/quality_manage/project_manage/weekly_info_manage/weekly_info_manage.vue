@@ -713,15 +713,23 @@
           <div class="meeting-record-row-col word-big">目前进展</div>
           <div class="meeting-record-row-col word-big">评估意见</div>
         </div>
-        <div v-for="item in meetingDialogObj.data.tableList" :key="item.key" class="meeting-record-row">
+        <div v-for="item in meetingForm.tableList" :key="item.key" class="meeting-record-row">
           <div class="meeting-record-row-col">{{ item.index }}</div>
           <div class="meeting-record-row-col">{{ item.date }}</div>
           <div class="meeting-record-row-col">{{ item.mainSys }}</div>
           <div class="meeting-record-row-col">{{ item.projectName }}</div>
           <div class="meeting-record-row-col">{{ item.type }}</div>
           <div class="meeting-record-row-col">{{ item.num }}</div>
-          <div class="meeting-record-row-col">{{ item.progress }}</div>
-          <div class="meeting-record-row-col">{{ item.opinion }}</div>
+          <div class="meeting-record-row-col">
+            <el-form-item label="">
+              <el-input v-model="item.progress" placeholder="请输入" clearable></el-input>
+            </el-form-item>
+          </div>
+          <div class="meeting-record-row-col">
+            <el-form-item label="">
+              <el-input v-model="item.opinion" placeholder="请输入" clearable></el-input>
+            </el-form-item>
+          </div>
         </div>
         <div class="meeting-record-row contain">
           <div class="meeting-record-row-col word-big">会议讨论结果</div>
@@ -839,41 +847,7 @@ export default {
       },
       meetingDialogObj: {
         visible: false,
-        height: 200,
-        data: {
-          tableList: [
-            {
-              index: 1,
-              date: '2019-07-11',
-              mainSys: 'main1',
-              projectName: 'pri1',
-              type: '正常',
-              num: 0,
-              progress: '',
-              opinion: '已完成模拟测试，按计划上线'
-            },
-            {
-              index: 2,
-              date: '2019-07-15',
-              mainSys: 'main2',
-              projectName: 'pri2',
-              type: '快捷',
-              num: 1,
-              progress: '10月17日完成模拟测试',
-              opinion: '按快速变更流程，测完则上线'
-            },
-            {
-              index: 3,
-              date: '2019-08-22',
-              mainSys: 'main3',
-              projectName: 'pri3',
-              type: '正常',
-              num: 0,
-              progress: '10月05日完成模拟测试',
-              opinion: '若周三测试完成，按计划上线'
-            }
-          ]
-        }
+        height: 200
       },
       meetingForm: {
         subject: '',
@@ -892,7 +866,8 @@ export default {
             value: ''
           }
         ],
-        otherList: []
+        otherList: [],
+        tableList: []
       },
       rules: {
         subject: [
@@ -1435,6 +1410,38 @@ export default {
         this.list = response.data.items
         this.listLoading = false
       })
+      this.meetingForm.tableList = [
+        {
+          index: 1,
+          date: '2019-07-11',
+          mainSys: 'main1',
+          projectName: 'pri1',
+          type: '正常',
+          num: 0,
+          progress: '',
+          opinion: '已完成模拟测试，按计划上线'
+        },
+        {
+          index: 2,
+          date: '2019-07-15',
+          mainSys: 'main2',
+          projectName: 'pri2',
+          type: '快捷',
+          num: 1,
+          progress: '10月17日完成模拟测试',
+          opinion: '按快速变更流程，测完则上线'
+        },
+        {
+          index: 3,
+          date: '2019-08-22',
+          mainSys: 'main3',
+          projectName: 'pri3',
+          type: '正常',
+          num: 0,
+          progress: '10月05日完成模拟测试',
+          opinion: '若周三测试完成，按计划上线'
+        }
+      ]
     }
   }
 }
