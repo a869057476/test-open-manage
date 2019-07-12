@@ -223,6 +223,12 @@ export default {
       this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
       this.needDialogObj.height = this.$root.$el.clientHeight - 180
       this.pdbDialogObj.height = this.$root.$el.clientHeight - 280
+
+      window.onresize = () => {
+        this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
+        this.needDialogObj.height = this.$root.$el.clientHeight - 180
+        this.pdbDialogObj.height = this.$root.$el.clientHeight - 280
+      }
     })
   },
   methods: {

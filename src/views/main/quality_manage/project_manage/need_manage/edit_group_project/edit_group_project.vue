@@ -23,7 +23,7 @@
           </el-form-item>
           <div class="mb20">
             <el-button type="primary" size="small" @click="onSearch">新增PDB项目权限</el-button>
-            <el-button type="success" size="small" @click="onSearch">查看项目权限</el-button>
+            <el-button type="success" size="small" @click="onShowDetail('work')">查看项目权限</el-button>
           </div>
         </el-form>
       </el-collapse-item>
@@ -49,11 +49,36 @@
           </el-form-item>
           <div class="mb20">
             <el-button type="primary" size="small" @click="onSearch">新增全流程项目权限</el-button>
-            <el-button type="success" size="small" @click="onSearch">查看项目权限</el-button>
+            <el-button type="success" size="small" @click="onShowDetail('need')">查看项目权限</el-button>
           </div>
         </el-form>
       </el-collapse-item>
     </el-collapse>
+    <el-dialog :title="groupDialogObj.title" :visible.sync="groupDialogObj.visible" top="5vh" width="800px">
+      <el-table :data="groupDialogObj.list" :max-height="groupDialogObj.height" fit border stripe>
+        <el-table-column prop="author" label="测试小组名" min-width="180"></el-table-column>
+        <el-table-column v-if="groupDialogObj.type === 'work'" prop="author" label="新老PDB系统标识" min-width="180"></el-table-column>
+        <el-table-column v-if="groupDialogObj.type === 'work'" prop="author" label="PDB系统名称" min-width="180"></el-table-column>
+        <el-table-column v-if="groupDialogObj.type === 'need'" prop="author" label="全流程系统名称" min-width="180"></el-table-column>
+        <el-table-column v-if="groupDialogObj.type === 'need'" prop="author" label="全流程子系统名称" min-width="180"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="80">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" plain @click="onShowDetail(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        class="mt20"
+        :current-page="groupDialogObj.currentPage"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </el-dialog>
   </div>
 </template>
 
@@ -61,16 +86,6 @@
 import { getTestList } from '@/api/local'
 
 export default {
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       autoHeight: 200,
@@ -81,7 +96,15 @@ export default {
         region: ''
       },
       list: [],
-      listLoading: true
+      listLoading: true,
+      groupDialogObj: {
+        type: 'work',
+        currentPage: 1,
+        title: '',
+        visible: false,
+        list: [],
+        height: 200
+      }
     }
   },
   created() {
@@ -90,9 +113,31 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
+      this.groupDialogObj.height = this.$root.$el.clientHeight - 260
+
+      window.onresize = () => {
+        this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
+        this.groupDialogObj.height = this.$root.$el.clientHeight - 260
+      }
     })
   },
   methods: {
+    /**
+     * 显示详情
+     * @method onShowDetail
+     * @param {String} type work:报工量,need:需求条目
+     * @return 无
+     */
+    onShowDetail(type) {
+      this.groupDialogObj.type = type
+      if (type === 'work') {
+        this.groupDialogObj.title = '删除组-PDB系统间权限(报工量汇总相关)'
+      } else if (type === 'need') {
+        this.groupDialogObj.title = '删除组-全流程系统间权限(需求条目相关)'
+      }
+      this.groupDialogObj.list = this.list
+      this.groupDialogObj.visible = true
+    },
     handleChange(val) {
       console.log(val)
     },

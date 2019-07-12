@@ -60,8 +60,8 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plai @click="onDetail(scope.row)">查看close-submit</el-button>
-          <el-button size="mini" type="primary" plain @click="onDetail(scope.row)">查看release-open</el-button>
+          <el-button size="mini" type="primary" plain @click="onShowDetail('close-submit', scope.row)">查看close-submit</el-button>
+          <el-button size="mini" type="primary" plain @click="onShowDetail('release-open', scope.row)">查看release-open</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -76,6 +76,31 @@
       @current-change="handleCurrentChange"
     >
     </el-pagination>
+    <el-dialog :title="releaseDialogObj.title" :visible.sync="releaseDialogObj.visible" top="5vh" width="1200px">
+      <el-table :data="releaseDialogObj.list" :max-height="releaseDialogObj.height" fit border stripe>
+        <el-table-column prop="author" label="缺陷编号" min-width="100"></el-table-column>
+        <el-table-column prop="author" label="系统名称" min-width="140"></el-table-column>
+        <el-table-column prop="author" label="缺陷版本号" min-width="100"></el-table-column>
+        <el-table-column prop="author" label="缺陷标题" min-width="200"></el-table-column>
+        <el-table-column prop="author" label="提交时间" min-width="100"></el-table-column>
+        <el-table-column prop="author" label="提交人" min-width="80"></el-table-column>
+        <el-table-column prop="author" label="Reopen时间" min-width="110"></el-table-column>
+        <el-table-column prop="author" label="操作人" min-width="80"></el-table-column>
+        <el-table-column prop="author" label="缺陷等级" min-width="100"></el-table-column>
+        <el-table-column prop="author" label="缺陷状态" min-width="100"></el-table-column>
+      </el-table>
+      <el-pagination
+        class="mt20"
+        :current-page="releaseDialogObj.currentPage"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </el-dialog>
   </div>
 </template>
 
@@ -83,16 +108,6 @@
 import { getTestList } from '@/api/local'
 
 export default {
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       autoHeight: 200,
@@ -102,7 +117,14 @@ export default {
         region: ''
       },
       list: [],
-      listLoading: true
+      listLoading: true,
+      releaseDialogObj: {
+        currentPage: 1,
+        title: '',
+        visible: false,
+        list: [],
+        height: 200
+      }
     }
   },
   created() {
@@ -111,11 +133,27 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
+      this.releaseDialogObj.height = this.$root.$el.clientHeight - 260
+
+      window.onresize = () => {
+        this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
+        this.releaseDialogObj.height = this.$root.$el.clientHeight - 260
+      }
     })
   },
   methods: {
-    onDetail(row) {
+    /**
+     * 显示详情
+     * @method onShowDetail
+     * @param {String} type close-submit release-open
+     * @param {Object} row 当前行数据
+     * @return 无
+     */
+    onShowDetail(type, row) {
       console.log(row)
+      this.releaseDialogObj.title = `缺陷${type}列表`
+      this.releaseDialogObj.list = this.list
+      this.releaseDialogObj.visible = true
     },
     // 每页条数选择
     handleSizeChange(val) {
