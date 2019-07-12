@@ -720,12 +720,12 @@
           <div class="meeting-record-row-col">{{ item.projectName }}</div>
           <div class="meeting-record-row-col">{{ item.type }}</div>
           <div class="meeting-record-row-col">{{ item.num }}</div>
-          <div class="meeting-record-row-col">
+          <div class="meeting-record-row-col form-padding">
             <el-form-item label="">
               <el-input v-model="item.progress" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </div>
-          <div class="meeting-record-row-col">
+          <div class="meeting-record-row-col form-padding">
             <el-form-item label="">
               <el-input v-model="item.opinion" placeholder="请输入" clearable></el-input>
             </el-form-item>
@@ -744,7 +744,7 @@
         </div>
         <div v-for="(item, index) in meetingForm.discussList" :key="item.index" class="meeting-record-row">
           <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
-          <div class="meeting-record-row-col change">
+          <div class="meeting-record-row-col change form-padding">
             <el-form-item label="" :prop="'discussList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
               <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
             </el-form-item>
@@ -769,22 +769,22 @@
         </div>
         <div v-for="(item, index) in meetingForm.otherList" :key="item.index" class="meeting-record-row">
           <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
-          <div class="meeting-record-row-col">
+          <div class="meeting-record-row-col form-padding">
             <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
               <el-input v-model="item.project" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </div>
-          <div class="meeting-record-row-col">
+          <div class="meeting-record-row-col form-padding">
             <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
               <el-input v-model="item.exhibitor" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </div>
-          <div class="meeting-record-row-col width2">
+          <div class="meeting-record-row-col form-padding width2">
             <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
               <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </div>
-          <div class="meeting-record-row-col width2">
+          <div class="meeting-record-row-col form-padding width2">
             <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
               <el-input v-model="item.leader" placeholder="请输入" clearable></el-input>
             </el-form-item>
