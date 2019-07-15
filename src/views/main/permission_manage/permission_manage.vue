@@ -20,7 +20,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button size="small" @click="onSearch">取消</el-button>
+            <!-- <el-button size="small" @click="onSearch">取消</el-button> -->
             <el-button type="primary" size="small" @click="onSearch">确定</el-button>
             <el-button type="warning" size="small" @click="onSearch">重置</el-button>
           </el-form-item>
@@ -36,7 +36,7 @@
             </el-tree>
           </el-form-item>
           <el-form-item>
-            <el-button size="small" @click="onSearch">取消</el-button>
+            <!-- <el-button size="small" @click="onSearch">取消</el-button> -->
             <el-button type="primary" size="small" @click="onSearch">确定</el-button>
             <el-button type="warning" size="small" @click="onSearch">重置</el-button>
           </el-form-item>
