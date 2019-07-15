@@ -14,7 +14,33 @@
         <div class="dashboard-row-col-item">
           <div class="dashboard-row-col-item-title">工作日历</div>
           <div class="dashboard-row-col-item-main calendar-contain">
-            <div>20190703</div>
+            <el-row>
+              <el-col :span="14" style="padding: 0 10px;">
+                <date-pick v-model="date" :has-input-element="false"></date-pick>
+              </el-col>
+              <el-col :span="10">
+                <div class="progress-row">
+                  <div class="progress-row-col">
+                    <el-progress type="circle" :percentage="0" :width="100"></el-progress>
+                    <div>xx计划</div>
+                  </div>
+                  <div class="progress-row-col">
+                    <el-progress type="circle" :percentage="25" :width="100"></el-progress>
+                    <div>xx计划</div>
+                  </div>
+                </div>
+                <div class="progress-row">
+                  <div class="progress-row-col">
+                    <el-progress type="circle" :percentage="50" :width="100"></el-progress>
+                    <div>xx计划</div>
+                  </div>
+                  <div class="progress-row-col">
+                    <el-progress type="circle" :percentage="100" :width="100"></el-progress>
+                    <div>xx计划</div>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
           </div>
         </div>
       </el-col>
@@ -51,11 +77,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import DatePick from 'vue-date-pick'
+import 'vue-date-pick/dist/vueDatePick.css'
 
 export default {
   name: 'Dashboard',
+  components: { DatePick },
   data() {
     return {
+      date: '2019-02-12',
       messageList: [
         {
           id: 0,
@@ -84,6 +114,11 @@ export default {
     ...mapGetters([
       'name'
     ])
+  },
+  watch: {
+    date: val => {
+      console.log(val)
+    }
   }
 }
 </script>
@@ -145,6 +180,15 @@ export default {
         }
       }
     }
+  }
+}
+.progress-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  &-col {
+    text-align: center;
+    margin-right: 25px;
   }
 }
 </style>
