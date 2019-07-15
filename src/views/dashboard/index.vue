@@ -50,7 +50,54 @@
         <div class="dashboard-row-col-item">
           <div class="dashboard-row-col-item-title">个人任务</div>
           <div class="dashboard-row-col-item-main calendar-contain">
-            <div>20190703</div>
+            <el-form :inline="true" :model="formSearch">
+              <el-form-item label="任务状态" label-width="80px">
+                <el-select v-model="formSearch.region" placeholder="请选择" clearable style="width: 110px;">
+                  <el-option label="close-submit" value="0"></el-option>
+                  <el-option label="release-open" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="任务分类">
+                <el-select v-model="formSearch.region" placeholder="请选择" clearable style="width: 110px;">
+                  <el-option label="close-submit" value="0"></el-option>
+                  <el-option label="release-open" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Release时间">
+                <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" style="width: 280px;">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="small" @click="onSearch">查询</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table ref="personalTask" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="autoHeight">
+              <el-table-column label="任务时间" min-width="120" align="center">
+                <template slot-scope="scope">
+                  {{ scope.$index }}
+                </template>
+              </el-table-column>
+              <el-table-column label="项目名称" min-width="120" align="center">
+                <template slot-scope="scope">
+                  {{ scope.row.title }}
+                </template>
+              </el-table-column>
+              <el-table-column label="任务分类" min-width="120" align="center">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.author }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="工作内容" min-width="180" align="center">
+                <template slot-scope="scope">
+                  {{ scope.row.pageviews }}
+                </template>
+              </el-table-column>
+              <el-table-column label="工作状态" min-width="120" align="center">
+                <template slot-scope="scope">
+                  {{ scope.row.pageviews }}
+                </template>
+              </el-table-column>
+            </el-table>
           </div>
         </div>
       </el-col>
@@ -77,6 +124,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getTestList } from '@/api/local'
 import DatePick from 'vue-date-pick'
 import 'vue-date-pick/dist/vueDatePick.css'
 
@@ -85,6 +133,13 @@ export default {
   components: { DatePick },
   data() {
     return {
+      autoHeight: 200,
+      formSearch: {
+        date: '',
+        region: ''
+      },
+      list: [],
+      listLoading: true,
       date: '2019-02-12',
       messageList: [
         {
@@ -118,6 +173,32 @@ export default {
   watch: {
     date: val => {
       console.log(val)
+    }
+  },
+  created() {
+    this.fetchData()
+  },
+  mounted() {
+    this.$nextTick(() => {
+      console.log(this.$el)
+      this.autoHeight = this.$refs.personalTask.$el.parentNode.clientHeight - this.$refs.personalTask.$el.parentNode.childNodes[0].clientHeight - 10
+
+      window.onresize = () => {
+        this.autoHeight = this.$refs.personalTask.$el.parentNode.clientHeight - this.$refs.personalTask.$el.parentNode.childNodes[0].clientHeight - 10
+      }
+    })
+  },
+  methods: {
+    // 查询
+    onSearch() {
+      console.log('submit!')
+    },
+    fetchData() {
+      this.listLoading = true
+      getTestList().then(response => {
+        this.list = response.data.items
+        this.listLoading = false
+      })
     }
   }
 }
