@@ -13,7 +13,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="onSearch">查询</el-button>
-            <el-button type="success" size="small" @click="onToggleMeeting">{{ meetingObj.visible ? '隐藏' : '显示'}}添加会议记录</el-button>
+            <el-button type="success" size="small" @click="onToggleMeeting">{{ meetingObj.visible ? '隐藏' : '显示' }}添加会议记录</el-button>
             <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
           </el-form-item>
           <el-form-item label="展开">
@@ -1458,11 +1458,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.add {
-  position: absolute;
-  right: 20px;
-  z-index: 1;
-}
 .scrollDialog {
   height: 50%;
 }

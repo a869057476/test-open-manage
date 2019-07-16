@@ -337,21 +337,21 @@ export const constantRoutes = [
           },
           {
             path: 'board_manage',
-            component: Layout,
-            redirect: '/board_manage/message_list',
+            component: Center,
+            redirect: '/quality_manage/project_manage/board_manage/message_list',
             name: 'board_manage',
             meta: { title: '看板管理', icon: 'example' },
             children: [
               {
                 path: 'message_list',
                 name: 'message_list',
-                component: () => import('@/views/table/index'),
+                component: () => import('@/views/main/quality_manage/project_manage/board_manage/message_list/message_list'),
                 meta: { title: '消息查看', icon: 'table' }
               },
               {
                 path: 'download_manage',
                 name: 'download_manage',
-                component: () => import('@/views/table/index'),
+                component: () => import('@/views/main/quality_manage/project_manage/board_manage/download_manage/download_manage'),
                 meta: { title: '下载管理', icon: 'table' }
               }
             ]

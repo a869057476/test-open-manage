@@ -5,6 +5,7 @@ const data = Mock.mock({
     id: '@id',
     title: '@csentence(5, 10)',
     'status|1': ['published', 'draft', 'deleted'],
+    'messageStatus|1': ['刪除', '等待中', '永久有效', '已过期', ''],
     author: 'name',
     display_time: '@datetime',
     pageviews: '@integer(300, 5000)',
