@@ -7,7 +7,7 @@
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="100">
-        <template slot-scope="scope">
+        <template>
           <a href="http://192.168.8.14:8000/get_all_download/?path=./BPM_information/doc/质量开放管理平台使用手册.docx&amp;name=质量开放管理平台使用手册.docx">下载</a>
         </template>
       </el-table-column>

@@ -403,21 +403,21 @@ export const constantRoutes = [
           },
           {
             path: 'defect_requir_manage',
-            component: Layout,
-            redirect: '/defect_requir_manage/defect_manages',
+            component: Center,
+            redirect: '/quality_manage/project_manage/defect_requir_manage/defect_manages',
             name: 'defect_requir_manage',
             meta: { title: '缺陷与需求', icon: 'example' },
             children: [
               {
                 path: 'defect_manages',
                 name: 'defect_manages',
-                component: () => import('@/views/table/index'),
+                component: () => import('@/views/main/quality_manage/project_manage/defect_requir_manage/defect_manages/defect_manages'),
                 meta: { title: '缺陷管理', icon: 'table' }
               },
               {
                 path: 'requir_manages',
                 name: 'requir_manages',
-                component: () => import('@/views/table/index'),
+                component: () => import('@/views/main/quality_manage/project_manage/defect_requir_manage/requir_manages/requir_manages'),
                 meta: { title: '需求管理', icon: 'table' }
               }
             ]
