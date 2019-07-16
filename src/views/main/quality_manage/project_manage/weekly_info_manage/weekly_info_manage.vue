@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-button class="add" type="info" size="small" @click="onOperate('add')">新增</el-button>
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="联测主系统列表" name="component-one">
+      <el-tab-pane label="联测主系统列表" name="component-one" :style="{ height: tabpaneHeight + 'px', overflow: 'auto' }">
         <el-form ref="component-one" :inline="true" :model="formSearch">
           <el-form-item label="系统名称">
             <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
@@ -13,7 +13,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="onSearch">查询</el-button>
-            <el-button type="success" size="small" @click="onShowMeeting">添加会议记录</el-button>
+            <el-button type="success" size="small" @click="onToggleMeeting">{{ meetingObj.visible ? '隐藏' : '显示'}}添加会议记录</el-button>
             <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
           </el-form-item>
           <el-form-item label="展开">
@@ -87,6 +87,16 @@
               <span>{{ scope.row.author }}</span>
             </template>
           </el-table-column>
+          <el-table-column v-if="meetingObj.visible" fixed="right" label="目前进展" width="200">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.progress" placeholder="请输入" clearable></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column v-if="meetingObj.visible" fixed="right" label="评估意见" width="200">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.opinion" placeholder="请输入" clearable></el-input>
+            </template>
+          </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="onOperate('edit', scope.row)">修改</el-button>
@@ -94,6 +104,170 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-form v-if="meetingObj.visible" ref="meetingForm" :model="meetingForm" :rules="rules" class="meeting-record">
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议主题 Subject</div>
+            <div class="meeting-record-row-col form-padding form-padding change">
+              <el-form-item label="" prop="subject">
+                <el-input v-model="meetingForm.subject" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议时间 Date</div>
+            <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
+              <el-form-item label="" prop="time">
+                <el-date-picker v-model="meetingForm.time" type="datetime" placeholder="请选择"></el-date-picker>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col stable" :style="{ width: '150px' }">会议地点 Place</div>
+            <div class="meeting-record-row-col form-padding change">
+              <el-form-item label="" prop="place">
+                <el-input v-model="meetingForm.place" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议主持人 Moderator</div>
+            <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
+              <el-form-item label="" prop="moderator">
+                <el-input v-model="meetingForm.moderator" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col stable" :style="{ width: '150px' }">记录人 Recorder</div>
+            <div class="meeting-record-row-col form-padding change">
+              <el-form-item label="" prop="recoder">
+                <el-input v-model="meetingForm.recoder" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+          </div>
+          <div class="meeting-record-row contain">
+            <div class="meeting-record-row-col word-big">参与部门与人员</div>
+            <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
+              <el-button type="info" size="mini" @click="onDepartmentOperate('add')">新增</el-button>
+            </div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">序号</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">部门</div>
+            <div class="meeting-record-row-col word-big change">部门人员</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
+          </div>
+          <div v-for="(item, index) in meetingForm.departmentList" :key="item.department" class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
+            <div class="meeting-record-row-col form-padding stable" :style="{ width: '200px' }">
+              <el-form-item label="" :prop="'departmentList.' + index + '.department'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.department" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col form-padding change">
+              <el-form-item label="" :prop="'departmentList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
+              <el-button size="mini" type="primary" plain @click="onDepartmentOperate('delete', index)">删除</el-button>
+            </div>
+          </div>
+          <!-- <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big">会议议题</div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big">序号</div>
+            <div class="meeting-record-row-col word-big">上线日期</div>
+            <div class="meeting-record-row-col word-big">主系统</div>
+            <div class="meeting-record-row-col word-big">项目名称</div>
+            <div class="meeting-record-row-col word-big">变更类型</div>
+            <div class="meeting-record-row-col word-big">升级联测系统数量</div>
+            <div class="meeting-record-row-col word-big">目前进展</div>
+            <div class="meeting-record-row-col word-big">评估意见</div>
+          </div>
+          <div v-for="item in meetingForm.tableList" :key="item.key" class="meeting-record-row">
+            <div class="meeting-record-row-col">{{ item.index }}</div>
+            <div class="meeting-record-row-col">{{ item.date }}</div>
+            <div class="meeting-record-row-col">{{ item.mainSys }}</div>
+            <div class="meeting-record-row-col">{{ item.projectName }}</div>
+            <div class="meeting-record-row-col">{{ item.type }}</div>
+            <div class="meeting-record-row-col">{{ item.num }}</div>
+            <div class="meeting-record-row-col form-padding">
+              <el-form-item label="">
+                <el-input v-model="item.progress" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col form-padding">
+              <el-form-item label="">
+                <el-input v-model="item.opinion" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+          </div> -->
+          <div class="meeting-record-row contain">
+            <div class="meeting-record-row-col word-big">会议讨论结果</div>
+            <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
+              <el-button type="info" size="mini" @click="onDiscussOperate('add')">新增</el-button>
+            </div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">序号</div>
+            <div class="meeting-record-row-col word-big change">内容</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
+          </div>
+          <div v-for="(item, index) in meetingForm.discussList" :key="item.index" class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
+            <div class="meeting-record-row-col change form-padding">
+              <el-form-item label="" :prop="'discussList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
+              <el-button size="mini" type="primary" plain @click="onDiscussOperate('delete', index)">删除</el-button>
+            </div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big">会议遗留问题或工作</div>
+            <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
+              <el-button type="info" size="mini" @click="onOtherOperate('add')">新增</el-button>
+            </div>
+          </div>
+          <div class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">序号</div>
+            <div class="meeting-record-row-col word-big">项目</div>
+            <div class="meeting-record-row-col word-big">提出人</div>
+            <div class="meeting-record-row-col word-big width2">遗留工作</div>
+            <div class="meeting-record-row-col word-big width2">负责人</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
+          </div>
+          <div v-for="(item, index) in meetingForm.otherList" :key="item.index" class="meeting-record-row">
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
+            <div class="meeting-record-row-col form-padding">
+              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.project" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col form-padding">
+              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.exhibitor" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col form-padding width2">
+              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col form-padding width2">
+              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.leader" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+            </div>
+            <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
+              <el-button size="mini" type="primary" plain @click="onOtherOperate('delete', index)">删除</el-button>
+            </div>
+          </div>
+          <div class="meeting-record-operate">
+            <el-button @click="meetingObj.visible = false">取消</el-button>
+            <el-button type="success" @click="meetingObj.visible = false">重置</el-button>
+            <el-button type="primary" @click="submitForm('meetingForm')">确定</el-button>
+          </div>
+        </el-form>
       </el-tab-pane>
       <el-tab-pane label="测试周报信息列表" name="component-two">
         <el-form ref="component-two" :inline="true" :model="formSearch" label-width="100px">
@@ -634,171 +808,6 @@
       <div>项目整体进度：正常----延期----暂停----作废----NA</div>
       <div id="myChart2" :style="{width: '100%', height: '580px'}"></div>
     </el-dialog>
-    <el-dialog title="会议记录" :visible.sync="meetingDialogObj.visible" top="5vh" width="1200px">
-      <el-form ref="meetingForm" :model="meetingForm" :rules="rules" class="meeting-record" :style="{ height: meetingDialogObj.height + 'px' }">
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议主题 Subject</div>
-          <div class="meeting-record-row-col form-padding form-padding change">
-            <el-form-item label="" prop="subject">
-              <el-input v-model="meetingForm.subject" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议时间 Date</div>
-          <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
-            <el-form-item label="" prop="time">
-              <el-date-picker v-model="meetingForm.time" type="datetime" placeholder="请选择"></el-date-picker>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col stable" :style="{ width: '150px' }">会议地点 Place</div>
-          <div class="meeting-record-row-col form-padding change">
-            <el-form-item label="" prop="place">
-              <el-input v-model="meetingForm.place" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议主持人 Moderator</div>
-          <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
-            <el-form-item label="" prop="moderator">
-              <el-input v-model="meetingForm.moderator" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col stable" :style="{ width: '150px' }">记录人 Recorder</div>
-          <div class="meeting-record-row-col form-padding change">
-            <el-form-item label="" prop="recoder">
-              <el-input v-model="meetingForm.recoder" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-        </div>
-        <div class="meeting-record-row contain">
-          <div class="meeting-record-row-col word-big">参与部门与人员</div>
-          <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
-            <el-button type="info" size="mini" @click="onDepartmentOperate('add')">新增</el-button>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">序号</div>
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">部门</div>
-          <div class="meeting-record-row-col word-big change">部门人员</div>
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
-        </div>
-        <div v-for="(item, index) in meetingForm.departmentList" :key="item.department" class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
-          <div class="meeting-record-row-col form-padding stable" :style="{ width: '200px' }">
-            <el-form-item label="" :prop="'departmentList.' + index + '.department'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.department" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col form-padding change">
-            <el-form-item label="" :prop="'departmentList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
-            <el-button size="mini" type="primary" plain @click="onDepartmentOperate('delete', index)">删除</el-button>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big">会议议题</div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big">序号</div>
-          <div class="meeting-record-row-col word-big">上线日期</div>
-          <div class="meeting-record-row-col word-big">主系统</div>
-          <div class="meeting-record-row-col word-big">项目名称</div>
-          <div class="meeting-record-row-col word-big">变更类型</div>
-          <div class="meeting-record-row-col word-big">升级联测系统数量</div>
-          <div class="meeting-record-row-col word-big">目前进展</div>
-          <div class="meeting-record-row-col word-big">评估意见</div>
-        </div>
-        <div v-for="item in meetingForm.tableList" :key="item.key" class="meeting-record-row">
-          <div class="meeting-record-row-col">{{ item.index }}</div>
-          <div class="meeting-record-row-col">{{ item.date }}</div>
-          <div class="meeting-record-row-col">{{ item.mainSys }}</div>
-          <div class="meeting-record-row-col">{{ item.projectName }}</div>
-          <div class="meeting-record-row-col">{{ item.type }}</div>
-          <div class="meeting-record-row-col">{{ item.num }}</div>
-          <div class="meeting-record-row-col form-padding">
-            <el-form-item label="">
-              <el-input v-model="item.progress" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col form-padding">
-            <el-form-item label="">
-              <el-input v-model="item.opinion" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-        </div>
-        <div class="meeting-record-row contain">
-          <div class="meeting-record-row-col word-big">会议讨论结果</div>
-          <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
-            <el-button type="info" size="mini" @click="onDiscussOperate('add')">新增</el-button>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">序号</div>
-          <div class="meeting-record-row-col word-big change">内容</div>
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
-        </div>
-        <div v-for="(item, index) in meetingForm.discussList" :key="item.index" class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
-          <div class="meeting-record-row-col change form-padding">
-            <el-form-item label="" :prop="'discussList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
-            <el-button size="mini" type="primary" plain @click="onDiscussOperate('delete', index)">删除</el-button>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big">会议遗留问题或工作</div>
-          <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
-            <el-button type="info" size="mini" @click="onOtherOperate('add')">新增</el-button>
-          </div>
-        </div>
-        <div class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">序号</div>
-          <div class="meeting-record-row-col word-big">项目</div>
-          <div class="meeting-record-row-col word-big">提出人</div>
-          <div class="meeting-record-row-col word-big width2">遗留工作</div>
-          <div class="meeting-record-row-col word-big width2">负责人</div>
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
-        </div>
-        <div v-for="(item, index) in meetingForm.otherList" :key="item.index" class="meeting-record-row">
-          <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
-          <div class="meeting-record-row-col form-padding">
-            <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.project" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col form-padding">
-            <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.exhibitor" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col form-padding width2">
-            <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col form-padding width2">
-            <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
-              <el-input v-model="item.leader" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </div>
-          <div class="meeting-record-row-col stable" :style="{ width: '100px' }">
-            <el-button size="mini" type="primary" plain @click="onOtherOperate('delete', index)">删除</el-button>
-          </div>
-        </div>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="meetingDialogObj.visible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm('meetingForm')">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -813,6 +822,7 @@ export default {
       autoHeight1: 200,
       autoHeight2: 200,
       autoHeight3: 200,
+      tabpaneHeight: 200,
       currentPage: 1,
       activeName: 'component-one',
       formSearch: {
@@ -845,9 +855,8 @@ export default {
         visible: false,
         list: []
       },
-      meetingDialogObj: {
-        visible: false,
-        height: 200
+      meetingObj: {
+        visible: false
       },
       meetingForm: {
         subject: '',
@@ -969,14 +978,14 @@ export default {
       this.autoHeight1 = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
       this.autoHeight3 = this.$root.$el.clientHeight - 380
       this.dialogObj.height = this.$root.$el.clientHeight - 280
-      this.meetingDialogObj.height = this.$root.$el.clientHeight - 280
+      this.tabpaneHeight = this.$root.$el.clientHeight - 180
 
       window.onresize = () => {
         this.autoHeight1 = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
         this.autoHeight3 = this.$root.$el.clientHeight - 380
         this.dialogObj.height = this.$root.$el.clientHeight - 280
         this.autoHeight2 = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 160
-        this.meetingDialogObj.height = this.$root.$el.clientHeight - 280
+        this.tabpaneHeight = this.$root.$el.clientHeight - 180
       }
     })
   },
@@ -988,14 +997,15 @@ export default {
       })
     },
     // 显示会议记录dialog
-    onShowMeeting() {
-      this.meetingDialogObj.visible = true
+    onToggleMeeting() {
+      this.meetingObj.visible = !this.meetingObj.visible
     },
     // 新增会议记录
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          console.log('submit!')
+          console.log(this.weekReportList)
         } else {
           console.log('error submit!!')
           return false
@@ -1460,6 +1470,7 @@ export default {
   overflow: auto;
   width: 100%;
   border: 1px solid #cdcdcd;
+  margin-top: 20px;
   .border-right {
     border-right: 1px solid #cdcdcd;
   }
@@ -1500,6 +1511,10 @@ export default {
     &.contain {
       position: relative;
     }
+  }
+  &-operate {
+    margin: 20px;
+    float: right;
   }
 }
 </style>

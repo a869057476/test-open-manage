@@ -25,7 +25,9 @@ for (let i = 0; i < 20; i++) {
     isExpand: false,
     display_time: '@datetime',
     pageviews: '@integer(300, 5000)',
-    date: '@date()'
+    date: '@date()',
+    progress: 'progress',
+    opinion: 'opinion'
   })
   if (i === 0) {
     obj.status = '主系统'
