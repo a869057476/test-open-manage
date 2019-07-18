@@ -46,19 +46,19 @@
       </el-col>
     </el-row>
     <el-row :gutter="20" class="dashboard-row mt20">
-      <el-col :span="14" class="dashboard-row-col">
+      <el-col :span="16" class="dashboard-row-col">
         <div class="dashboard-row-col-item">
           <div class="dashboard-row-col-item-title">个人任务</div>
           <div class="dashboard-row-col-item-main calendar-contain">
             <el-form :inline="true" :model="formSearch">
               <el-form-item label="任务状态" label-width="80px">
-                <el-select v-model="formSearch.region" placeholder="请选择" clearable style="width: 110px;">
+                <el-select v-model="formSearch.region" placeholder="请选择" clearable style="width: 120px;">
                   <el-option label="close-submit" value="0"></el-option>
                   <el-option label="release-open" value="1"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="任务分类">
-                <el-select v-model="formSearch.region" placeholder="请选择" clearable style="width: 110px;">
+                <el-select v-model="formSearch.region" placeholder="请选择" clearable style="width: 120px;">
                   <el-option label="close-submit" value="0"></el-option>
                   <el-option label="release-open" value="1"></el-option>
                 </el-select>
@@ -71,7 +71,7 @@
                 <el-button type="primary" size="small" @click="onSearch">查询</el-button>
               </el-form-item>
             </el-form>
-            <el-table ref="personalTask" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="autoHeight">
+            <el-table ref="personalTask" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit stripe highlight-current-row max-height="300">
               <el-table-column label="任务时间" min-width="120" align="center">
                 <template slot-scope="scope">
                   {{ scope.$index }}
@@ -101,7 +101,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="10" class="dashboard-row-col">
+      <el-col :span="8" class="dashboard-row-col">
         <div class="dashboard-row-col-item">
           <div class="dashboard-row-col-item-title">必知必会</div>
           <div class="dashboard-row-col-item-main know-contain">
@@ -133,7 +133,6 @@ export default {
   components: { DatePick },
   data() {
     return {
-      autoHeight: 200,
       formSearch: {
         date: '',
         region: ''
@@ -179,14 +178,6 @@ export default {
     this.fetchData()
   },
   mounted() {
-    this.$nextTick(() => {
-      console.log(this.$el)
-      this.autoHeight = this.$refs.personalTask.$el.parentNode.clientHeight - this.$refs.personalTask.$el.parentNode.childNodes[0].clientHeight - 10
-
-      window.onresize = () => {
-        this.autoHeight = this.$refs.personalTask.$el.parentNode.clientHeight - this.$refs.personalTask.$el.parentNode.childNodes[0].clientHeight - 10
-      }
-    })
   },
   methods: {
     // 查询
@@ -207,7 +198,8 @@ export default {
 <style lang="scss" scoped>
 .dashboard {
   &-container {
-    padding: 20px 0 40px 20px;
+    padding: 20px 0 20px 20px;
+    overflow: auto;
     height: 100%;
   }
   &-text {
@@ -216,14 +208,15 @@ export default {
   }
   &-row {
     width: 100%;
-    height: 50%;
+    display: flex;
+    align-items: stretch;
     &-col {
-      height: 100%;
       &-item {
         width: 100%;
         height: 100%;
         border-radius: 5px;
         box-shadow: 0px 0px 8px 4px #e5ecff;
+        padding-bottom: 10px;
         &-title {
           height: 50px;
           line-height: 50px;
@@ -233,7 +226,6 @@ export default {
         }
         &-main {
           height: calc(100% - 50px);
-          overflow: auto;
         }
         & .msg-contain {
           &-item {
