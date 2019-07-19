@@ -16,7 +16,7 @@
       <div class="login-container-row-right">
         <el-form ref="loginForm" class="login-form" :model="loginForm" :rules="loginRules" auto-complete="on" label-position="left">
           <h1 class="login-form-title">质量开放管理平台</h1>
-          <el-form-item prop="username">
+          <el-form-item>
             <span class="svg-container">
               <svg-icon icon-class="user" />
             </span>

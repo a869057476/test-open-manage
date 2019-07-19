@@ -424,15 +424,15 @@ export const constantRoutes = [
           },
           {
             path: 'bata_entrance_manage',
-            component: Layout,
-            redirect: '/bata_entrance_manage/clms_project',
+            component: Center,
+            redirect: '/quality_manage/project_manage/bata_entrance_manage/clms_project',
             name: 'bata_entrance_manage',
             meta: { title: '报工公测入口', icon: 'example' },
             children: [
               {
                 path: 'clms_project',
                 name: 'clms_project',
-                component: () => import('@/views/table/index'),
+                component: () => import('@/views/main/quality_manage/project_manage/bata_entrance_manage/clms_project/clms_project'),
                 meta: { title: '精益系统项目情况', icon: 'table' }
               }
             ]
