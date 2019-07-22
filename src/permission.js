@@ -1,6 +1,6 @@
 import router from './router'
-import store from './store'
-import { Message } from 'element-ui'
+// import store from './store'
+// import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getLogin } from '@/utils/auth' // get token from cookie
@@ -19,8 +19,8 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const isLogin = getLogin()
-  console.log(isLogin)
-  if (isLogin == 'true') {
+
+  if (isLogin === 'true') {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
