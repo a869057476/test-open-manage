@@ -21,3 +21,11 @@ export function setLogin(type) {
 export function getLogin() {
   return Cookies.get('isLogin')
 }
+
+export function setUserInfo(data) {
+  return Cookies.set('userInfo', data)
+}
+
+export function getUserInfo() {
+  return Cookies.get('userInfo')
+}

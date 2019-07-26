@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, removeToken, setLogin } from '@/utils/auth'
+import { getToken, removeToken, setLogin, setUserInfo } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
@@ -28,7 +28,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         // const { data } = response
         // commit('SET_TOKEN', data.token)
-        // setToken(data.token)
+        setUserInfo(response.data)
         setLogin(true)
         resolve()
       }).catch(error => {

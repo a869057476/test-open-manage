@@ -5,6 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getLogin } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+// import { setLogin, getUserInfo } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -27,22 +28,27 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       next()
-      // const hasGetUserInfo = store.getters.name
+      // const hasGetUserInfo = getUserInfo()
       // if (hasGetUserInfo) {
+      //   if (JSON.parse(hasGetUserInfo).lvName === 'L1') {
+      //     next(`/401`)
+      //   }
       //   next()
       // } else {
-      //   try {
-      //     // get user info
-      //     await store.dispatch('user/getInfo')
+      //   setLogin(false)
+      //   next(`/login?redirect=${to.path}`)
+      //   // try {
+      //   //   // get user info
+      //   //   await store.dispatch('user/getInfo')
 
-      //     next()
-      //   } catch (error) {
-      //     // remove token and go to login page to re-login
-      //     await store.dispatch('user/resetToken')
-      //     Message.error(error || 'Has Error')
-      //     next(`/login?redirect=${to.path}`)
-      //     NProgress.done()
-      //   }
+      //   //   next()
+      //   // } catch (error) {
+      //   //   // remove token and go to login page to re-login
+      //   //   await store.dispatch('user/resetToken')
+      //   //   Message.error(error || 'Has Error')
+      //   //   next(`/login?redirect=${to.path}`)
+      //   //   NProgress.done()
+      //   // }
       // }
     }
   } else {
