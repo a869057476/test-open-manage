@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, removeToken, setLogin, setUserInfo } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import permissionApi from '@/api/permission_manage'
 
 const state = {
   token: getToken(),
@@ -30,6 +31,12 @@ const actions = {
         // commit('SET_TOKEN', data.token)
         setUserInfo(response.data)
         setLogin(true)
+        permissionApi.getStaffMenuModule(response.data.staffId).then(response => {
+          console.log(response)
+          if (response.data) {
+            localStorage.setItem("permissionInfo", JSON.parse(response.data.menuModuleMap))
+          }
+        })
         resolve()
       }).catch(error => {
         reject(error)

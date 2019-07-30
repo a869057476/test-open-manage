@@ -46,11 +46,36 @@ function getMenuModules(menuParentId) {
   })
 }
 
+function getStaffAll() {
+  return request({
+    url: `/sys/staffs`,
+    method: 'get'
+  })
+}
+
+function getStaffMenuModule(staffId) {
+  return request({
+    url: `/sys/staffs/${staffId}/menus`,
+    method: 'get'
+  })
+}
+
+function updateStaffMenuModule(data) {
+  return request({
+    url: `/sys/staffs/menus`,
+    method: 'put',
+    data
+  })
+}
+
 export default {
   getStaffSysLvs,
   setStaffSysLvs,
   addMenu,
   delMenu,
   updateMenu,
-  getMenuModules
+  getMenuModules,
+  getStaffAll,
+  getStaffMenuModule,
+  updateStaffMenuModule
 }
