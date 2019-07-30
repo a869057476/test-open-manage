@@ -972,6 +972,8 @@ export default {
   },
   created() {
     this.fetchData()
+    const permissionInfo = localStorage.getItem('permissionInfo')
+    console.log(permissionInfo)
   },
   mounted() {
     this.$nextTick(() => {

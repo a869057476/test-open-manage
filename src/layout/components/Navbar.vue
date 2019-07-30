@@ -13,7 +13,7 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              主页
             </el-dropdown-item>
           </router-link>
           <!-- <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
@@ -23,11 +23,25 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">Log Out</span>
+            <span style="display:block;" @click="formPasswordDialogObj.visible = true">修改密码</span>
+          </el-dropdown-item>
+          <el-dropdown-item divided>
+            <span style="display:block;" @click="logout">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog title="修改密码" :visible.sync="formPasswordDialogObj.visible" width="600px">
+      <el-form ref="formPassword" :model="formPasswordDialogObj.form" :rules="rules" label-width="80px">
+        <el-form-item label="新密码" prop="password">
+          <el-input v-model="formPasswordDialogObj.form.password" maxlength="12" placeholder="请输入" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="formPasswordDialogObj.visible = false">取 消</el-button>
+        <el-button type="primary" @click="updatePassword('formPassword')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -35,11 +49,43 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { updatePassword } from '@/api/user'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    const validatePassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('此为必填项'))
+      } else {
+        if (value.length < 6 || value.length > 12) {
+          callback(new Error('密码长度必须6-12位'))
+        } else {
+          const reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/g
+          if (reg.test(value)) {
+            callback(new Error('请输入有效字符，无法使用中文'))
+          } else {
+            callback()
+          }
+        }
+      }
+    }
+    return {
+      formPasswordDialogObj: {
+        visible: false,
+        form: {
+          password: ''
+        }
+      },
+      rules: {
+        password: [
+          { validator: validatePassword, trigger: 'change' }
+        ]
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -50,6 +96,28 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    updatePassword(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          updatePassword({ password: this.formPasswordDialogObj.form.password }).then(response => {
+            if (response.success) {
+              this.$notify({
+                title: '成功',
+                message: '密码修改成功',
+                type: 'success'
+              })
+              this.logout()
+            }
+          }).catch(error => {
+            this.$notify({
+              title: '错误',
+              message: error,
+              type: 'error'
+            })
+          })
+        }
+      })
     },
     async logout() {
       await this.$store.dispatch('user/logout')

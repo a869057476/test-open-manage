@@ -30,3 +30,11 @@ export function logout() {
     method: 'get'
   })
 }
+
+export function updatePassword(data) {
+  return request({
+    url: '/sys/staffs',
+    method: 'post',
+    data
+  })
+}

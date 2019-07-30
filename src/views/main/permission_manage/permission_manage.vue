@@ -4,7 +4,7 @@
       <el-tab-pane label="系统权限" name="component-one">
         <el-form ref="component-one" :model="formSystemPermission" label-width="100px" :style="{ height: autoHeight + 'px', overflow: 'auto' }">
           <el-form-item label="系统名称">
-            <el-select v-model="formSystemPermission.region" placeholder="请选择" @change="onChangeSys" filterable>
+            <el-select v-model="formSystemPermission.region" placeholder="请选择" filterable @change="onChangeSys">
               <el-option v-for="item in formSystemPermission.regionList" :key="item.SYSID" :label="item.SYSNAME" :value="item.SYSID"></el-option>
             </el-select>
           </el-form-item>
@@ -176,14 +176,14 @@ export default {
       list: [],
       listLoading: true,
       chosedFilter(query, item) {
-        return item.USEREN.indexOf(query) >= 0 || item.USERNAMEZH.indexOf(query) >=0
+        return item.USEREN.indexOf(query) >= 0 || item.USERNAMEZH.indexOf(query) >= 0
       }
     }
   },
   created() {
     new Promise((resolve, reject) => {
-      this.userInfo  = JSON.parse(getUserInfo())
-      console.log(this.userInfo)
+      this.userInfo = JSON.parse(getUserInfo())
+      // console.log(this.userInfo)
       resolve(this.userInfo)
     }).then(value => {
       this.fetchData()
@@ -223,34 +223,34 @@ export default {
             { node.isLeaf ? <el-button style='font-size: 12px;' type='text' on-click={ () => this.remove(node, data) }>删除</el-button> : <el-button type='text' style='font-size: 12px;visibility: hidden;'>删除</el-button> }
           </span>
         </span>)
-        // return (
-        // <span style='flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;'>
-        //   <span>
-        //     <i style={ data.flag === '1' ? 'display: inline; ' : 'display: none;'} type='text' class='el-icon-menu'></i>
-        //     <i style={ data.flag === '2' ? 'display: inline; ' : 'display: none;'} type='text' class='el-icon-document'></i>
-        //     <i style={ data.flag === '3' ? 'display: inline; ' : 'display: none;'} type='text' class='el-icon-goods'></i>
-        //     <span>{node.label}</span>
-        //     <el-tag class='ml10' size='mini' style={ data.read !== null ? 'display: inline-block; ' : 'display: none;'}><i class={ data.read === '1' ? 'el-icon-success' : 'el-icon-error'}></i> 读</el-tag>
-        //     <el-tag class='ml10' size='mini' style={ data.write !== null ? 'display: inline-block; ' : 'display: none;'}><i class={ data.write === '1' ? 'el-icon-success' : 'el-icon-error'}></i> 写</el-tag>
-        //   </span>
-        //   <span>
-        //     <el-button style='font-size: 12px;' type='text' icon='el-icon-sort-up' on-click={ () => this.sortUp(node, data) }></el-button>
-        //     <el-button style='font-size: 12px;' type='text' icon='el-icon-sort-down' on-click={ () => this.sortDown(node, data) }></el-button>
-        //     <el-button style='font-size: 12px;' type='text' on-click={ () => this.showPermission(node, data) }>权限</el-button>
-        //     <el-button style='font-size: 12px;' type='text' on-click={ () => this.showUpdate(node, data) }>修改</el-button>
-        //     { data.flag !== '3' ? <el-button style='font-size: 12px;' type='text' on-click={ () => this.showAdd(node, data) }>添加</el-button> : <el-button type='text' style='font-size: 12px;visibility: hidden;'>添加</el-button> }
-        //     { node.isLeaf ? <el-button style='font-size: 12px;' type='text' on-click={ () => this.remove(node, data) }>删除</el-button> : <el-button type='text' style='font-size: 12px;visibility: hidden;'>删除</el-button> }
-        //   </span>
-        // </span>)
+      // return (
+      // <span style='flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;'>
+      //   <span>
+      //     <i style={ data.flag === '1' ? 'display: inline; ' : 'display: none;'} type='text' class='el-icon-menu'></i>
+      //     <i style={ data.flag === '2' ? 'display: inline; ' : 'display: none;'} type='text' class='el-icon-document'></i>
+      //     <i style={ data.flag === '3' ? 'display: inline; ' : 'display: none;'} type='text' class='el-icon-goods'></i>
+      //     <span>{node.label}</span>
+      //     <el-tag class='ml10' size='mini' style={ data.read !== null ? 'display: inline-block; ' : 'display: none;'}><i class={ data.read === '1' ? 'el-icon-success' : 'el-icon-error'}></i> 读</el-tag>
+      //     <el-tag class='ml10' size='mini' style={ data.write !== null ? 'display: inline-block; ' : 'display: none;'}><i class={ data.write === '1' ? 'el-icon-success' : 'el-icon-error'}></i> 写</el-tag>
+      //   </span>
+      //   <span>
+      //     <el-button style='font-size: 12px;' type='text' icon='el-icon-sort-up' on-click={ () => this.sortUp(node, data) }></el-button>
+      //     <el-button style='font-size: 12px;' type='text' icon='el-icon-sort-down' on-click={ () => this.sortDown(node, data) }></el-button>
+      //     <el-button style='font-size: 12px;' type='text' on-click={ () => this.showPermission(node, data) }>权限</el-button>
+      //     <el-button style='font-size: 12px;' type='text' on-click={ () => this.showUpdate(node, data) }>修改</el-button>
+      //     { data.flag !== '3' ? <el-button style='font-size: 12px;' type='text' on-click={ () => this.showAdd(node, data) }>添加</el-button> : <el-button type='text' style='font-size: 12px;visibility: hidden;'>添加</el-button> }
+      //     { node.isLeaf ? <el-button style='font-size: 12px;' type='text' on-click={ () => this.remove(node, data) }>删除</el-button> : <el-button type='text' style='font-size: 12px;visibility: hidden;'>删除</el-button> }
+      //   </span>
+      // </span>)
     },
     copyFilter(val) {
       this.formSystemPermission.copyPersonList = this.formSystemPermission.personList.filter(e => {
-        return e.USEREN.indexOf(val) >= 0 || e.USERNAMEZH.indexOf(val) >=0
+        return e.USEREN.indexOf(val) >= 0 || e.USERNAMEZH.indexOf(val) >= 0
       })
     },
     personFilter(val) {
       this.formStaffPermission.personnelAllList = this.formStaffPermission.personList.filter(e => {
-        return e.USEREN.indexOf(val) >= 0 || e.USERNAMEZH.indexOf(val) >=0
+        return e.USEREN.indexOf(val) >= 0 || e.USERNAMEZH.indexOf(val) >= 0
       })
     },
     handleClick(tab, event) {
@@ -305,7 +305,7 @@ export default {
           this.formSystemPermission.personnelAllList = response.data.noLv
           this.formSystemPermission.copyPersonList = response.data.noLv
           this.formSystemPermission.personList = response.data.noLv
-          console.log(this.formSystemPermission.personnelSelectedList)
+          // console.log(this.formSystemPermission.personnelSelectedList)
         }
       })
     },
@@ -646,7 +646,7 @@ export default {
       console.log(this.setTree)
       const params = {
         menuModuleMap: JSON.stringify(this.setTree),
-        staffId: this.formStaffPermission.personnelSelectedList,
+        staffId: this.formStaffPermission.personnelSelectedList
       }
       permissionApi.updateStaffMenuModule(params).then(response => {
         if (response.success) {

@@ -31,10 +31,10 @@ const actions = {
         // commit('SET_TOKEN', data.token)
         setUserInfo(response.data)
         setLogin(true)
-        permissionApi.getStaffMenuModule(response.data.staffId).then(response => {
-          console.log(response)
-          if (response.data) {
-            localStorage.setItem("permissionInfo", JSON.parse(response.data.menuModuleMap))
+        permissionApi.getStaffMenuModule(response.data.staffId).then(res => {
+          console.log(JSON.parse(res.data.menuModuleMap))
+          if (res.data) {
+            localStorage.setItem('permissionInfo', res.data.menuModuleMap)
           }
         })
         resolve()
