@@ -69,7 +69,7 @@ export default {
       })
 
       // When there is only one child router, the child router is displayed by default
-      if (showingChildren.length === 1 && (showingChildren[0].name === 'dashboard' || showingChildren[0].name === 'permission')) {
+      if (showingChildren.length === 1 && showingChildren[0].name === 'dashboard') {
         return true
       }
 

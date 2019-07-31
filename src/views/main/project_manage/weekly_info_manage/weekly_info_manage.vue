@@ -563,6 +563,55 @@
         >
         </el-pagination>
       </el-tab-pane>
+      <el-tab-pane label="会议记录列表" name="component-three">
+        <el-form ref="component-three" :inline="true" :model="formSearch">
+          <el-form-item label="关键字">
+            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="small" @click="onSearch">查询</el-button>
+            <el-button type="success" size="small" @click="onToggleMeeting">{{ meetingObj.visible ? '隐藏' : '显示' }}添加会议记录</el-button>
+            <!-- <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button> -->
+          </el-form-item>
+          <el-form-item label="展开">
+            <el-switch v-model="formSearch.expand" @change="onChangeExpandAll"></el-switch>
+          </el-form-item>
+        </el-form>
+        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight2">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
+          <el-table-column label="会议主题" min-width="180" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.title }}
+            </template>
+          </el-table-column>
+          <el-table-column label="会议时间" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="会议地点" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="会议主持人" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="记录人" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" width="80">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" plain @click="onOperate('edit', scope.row)">修改</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
     </el-tabs>
     <el-dialog :title="dialogObj.title" :visible.sync="dialogObj.visible" top="5vh" width="1200px">
       <el-form :style="{ height: dialogObj.height + 'px', overflow: 'auto' }" :inline="true" :model="dialogObj.form" label-width="100px" label-position="top">
@@ -584,17 +633,24 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="版本号(版本号/手写版本号二选一填写*)">
-              <el-select v-model="dialogObj.form.region" placeholder="请选择" clearable>
+              <!-- <el-select v-model="dialogObj.form.region" placeholder="请选择" clearable>
                 <el-option label="债券基础信息系统" value="0"></el-option>
                 <el-option label="交易后处理系统" value="1"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="手写版本号(版本号/手写版本号二选一填写*)">
-              <el-input v-model="dialogObj.form.user" placeholder="请输入" clearable></el-input>
-            </el-form-item>
+              </el-select> -->
+              <el-form-item label="版本号">
+                <el-dropdown @command="handleCommand">
+                    <el-input v-model="dialogObj.form.user" placeholder="请输入内容">
+                      <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
+                    </el-input>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="item1">黄金糕</el-dropdown-item>
+                    <el-dropdown-item command="item2">狮子头</el-dropdown-item>
+                    <el-dropdown-item command="item3">螺蛳粉</el-dropdown-item>
+                    <el-dropdown-item command="item4" disabled>双皮奶</el-dropdown-item>
+                    <el-dropdown-item command="item5" divided>蚵仔煎</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -615,16 +671,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="版本号(版本号/手写版本号二选一填写*)">
-              <el-select v-model="dialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="手写版本号(版本号/手写版本号二选一填写*)">
-              <el-input v-model="dialogObj.form.user" placeholder="请输入" clearable></el-input>
+            <el-form-item label="版本号">
+              <el-dropdown @command="handleCommand">
+                <el-input v-model="dialogObj.form.user" placeholder="请输入内容">
+                  <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
+                </el-input>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="item1">黄金糕</el-dropdown-item>
+                  <el-dropdown-item command="item2">狮子头</el-dropdown-item>
+                  <el-dropdown-item command="item3">螺蛳粉</el-dropdown-item>
+                  <el-dropdown-item command="item4" disabled>双皮奶</el-dropdown-item>
+                  <el-dropdown-item command="item5" divided>蚵仔煎</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </el-form-item>
           </el-col>
         </el-row>
@@ -992,6 +1051,9 @@ export default {
     })
   },
   methods: {
+    handleCommand(value) {
+      console.log(value)
+    },
     handleClick(tab, event) {
       console.log(tab, event)
       this.$nextTick(() => {
