@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateSys('add')">新增</el-button>
     <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperatMeeting('add')">新增</el-button>
-    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+    <el-tabs v-model="activeName" type="card" @tab-click="onToggleTab">
       <el-tab-pane label="联测主系统列表" name="component-one" :style="{ height: tabpaneHeight + 'px', overflow: 'auto' }">
         <el-form ref="component-one" :inline="true" :model="formSearch">
           <el-form-item label="系统名称">
@@ -91,279 +91,283 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="测试周报信息列表" name="component-two">
-        <el-form ref="component-two" :inline="true" :model="formSearch" label-width="100px">
-          <el-form-item label="系统名称">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="债券基础信息系统" value="0"></el-option>
-              <el-option label="交易后处理系统" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="系统版本号">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="主系统名称">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="系统1" value="0"></el-option>
-              <el-option label="系统2" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="主系统版本号">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="项目名称">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="变更类型">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="正常" value="0"></el-option>
-              <el-option label="紧急" value="1"></el-option>
-              <el-option label="紧例行急" value="1"></el-option>
-              <el-option label="快捷" value="1"></el-option>
-              <el-option label="NA" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="联测类别">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="主系统" value="0"></el-option>
-              <el-option label="升级联测" value="1"></el-option>
-              <el-option label="无升级联测" value="1"></el-option>
-              <el-option label="未回复" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="项目阶段">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="测试准备" value="0"></el-option>
-              <el-option label="UAT1测试" value="1"></el-option>
-              <el-option label="UAT1完成" value="1"></el-option>
-              <el-option label="验收流程" value="1"></el-option>
-              <el-option label="验收测试" value="1"></el-option>
-              <el-option label="验收完成" value="1"></el-option>
-              <el-option label="模拟流程" value="1"></el-option>
-              <el-option label="模拟测试" value="1"></el-option>
-              <el-option label="模拟完成" value="1"></el-option>
-              <el-option label="已上线" value="1"></el-option>
-              <el-option label="NA" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="测试轮次">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="整体进度">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="正常" value="0"></el-option>
-              <el-option label="延期" value="1"></el-option>
-              <el-option label="暂停" value="1"></el-option>
-              <el-option label="作废" value="1"></el-option>
-              <el-option label="NA" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="人力投入">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="人力紧张" value="0"></el-option>
-              <el-option label="人力充足" value="1"></el-option>
-              <el-option label="人力不足" value="0"></el-option>
-              <el-option label="NA" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="填写日期">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="今天" value="0"></el-option>
-              <el-option label="过去7天" value="1"></el-option>
-              <el-option label="本月" value="0"></el-option>
-              <el-option label="今年" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="版本质量">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="质量一般" value="0"></el-option>
-              <el-option label="质量较好" value="1"></el-option>
-              <el-option label="质量较差" value="0"></el-option>
-              <el-option label="NA" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="工作量情况">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="超签报" value="0"></el-option>
-              <el-option label="正常" value="1"></el-option>
-              <el-option label="超采购" value="0"></el-option>
-              <el-option label="NA" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="负责人">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="生产上线日期">
-            <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-              <el-option label="今天" value="0"></el-option>
-              <el-option label="过去7天" value="1"></el-option>
-              <el-option label="本月" value="0"></el-option>
-              <el-option label="今年" value="1"></el-option>
-            </el-select>
-          </el-form-item> -->
-          <el-form-item label="生产上线时间">
-            <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
-            </el-date-picker>
-          </el-form-item>
-          <div class="mb20">
-            <el-button type="primary" size="small" @click="onSearch">查询</el-button>
-            <el-button type="success" size="small" @click="onSearch">重置</el-button>
-            <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
-            <el-button type="danger" size="small" @click="onSearch">删除</el-button>
-          </div>
-        </el-form>
-        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeightWeek">
+        <el-collapse value="1" @change="onChangeCollapse">
+          <el-collapse-item title="展开/收起搜索条件" name="1">
+            <el-form ref="component-two" :inline="true" :model="weekFormSearch" label-width="100px">
+              <el-form-item label="系统名称">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="债券基础信息系统" value="0"></el-option>
+                  <el-option label="交易后处理系统" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="系统版本号">
+                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="主系统名称">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="系统1" value="0"></el-option>
+                  <el-option label="系统2" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="主系统版本号">
+                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="项目名称">
+                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="变更类型">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="正常" value="0"></el-option>
+                  <el-option label="紧急" value="1"></el-option>
+                  <el-option label="紧例行急" value="1"></el-option>
+                  <el-option label="快捷" value="1"></el-option>
+                  <el-option label="NA" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="联测类别">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="主系统" value="0"></el-option>
+                  <el-option label="升级联测" value="1"></el-option>
+                  <el-option label="无升级联测" value="1"></el-option>
+                  <el-option label="未回复" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="项目阶段">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="测试准备" value="0"></el-option>
+                  <el-option label="UAT1测试" value="1"></el-option>
+                  <el-option label="UAT1完成" value="1"></el-option>
+                  <el-option label="验收流程" value="1"></el-option>
+                  <el-option label="验收测试" value="1"></el-option>
+                  <el-option label="验收完成" value="1"></el-option>
+                  <el-option label="模拟流程" value="1"></el-option>
+                  <el-option label="模拟测试" value="1"></el-option>
+                  <el-option label="模拟完成" value="1"></el-option>
+                  <el-option label="已上线" value="1"></el-option>
+                  <el-option label="NA" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="测试轮次">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="整体进度">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="正常" value="0"></el-option>
+                  <el-option label="延期" value="1"></el-option>
+                  <el-option label="暂停" value="1"></el-option>
+                  <el-option label="作废" value="1"></el-option>
+                  <el-option label="NA" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="人力投入">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="人力紧张" value="0"></el-option>
+                  <el-option label="人力充足" value="1"></el-option>
+                  <el-option label="人力不足" value="0"></el-option>
+                  <el-option label="NA" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="填写日期">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="今天" value="0"></el-option>
+                  <el-option label="过去7天" value="1"></el-option>
+                  <el-option label="本月" value="0"></el-option>
+                  <el-option label="今年" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="版本质量">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="质量一般" value="0"></el-option>
+                  <el-option label="质量较好" value="1"></el-option>
+                  <el-option label="质量较差" value="0"></el-option>
+                  <el-option label="NA" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="工作量情况">
+                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+                  <el-option label="超签报" value="0"></el-option>
+                  <el-option label="正常" value="1"></el-option>
+                  <el-option label="超采购" value="0"></el-option>
+                  <el-option label="NA" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="负责人">
+                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              </el-form-item>
+              <!-- <el-form-item label="生产上线日期">
+                <el-select v-model="formSearch.region" placeholder="请选择" clearable>
+                  <el-option label="今天" value="0"></el-option>
+                  <el-option label="过去7天" value="1"></el-option>
+                  <el-option label="本月" value="0"></el-option>
+                  <el-option label="今年" value="1"></el-option>
+                </el-select>
+              </el-form-item> -->
+              <el-form-item label="生产上线时间">
+                <el-date-picker v-model="weekFormSearch.businessTime" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+                </el-date-picker>
+              </el-form-item>
+              <div class="mb20">
+                <el-button type="primary" size="small" @click="onSearchWeek">查询</el-button>
+                <el-button type="success" size="small" @click="onSearch">重置</el-button>
+                <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
+                <el-button type="danger" size="small" @click="onSearch">删除</el-button>
+              </div>
+            </el-form>
+          </el-collapse-item>
+        </el-collapse>
+        <el-table v-loading="listLoading" :data="weekObj.list" element-loading-text="Loading" border fit highlight-current-row :max-height="weekObj.height">
           <el-table-column type="selection" width="55">
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              {{ scope.row.title }}
+              {{ scope.row.sysName }}
             </template>
           </el-table-column>
           <el-table-column label="版本号" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
+              <span>{{ scope.row.versionNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="主系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.$index }}</span>
+              <span>{{ scope.row.mainSysName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="主系统版本号" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.mainVersionNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="项目名称" min-width="300" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.projectName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="生产上线日期" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.businessTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="变更类型" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.crType }}</span>
             </template>
           </el-table-column>
           <el-table-column label="联测类别" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.testType }}</span>
             </template>
           </el-table-column>
           <el-table-column label="测试轮次" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.testRuns }}</span>
             </template>
           </el-table-column>
           <el-table-column label="项目整体进度" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.projectStage }}</span>
             </template>
           </el-table-column>
           <el-table-column label="原因说明" min-width="300" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.reason }}</span>
             </template>
           </el-table-column>
           <el-table-column label="人力投入情况" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.manPowerInput }}</span>
             </template>
           </el-table-column>
           <el-table-column label="版本质量" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.versionQuality }}</span>
             </template>
           </el-table-column>
           <el-table-column label="工作量情况" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.workload }}</span>
             </template>
           </el-table-column>
           <el-table-column label="性能测试" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.performanceTest }}</span>
             </template>
           </el-table-column>
           <el-table-column label="测试负责人" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.writter }}</span>
             </template>
           </el-table-column>
           <el-table-column label="填写日期" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.planTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="更新用户名" min-width="100" align="center">
+          <el-table-column label="更新用户名" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.updateUserName }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="最后更新时间" min-width="120" align="center">
+          <el-table-column label="最后更新时间" min-width="160" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.updateTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否为核心系统" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isMainSystem }}</span>
             </template>
           </el-table-column>
           <el-table-column label="功能点数量" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.funcNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="代码量" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.codeNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否影响会员" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isInfluenceMem }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否影响外部关联机构" min-width="180" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isInfluenceOuter }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否为新业务上线或总行相关业务" min-width="240" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isNewOrHead }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否为技术上线" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isTechUp }}</span>
             </template>
           </el-table-column>
           <el-table-column label="业务上线时间" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.businessTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="变更操作耗时" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.changeOperationTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否为自动化部署" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isAutoDeploy }}</span>
             </template>
           </el-table-column>
           <el-table-column label="是否包含业务操作内容" min-width="180" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.isIncludeBusiness }}</span>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="80">
@@ -374,11 +378,11 @@
         </el-table>
         <el-pagination
           class="mt20"
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="weekObj.pageIndex"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="weekObj.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="weekObj.total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         >
@@ -435,8 +439,8 @@
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
           :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="handleSizeChangeWeek"
+          @current-change="handleCurrentChangeWeek"
         >
         </el-pagination>
       </el-tab-pane>
@@ -825,6 +829,18 @@
             </div>
           </div>
         </el-form>
+        <el-form class="mt20" :inline="true" :model="formSearch">
+          <el-form-item label="系统名称">
+            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="上线时间">
+            <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="small" @click="onSearch">查询</el-button>
+          </el-form-item>
+        </el-form>
         <el-table v-loading="listLoading" :data="weekReportOriginList" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500">
           <el-table-column label="上线日期" min-width="120" align="center">
             <template slot-scope="scope">
@@ -904,7 +920,8 @@
 </template>
 
 <script>
-import { getWeekReportList, getTestList } from '@/api/local'
+import { getTestList } from '@/api/local'
+import weekApi from '@/api/week_manage'
 import { Calendar } from '@/utils'
 import echarts from 'echarts'
 
@@ -912,7 +929,6 @@ export default {
   data() {
     return {
       autoHeightSys: 200,
-      autoHeightWeek: 200,
       autoHeightMeeting: 200,
       autoHeightRequirement: 200,
       tabpaneHeight: 200,
@@ -923,6 +939,18 @@ export default {
         user: '',
         region: '',
         type: '当月采购详情'
+      },
+      // 周报 搜索条件
+      weekFormSearch: {
+        sysName: '',
+        businessTime: null
+      },
+      // 周报信息
+      weekObj: {
+        height: 200,
+        list: [],
+        pageIndex: 0,
+        pageSize: 20
       },
       list: [],
       weekReportList: [],
@@ -1088,7 +1116,7 @@ export default {
         this.autoHeightRequirement = this.$root.$el.clientHeight - 380
         this.sysDialogObj.height = this.$root.$el.clientHeight - 280
         this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
-        this.autoHeightWeek = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 160
+        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
         this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['component-three'].$el.clientHeight - 160
       }
     })
@@ -1097,11 +1125,26 @@ export default {
     handleCommand(value) {
       console.log(value)
     },
-    handleClick(tab, event) {
+    // 切换tab
+    onToggleTab(tab, event) {
       console.log(tab, event)
+      if (tab.name === 'component-two') {
+        this.onSearchWeek()
+      }
       this.$nextTick(() => {
-        this.autoHeightWeek = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 160
+        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
         this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['component-three'].$el.clientHeight - 160
+      })
+    },
+    // 展开/收起搜索条件
+    onChangeCollapse(name) {
+      console.log(name)
+      this.$nextTick(() => {
+        if (name.length) {
+          this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
+        } else {
+          this.weekObj.height = this.$el.parentNode.clientHeight - 240
+        }
       })
     },
     // 新增会议记录
@@ -1512,25 +1555,69 @@ export default {
       console.log('submit!')
       this.fetchData()
     },
-    fetchData() {
-      this.listLoading = true
-      getWeekReportList().then(response => {
-        console.log(response.data.items)
-        this.weekReportOriginList = response.data.items
-        // 设置能展开的行
-        this.weekReportOriginList.forEach((e, i) => {
-          if (e.status !== '主系统') {
-            if (this.weekReportOriginList[i - 1].status === '主系统') {
-              this.weekReportOriginList[i - 1].isExpand = true
-            }
-          }
-        })
-        // this.weekReportList = response.data.items
-        this.weekReportList = this.weekReportOriginList.filter(e => {
-          return e.status === '主系统'
-        })
+    // 周报列表 每页条数选择
+    handleSizeChangeWeek(val) {
+      this.weekObj.pageIndex = val
+    },
+    // 周报列表 当前页选择
+    handleCurrentChangeWeek(val) {
+      this.weekObj.pageSize = val - 1
+    },
+    // 查询周报列表
+    onSearchWeek() {
+      const params = {
+        pageIndex: this.weekObj.pageIndex,
+        pageSize: this.weekObj.pageSize,
+        sysName: this.weekFormSearch.sysName,
+        businessTimeStart: this.weekFormSearch.businessTime === null ? this.weekFormSearch.businessTime : this.weekFormSearch.businessTime[0],
+        businessTimeEnd: this.weekFormSearch.businessTime === null ? this.weekFormSearch.businessTime : this.weekFormSearch.businessTime[1]
+      }
+      weekApi.getWeekReportList(params).then(response => {
+        this.weekObj.list = response.data.list
+        this.weekObj.total = response.data.total
+        // console.log(response.data.items)
+        // this.weekReportOriginList = response.data.items
+        // // 设置能展开的行
+        // this.weekReportOriginList.forEach((e, i) => {
+        //   if (e.status !== '主系统') {
+        //     if (this.weekReportOriginList[i - 1].status === '主系统') {
+        //       this.weekReportOriginList[i - 1].isExpand = true
+        //     }
+        //   }
+        // })
+        // // this.weekReportList = response.data.items
+        // this.weekReportList = this.weekReportOriginList.filter(e => {
+        //   return e.status === '主系统'
+        // })
         this.listLoading = false
       })
+    },
+    fetchData() {
+      this.listLoading = true
+      // const params = {
+      //   pageIndex: 0,
+      //   pageSize: 10,
+      //   sysName: this.weekFormSearch.sysName,
+      //   businessTimeStart: this.weekFormSearch.businessTime[0],
+      //   businessTimeEnd: this.weekFormSearch.businessTime[1]
+      // }
+      // weekApi.getWeekReportList(params).then(response => {
+      //   console.log(response.data.items)
+      //   this.weekReportOriginList = response.data.items
+      //   // 设置能展开的行
+      //   this.weekReportOriginList.forEach((e, i) => {
+      //     if (e.status !== '主系统') {
+      //       if (this.weekReportOriginList[i - 1].status === '主系统') {
+      //         this.weekReportOriginList[i - 1].isExpand = true
+      //       }
+      //     }
+      //   })
+      //   // this.weekReportList = response.data.items
+      //   this.weekReportList = this.weekReportOriginList.filter(e => {
+      //     return e.status === '主系统'
+      //   })
+      //   this.listLoading = false
+      // })
       getTestList().then(response => {
         this.list = response.data.items
         this.listLoading = false
