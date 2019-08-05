@@ -8,6 +8,41 @@ function getWeekReportList(data) {
   })
 }
 
+function addWeekReport(data) {
+  return request({
+    url: '/pf/report/weekreports',
+    method: 'post',
+    data
+  })
+}
+
+function delWeekReport(data) {
+  return request({
+    url: '/pf/report/weekreports',
+    method: 'delete',
+    data
+  })
+}
+
+export function getWeekReport(uuid) {
+  return request({
+    url: `/pf/report/weekreports/${uuid}`,
+    method: 'get'
+  })
+}
+
+function updateWeekReport(data) {
+  return request({
+    url: '/pf/report/weekreports',
+    method: 'put',
+    data
+  })
+}
+
 export default {
-  getWeekReportList
+  getWeekReportList,
+  addWeekReport,
+  delWeekReport,
+  getWeekReport,
+  updateWeekReport
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateSys('add')">新增</el-button>
+    <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateWeek('add')">新增</el-button>
     <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperatMeeting('add')">新增</el-button>
     <el-tabs v-model="activeName" type="card" @tab-click="onToggleTab">
       <el-tab-pane label="联测主系统列表" name="component-one" :style="{ height: tabpaneHeight + 'px', overflow: 'auto' }">
@@ -38,7 +38,7 @@
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status === '主系统'" type="text" size="mini" @click="onOperateSys('tree', scope.row)">{{ scope.row.title }}</el-button>
+              <el-button v-if="scope.row.status === '主系统'" type="text" size="mini" @click="onOperateWeek('tree', scope.row)">{{ scope.row.title }}</el-button>
               <span v-if="scope.row.status !== '主系统'">{{ scope.row.title }}</span>
             </template>
           </el-table-column>
@@ -84,8 +84,8 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="onOperateSys('edit', scope.row)">修改</el-button>
-              <el-button size="mini" type="primary" plain @click="onOperateSys('detail', scope.row)">查看需求条目</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateWeek('edit', scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateWeek('detail', scope.row)">查看需求条目</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -209,15 +209,15 @@
                 </el-date-picker>
               </el-form-item>
               <div class="mb20">
-                <el-button type="primary" size="small" @click="onSearchWeek">查询</el-button>
+                <el-button type="primary" size="small" @click="initWeek">查询</el-button>
                 <el-button type="success" size="small" @click="onSearch">重置</el-button>
                 <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
-                <el-button type="danger" size="small" @click="onSearch">删除</el-button>
+                <el-button type="danger" size="small" @click="onOperateWeek('deleteMultiple')">删除</el-button>
               </div>
             </el-form>
           </el-collapse-item>
         </el-collapse>
-        <el-table v-loading="listLoading" :data="weekObj.list" element-loading-text="Loading" border fit highlight-current-row :max-height="weekObj.height">
+        <el-table v-loading="listLoading" :data="weekObj.list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="weekObj.height" @selection-change="handleSelectionChangeWeek">
           <el-table-column type="selection" width="55">
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
@@ -370,9 +370,10 @@
               <span>{{ scope.row.isIncludeBusiness }}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="80">
+          <el-table-column fixed="right" label="操作" width="160">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="onOperateSys('edit', scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateWeek('edit', scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateWeek('deleteSingle', scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -383,8 +384,8 @@
           :page-size="weekObj.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="weekObj.total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="handleSizeChangeWeek"
+          @current-change="handleCurrentChangeWeek"
         >
         </el-pagination>
       </el-tab-pane>
@@ -435,7 +436,7 @@
         <el-pagination
           class="mt20"
           :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
+          :page-sizes="[10, 20, 50, 100]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
           :total="400"
@@ -445,41 +446,47 @@
         </el-pagination>
       </el-tab-pane>
     </el-tabs>
-    <el-dialog :title="sysDialogObj.title" :visible.sync="sysDialogObj.visible" top="5vh" width="1200px">
-      <el-form ref="sysForm" :style="{ height: sysDialogObj.height + 'px', overflow: 'auto' }" :inline="true" :model="sysDialogObj.form" label-width="100px" label-position="top">
+    <el-dialog :title="weekDialogObj.title" :visible.sync="weekDialogObj.visible" top="5vh" width="1200px">
+      <el-form ref="sysForm" :style="{ height: weekDialogObj.height + 'px', overflow: 'auto' }" :inline="true" :model="weekDialogObj.form" label-width="100px" label-position="top">
         <el-row>
           <el-col :span="6">
             <el-form-item label="全流程系统名称">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" clearable>
+                <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
+                <el-option label="本币交易系统" value="本币交易系统"></el-option>
+                <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
+                <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
+                <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
+                <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="全流程子系统名称">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.sysSonName" placeholder="请选择" clearable>
+                <el-option label="null" value="null"></el-option>
+                <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
+                <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
+                <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
+                <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
+                <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
+                <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
+                <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <!-- <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-              <el-option label="债券基础信息系统" value="0"></el-option>
-              <el-option label="交易后处理系统" value="1"></el-option>
-            </el-select> -->
             <el-form-item label="版本号">
-              <el-dropdown @command="handleCommand">
-                <el-input v-model="sysDialogObj.form.user" placeholder="请输入内容">
+              <el-dropdown @command="handleCommandWeekMainOperate">
+                <el-input v-model="weekDialogObj.form.versionNum" placeholder="请输入内容">
                   <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
                 </el-input>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="item1">黄金糕</el-dropdown-item>
-                  <el-dropdown-item command="item2">狮子头</el-dropdown-item>
-                  <el-dropdown-item command="item3">螺蛳粉</el-dropdown-item>
-                  <el-dropdown-item command="item4" disabled>双皮奶</el-dropdown-item>
-                  <el-dropdown-item command="item5" divided>蚵仔煎</el-dropdown-item>
+                  <el-dropdown-item command="null">null</el-dropdown-item>
+                  <el-dropdown-item command="1.0.0">1.0.0</el-dropdown-item>
+                  <el-dropdown-item command="1.1.1">1.1.1</el-dropdown-item>
+                  <el-dropdown-item command="1.2.1">1.2.1</el-dropdown-item>
+                  <el-dropdown-item command="2.1.3">2.1.3</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-form-item>
@@ -488,32 +495,42 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="主系统全流程名称">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" clearable>
+                <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
+                <el-option label="本币交易系统" value="本币交易系统"></el-option>
+                <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
+                <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
+                <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
+                <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="主系统全流程子系统名称">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.mainSysSonName" placeholder="请选择" clearable>
+                <el-option label="null" value="null"></el-option>
+                <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
+                <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
+                <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
+                <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
+                <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
+                <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
+                <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="版本号">
-              <el-dropdown @command="handleCommand">
-                <el-input v-model="sysDialogObj.form.user" placeholder="请输入内容">
+              <el-dropdown @command="handleCommandWeekSonOperate">
+                <el-input v-model="weekDialogObj.form.mainVersionNum" placeholder="请输入内容">
                   <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
                 </el-input>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="item1">黄金糕</el-dropdown-item>
-                  <el-dropdown-item command="item2">狮子头</el-dropdown-item>
-                  <el-dropdown-item command="item3">螺蛳粉</el-dropdown-item>
-                  <el-dropdown-item command="item4" disabled>双皮奶</el-dropdown-item>
-                  <el-dropdown-item command="item5" divided>蚵仔煎</el-dropdown-item>
+                  <el-dropdown-item command="null">null</el-dropdown-item>
+                  <el-dropdown-item command="1.0.0">1.0.0</el-dropdown-item>
+                  <el-dropdown-item command="1.1.1">1.1.1</el-dropdown-item>
+                  <el-dropdown-item command="1.2.1">1.2.1</el-dropdown-item>
+                  <el-dropdown-item command="2.1.3">2.1.3</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-form-item>
@@ -522,12 +539,12 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="项目名称">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-input v-model="weekDialogObj.form.projectName" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="生产上线日期">
-              <el-date-picker v-model="sysDialogObj.form.date" type="date" placeholder="选择日期">
+              <el-date-picker v-model="weekDialogObj.form.planTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -535,72 +552,97 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="变更类型">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.crType" placeholder="请选择" clearable>
+                <el-option label="正常" value="正常"></el-option>
+                <el-option label="紧急" value="紧急"></el-option>
+                <el-option label="例行" value="例行"></el-option>
+                <el-option label="快捷" value="快捷"></el-option>
+                <el-option label="NA" value="NA"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="联测类别">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.testType" placeholder="请选择" clearable>
+                <el-option label="主系统" value="主系统"></el-option>
+                <el-option label="升级联测" value="升级联测"></el-option>
+                <el-option label="无升级联测" value="无升级联测"></el-option>
+                <el-option label="未回复" value="未回复"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="目前项目阶段">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.projectStage" placeholder="请选择" clearable>
+                <el-option label="测试准备" value="测试准备"></el-option>
+                <el-option label="UAT1测试" value="UAT1测试"></el-option>
+                <el-option label="UAT1完成" value="UAT1完成"></el-option>
+                <el-option label="验收流程" value="验收流程"></el-option>
+                <el-option label="验收测试" value="验收测试"></el-option>
+                <el-option label="验收完成" value="验收完成"></el-option>
+                <el-option label="模拟流程" value="模拟流程"></el-option>
+                <el-option label="模拟测试" value="模拟测试"></el-option>
+                <el-option label="模拟完成" value="模拟完成"></el-option>
+                <el-option label="已上线" value="已上线"></el-option>
+                <el-option label="NA" value="NA"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="测试轮次">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-select v-model="weekDialogObj.form.testRuns" placeholder="请选择" clearable>
+                <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="5">
             <el-form-item label="项目整体进度">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.overAllSchedule" placeholder="请选择" clearable>
+                <el-option label="正常" value="正常"></el-option>
+                <el-option label="延期" value="延期"></el-option>
+                <el-option label="暂停" value="暂停"></el-option>
+                <el-option label="作废" value="作废"></el-option>
+                <el-option label="NA" value="NA"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="人力投入情况">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.manPowerInput" placeholder="请选择" clearable>
+                <el-option label="人力紧张" value="人力紧张"></el-option>
+                <el-option label="人力不足" value="人力不足"></el-option>
+                <el-option label="人力充足" value="人力充足"></el-option>
+                <el-option label="NA" value="NA"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="版本质量">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.versionQuality" placeholder="请选择" clearable>
+                <el-option label="质量一般" value="质量一般"></el-option>
+                <el-option label="质量较好" value="质量较好"></el-option>
+                <el-option label="质量较差" value="质量较差"></el-option>
+                <el-option label="NA" value="NA"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="工作量情况">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.workload" placeholder="请选择" clearable>
+                <el-option label="超签报" value="超签报"></el-option>
+                <el-option label="正常" value="正常"></el-option>
+                <el-option label="超采购" value="超采购"></el-option>
+                <el-option label="NA" value="NA"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
             <el-form-item label="性能测试">
-              <el-select v-model="sysDialogObj.form.region" placeholder="请选择" clearable>
-                <el-option label="债券基础信息系统" value="0"></el-option>
-                <el-option label="交易后处理系统" value="1"></el-option>
+              <el-select v-model="weekDialogObj.form.performanceTest" placeholder="请选择" clearable>
+                <el-option label="有" value="有"></el-option>
+                <el-option label="无" value="无"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -608,34 +650,35 @@
         <el-row>
           <el-col :span="5">
             <el-form-item label="测试负责人">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-input v-model="weekDialogObj.form.writter" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="功能点数量">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-input v-model="weekDialogObj.form.funcNum" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="代码量">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-input v-model="weekDialogObj.form.codeNum" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="业务上线时间">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-date-picker v-model="weekDialogObj.form.businessTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="4">
             <el-form-item label="变更操作耗时">
-              <el-input v-model="sysDialogObj.form.user" placeholder="请输入" clearable></el-input>
+              <el-input v-model="weekDialogObj.form.changeOperationTime" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
             <el-form-item label="填写日期">
-              <el-date-picker v-model="sysDialogObj.form.date" type="date" placeholder="选择日期">
+              <el-date-picker v-model="weekDialogObj.form.updateDate" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -643,49 +686,49 @@
         <el-row>
           <el-col :span="18">
             <el-form-item label="原因说明">
-              <el-input v-model="sysDialogObj.form.user" type="textarea" :rows="6" :style="{ width: '600px'}"></el-input>
+              <el-input v-model="weekDialogObj.form.reason" type="textarea" :rows="6" :style="{ width: '600px'}"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否为核心系统</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isMainSystem" :true-label="1" :false-label="0">是否为核心系统</el-checkbox>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否影响会员（客户端和API更新）</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isInfluenceMem" :true-label="1" :false-label="0">是否影响会员（客户端和API更新）</el-checkbox>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否影响外部关联机构（CDC、清算所、金交所、总行、货币经济公司、第三方平台）</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isInfluenceOuter" :true-label="1" :false-label="0">是否影响外部关联机构（CDC、清算所、金交所、总行、货币经济公司、第三方平台）</el-checkbox>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否为新业务上线或总行相关业务</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isNewOrHead" :true-label="1" :false-label="0">是否为新业务上线或总行相关业务</el-checkbox>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否为技术上线</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isTechUp" :true-label="1" :false-label="0">是否为技术上线</el-checkbox>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否为自动化部署</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isAutoDeploy" :true-label="1" :false-label="0">是否为自动化部署</el-checkbox>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-checkbox v-model="sysDialogObj.form.checked">是否包含业务操作内容</el-checkbox>
+            <el-checkbox v-model="weekDialogObj.form.isIncludeBusiness" :true-label="1" :false-label="0">是否包含业务操作内容</el-checkbox>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="sysDialogObj.visible = false">取 消</el-button>
-        <el-button type="primary" @click="sysDialogObj.visible = false">确 定</el-button>
+        <el-button @click="weekDialogObj.visible = false">取 消</el-button>
+        <el-button type="primary" @click="onOperateWeek('submit')">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="需求条目信息" :visible.sync="requirementDialogObj.visible" width="800px">
@@ -904,8 +947,8 @@
           </el-table-column>
           <!-- <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="onOperateSys('edit', scope.row)">修改</el-button>
-              <el-button size="mini" type="primary" plain @click="onOperateSys('detail', scope.row)">查看需求条目</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateWeek('edit', scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateWeek('detail', scope.row)">查看需求条目</el-button>
             </template>
           </el-table-column> -->
         </el-table>
@@ -949,6 +992,7 @@ export default {
       weekObj: {
         height: 200,
         list: [],
+        checkedList: [],
         pageIndex: 0,
         pageSize: 20
       },
@@ -957,16 +1001,43 @@ export default {
       weekReportOriginList: [],
       listLoading: true,
       // 联测主系统/周报dialog
-      sysDialogObj: {
+      weekDialogObj: {
         title: '新增',
         visible: false,
         height: 200,
+        uuid: null,
         form: {
-          date: '',
-          user: '',
-          region: '',
-          checked: false,
-          expand: false
+          sysName: '', // 全流程系统名称
+          sysSonName: '', // 全流程子系统名称
+          versionNum: '', // 版本号
+          mainSysName: '', // 主系统全流程名称
+          mainSysSonName: '', // 主系统全流程子系统名称
+          mainVersionNum: '', // 版本号
+          projectName: '', // 项目名称
+          planTime: '', // 生产上线日期
+          crType: '', // 变更类型
+          testType: '', // 联测类别
+          projectStage: '', // 目前项目阶段
+          testRuns: '', // 测试轮次
+          overAllSchedule: '', // 项目整体进度
+          manPowerInput: '', // 人力投入情况
+          versionQuality: '', // 版本质量
+          workload: '', // 工作量情况
+          performanceTest: '', // 性能测试
+          writter: '', // 测试负责人
+          funcNum: '', // 功能点数量
+          codeNum: '', // 代码量
+          businessTime: '', // 业务上线时间
+          changeOperationTime: '', // 变更操作耗时
+          updateDate: '', // 填写日期
+          reason: '', // 原因说明
+          isMainSystem: 0, // 是否为核心系统
+          isInfluenceMem: 0, // 是否影响会员（客户端和API更新）
+          isInfluenceOuter: 0, // 是否影响外部关联机构（CDC、清算所、金交所、总行、货币经济公司、第三方平台）
+          isNewOrHead: 0, // 是否为新业务上线或总行相关业务
+          isTechUp: 0, // 是否为技术上线
+          isAutoDeploy: 0, // 是否为自动化部署
+          isIncludeBusiness: 0 // 是否包含业务操作内容
         }
       },
       // 需求条目dialog
@@ -1107,14 +1178,14 @@ export default {
       this.tabpaneHeight = this.$root.$el.clientHeight - 180
       this.autoHeightSys = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
       this.autoHeightRequirement = this.$root.$el.clientHeight - 380
-      this.sysDialogObj.height = this.$root.$el.clientHeight - 280
+      this.weekDialogObj.height = this.$root.$el.clientHeight - 280
       this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
 
       window.onresize = () => {
         this.tabpaneHeight = this.$root.$el.clientHeight - 180
         this.autoHeightSys = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
         this.autoHeightRequirement = this.$root.$el.clientHeight - 380
-        this.sysDialogObj.height = this.$root.$el.clientHeight - 280
+        this.weekDialogObj.height = this.$root.$el.clientHeight - 280
         this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
         this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
         this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['component-three'].$el.clientHeight - 160
@@ -1124,6 +1195,16 @@ export default {
   methods: {
     handleCommand(value) {
       console.log(value)
+    },
+    // 选择主系统版本号
+    handleCommandWeekMainOperate(value) {
+      console.log(value)
+      this.weekDialogObj.form.versionNum = value
+    },
+    // 选择子系统版本号
+    handleCommandWeekSonOperate(value) {
+      console.log(value)
+      this.weekDialogObj.form.mainVersionNum = value
     },
     // 切换tab
     onToggleTab(tab, event) {
@@ -1208,19 +1289,103 @@ export default {
         this.meetingDialogObj.form.otherList.splice(index, 1)
       }
     },
+    // 周报 设置列表选中的数据
+    handleSelectionChangeWeek(val) {
+      this.weekObj.checkedList = val
+    },
     /** 系统/周报 操作
-     * @method onOperateSys
-     * @param {String} type add:新增;edit:修改;detail:查看;tree:系统关系树状图
+     * @method onOperateWeek
+     * @param {String} type add: 新增;edit: 修改;deleteSingle: 单个删除;deleteMultiple: 批量删除;submit: 提交;detail: 查看;tree: 系统关系树状图
      * @param {Object} row 当前行数据
      * @return 无
      */
-    onOperateSys(type, row) {
+    onOperateWeek(type, row) {
       if (type === 'add') {
-        this.sysDialogObj.visible = true
-        this.sysDialogObj.title = '新增'
+        this.weekDialogObj.visible = true
+        this.weekDialogObj.title = '新增'
+        this.weekDialogObj.uuid = null
       } else if (type === 'edit') {
-        this.sysDialogObj.visible = true
-        this.sysDialogObj.title = '修改'
+        this.weekDialogObj.visible = true
+        this.weekDialogObj.title = '修改'
+        this.weekDialogObj.uuid = row.uuid
+        const params = row.uuid
+        weekApi.getWeekReport(params).then(response => {
+          this.weekDialogObj.form = response.data
+        })
+      } else if (type === 'submit') {
+        if (this.weekDialogObj.title === '新增') {
+          const params = this.weekDialogObj.form
+          weekApi.addWeekReport(params).then(response => {
+            this.$notify({
+              title: '成功',
+              message: '新增成功',
+              type: 'success'
+            })
+            if (this.activeName ==='component-two') {
+              this.initWeek()
+              this.weekDialogObj.visible = false
+            }
+          })
+        } else if (this.weekDialogObj.title === '修改') {
+          const params = this.weekDialogObj.form
+          params.uuid = this.weekDialogObj.uuid
+          weekApi.updateWeekReport(params).then(response => {
+            this.$notify({
+              title: '成功',
+              message: '修改成功',
+              type: 'success'
+            })
+            if (this.activeName ==='component-two') {
+              this.initWeek()
+              this.weekDialogObj.visible = false
+            }
+          })
+        }
+      } else if (type === 'deleteMultiple') {
+        console.log(this.weekObj.checkedList)
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = {
+            weekReportInfoList: this.weekObj.checkedList
+          }
+          weekApi.delWeekReport(params).then(response => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initWeek()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });         
+        })
+      } else if (type === 'deleteSingle') {
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = {
+            weekReportInfoList: [row]
+          }
+          weekApi.delWeekReport(params).then(response => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initWeek()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });         
+        })
       } else if (type === 'detail') {
         this.requirementDialogObj.visible = true
         this.requirementDialogObj.list = [
@@ -1557,11 +1722,13 @@ export default {
     },
     // 周报列表 每页条数选择
     handleSizeChangeWeek(val) {
-      this.weekObj.pageIndex = val
+      this.weekObj.pageSize = val
+      this.initWeek()
     },
     // 周报列表 当前页选择
     handleCurrentChangeWeek(val) {
-      this.weekObj.pageSize = val - 1
+      this.weekObj.pageIndex = val - 1
+      this.onSearchWeek()
     },
     // 查询周报列表
     onSearchWeek() {
@@ -1591,6 +1758,11 @@ export default {
         // })
         this.listLoading = false
       })
+    },
+    // 周报列表初始化
+    initWeek() {
+      this.weekObj.pageIndex = 0
+      this.onSearchWeek()
     },
     fetchData() {
       this.listLoading = true
