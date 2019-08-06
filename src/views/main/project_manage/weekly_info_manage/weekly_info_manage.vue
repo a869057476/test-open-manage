@@ -94,98 +94,102 @@
         <el-collapse value="1" @change="onChangeCollapse">
           <el-collapse-item title="展开/收起搜索条件" name="1">
             <el-form ref="component-two" :inline="true" :model="weekFormSearch" label-width="100px">
-              <el-form-item label="系统名称">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="债券基础信息系统" value="0"></el-option>
-                  <el-option label="交易后处理系统" value="1"></el-option>
+              <el-form-item label="系统名称" prop="sysName">
+                <el-select v-model="weekFormSearch.sysName" placeholder="请选择" clearable>
+                  <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
+                  <el-option label="本币交易系统" value="本币交易系统"></el-option>
+                  <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
+                  <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
+                  <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
+                  <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="系统版本号">
-                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              <el-form-item label="系统版本号" prop="versionNum">
+                <el-input v-model="weekFormSearch.versionNum" placeholder="请输入" clearable></el-input>
               </el-form-item>
-              <el-form-item label="主系统名称">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="系统1" value="0"></el-option>
-                  <el-option label="系统2" value="1"></el-option>
+              <el-form-item label="主系统名称" prop="sysSonName">
+                <el-select v-model="weekFormSearch.sysSonName" placeholder="请选择" clearable>
+                  <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
+                  <el-option label="本币交易系统" value="本币交易系统"></el-option>
+                  <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
+                  <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
+                  <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
+                  <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="主系统版本号">
-                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              <el-form-item label="主系统版本号" prop="mainVersionNum">
+                <el-input v-model="weekFormSearch.mainVersionNum" placeholder="请输入" clearable></el-input>
               </el-form-item>
-              <el-form-item label="项目名称">
-                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              <el-form-item label="项目名称" prop="projectName">
+                <el-input v-model="weekFormSearch.projectName" placeholder="请输入" clearable></el-input>
               </el-form-item>
-              <el-form-item label="变更类型">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="正常" value="0"></el-option>
-                  <el-option label="紧急" value="1"></el-option>
-                  <el-option label="紧例行急" value="1"></el-option>
-                  <el-option label="快捷" value="1"></el-option>
-                  <el-option label="NA" value="1"></el-option>
+              <el-form-item label="变更类型" prop="crType">
+                <el-select v-model="weekFormSearch.crType" placeholder="请选择" clearable>
+                  <el-option label="正常" value="正常"></el-option>
+                  <el-option label="紧急" value="紧急"></el-option>
+                  <el-option label="例行" value="例行"></el-option>
+                  <el-option label="快捷" value="快捷"></el-option>
+                  <el-option label="NA" value="NA"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="联测类别">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="主系统" value="0"></el-option>
-                  <el-option label="升级联测" value="1"></el-option>
-                  <el-option label="无升级联测" value="1"></el-option>
-                  <el-option label="未回复" value="1"></el-option>
+              <el-form-item label="联测类别" prop="testType">
+                <el-select v-model="weekFormSearch.testType" placeholder="请选择" clearable>
+                  <el-option label="主系统" value="主系统"></el-option>
+                  <el-option label="升级联测" value="升级联测"></el-option>
+                  <el-option label="无升级联测" value="无升级联测"></el-option>
+                  <el-option label="未回复" value="未回复"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="项目阶段">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="测试准备" value="0"></el-option>
-                  <el-option label="UAT1测试" value="1"></el-option>
-                  <el-option label="UAT1完成" value="1"></el-option>
-                  <el-option label="验收流程" value="1"></el-option>
-                  <el-option label="验收测试" value="1"></el-option>
-                  <el-option label="验收完成" value="1"></el-option>
-                  <el-option label="模拟流程" value="1"></el-option>
-                  <el-option label="模拟测试" value="1"></el-option>
-                  <el-option label="模拟完成" value="1"></el-option>
-                  <el-option label="已上线" value="1"></el-option>
-                  <el-option label="NA" value="1"></el-option>
+              <el-form-item label="项目阶段" prop="projectStage">
+                <el-select v-model="weekFormSearch.projectStage" placeholder="请选择" clearable>
+                  <el-option label="测试准备" value="测试准备"></el-option>
+                  <el-option label="UAT1测试" value="UAT1测试"></el-option>
+                  <el-option label="UAT1完成" value="UAT1完成"></el-option>
+                  <el-option label="验收流程" value="验收流程"></el-option>
+                  <el-option label="验收测试" value="验收测试"></el-option>
+                  <el-option label="验收完成" value="验收完成"></el-option>
+                  <el-option label="模拟流程" value="模拟流程"></el-option>
+                  <el-option label="模拟测试" value="模拟测试"></el-option>
+                  <el-option label="模拟完成" value="模拟完成"></el-option>
+                  <el-option label="已上线" value="已上线"></el-option>
+                  <el-option label="NA" value="NA"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="测试轮次">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+              <el-form-item label="测试轮次" prop="testRuns">
+                <el-select v-model="weekFormSearch.testRuns" placeholder="请选择" clearable>
                   <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="整体进度">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="正常" value="0"></el-option>
-                  <el-option label="延期" value="1"></el-option>
-                  <el-option label="暂停" value="1"></el-option>
-                  <el-option label="作废" value="1"></el-option>
-                  <el-option label="NA" value="1"></el-option>
+              <el-form-item label="整体进度" prop="overAllSchedule">
+                <el-select v-model="weekFormSearch.overAllSchedule" placeholder="请选择" clearable>
+                  <el-option label="正常" value="正常"></el-option>
+                  <el-option label="延期" value="延期"></el-option>
+                  <el-option label="暂停" value="暂停"></el-option>
+                  <el-option label="作废" value="作废"></el-option>
+                  <el-option label="NA" value="NA"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="人力投入">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="人力紧张" value="0"></el-option>
-                  <el-option label="人力充足" value="1"></el-option>
-                  <el-option label="人力不足" value="0"></el-option>
-                  <el-option label="NA" value="1"></el-option>
+              <el-form-item label="人力投入" prop="manPowerInput">
+                <el-select v-model="weekFormSearch.manPowerInput" placeholder="请选择" clearable>
+                  <el-option label="人力紧张" value="人力紧张"></el-option>
+                  <el-option label="人力不足" value="人力不足"></el-option>
+                  <el-option label="人力充足" value="人力充足"></el-option>
+                  <el-option label="NA" value="NA"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="填写日期">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="今天" value="0"></el-option>
-                  <el-option label="过去7天" value="1"></el-option>
-                  <el-option label="本月" value="0"></el-option>
-                  <el-option label="今年" value="1"></el-option>
+              <el-form-item label="填写日期" prop="updateDate">
+                <el-date-picker v-model="weekFormSearch.updateDate" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="版本质量" prop="versionQuality">
+                <el-select v-model="weekFormSearch.versionQuality" placeholder="请选择" clearable>
+                  <el-option label="质量一般" value="质量一般"></el-option>
+                  <el-option label="质量较好" value="质量较好"></el-option>
+                  <el-option label="质量较差" value="质量较差"></el-option>
+                  <el-option label="NA" value="NA"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="版本质量">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
-                  <el-option label="质量一般" value="0"></el-option>
-                  <el-option label="质量较好" value="1"></el-option>
-                  <el-option label="质量较差" value="0"></el-option>
-                  <el-option label="NA" value="1"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="工作量情况">
+              <el-form-item label="工作量情况" prop="region">
                 <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
                   <el-option label="超签报" value="0"></el-option>
                   <el-option label="正常" value="1"></el-option>
@@ -193,24 +197,16 @@
                   <el-option label="NA" value="1"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="负责人">
-                <el-input v-model="weekFormSearch.user" placeholder="请输入" clearable></el-input>
+              <el-form-item label="负责人" prop="writter">
+                <el-input v-model="weekFormSearch.writter" placeholder="请输入" clearable></el-input>
               </el-form-item>
-              <!-- <el-form-item label="生产上线日期">
-                <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-                  <el-option label="今天" value="0"></el-option>
-                  <el-option label="过去7天" value="1"></el-option>
-                  <el-option label="本月" value="0"></el-option>
-                  <el-option label="今年" value="1"></el-option>
-                </el-select>
-              </el-form-item> -->
-              <el-form-item label="生产上线时间">
-                <el-date-picker v-model="weekFormSearch.businessTime" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+              <el-form-item label="生产上线时间" prop="planTime">
+                <el-date-picker v-model="weekFormSearch.planTime" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
                 </el-date-picker>
               </el-form-item>
               <div class="mb20">
                 <el-button type="primary" size="small" @click="initWeek">查询</el-button>
-                <el-button type="success" size="small" @click="onSearch">重置</el-button>
+                <el-button type="success" size="small" @click="resetWeek('component-two')">重置</el-button>
                 <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
                 <el-button type="danger" size="small" @click="onOperateWeek('deleteMultiple')">删除</el-button>
               </div>
@@ -447,10 +443,10 @@
       </el-tab-pane>
     </el-tabs>
     <el-dialog :title="weekDialogObj.title" :visible.sync="weekDialogObj.visible" top="5vh" width="1200px">
-      <el-form ref="sysForm" :style="{ height: weekDialogObj.height + 'px', overflow: 'auto' }" :inline="true" :model="weekDialogObj.form" label-width="100px" label-position="top">
+      <el-form ref="weekForm" :model="weekDialogObj.form" :rules="weekDialogObj.rules" :style="{ height: weekDialogObj.height + 'px', overflow: 'auto' }" :inline="true" label-width="100px" label-position="top">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="全流程系统名称">
+            <el-form-item label="全流程系统名称" prop="sysName">
               <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" clearable>
                 <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
                 <el-option label="本币交易系统" value="本币交易系统"></el-option>
@@ -462,7 +458,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="全流程子系统名称">
+            <el-form-item label="全流程子系统名称" prop="sysSonName">
               <el-select v-model="weekDialogObj.form.sysSonName" placeholder="请选择" clearable>
                 <el-option label="null" value="null"></el-option>
                 <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
@@ -476,7 +472,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="版本号">
+            <el-form-item label="版本号" prop="versionNum">
               <el-dropdown @command="handleCommandWeekMainOperate">
                 <el-input v-model="weekDialogObj.form.versionNum" placeholder="请输入内容">
                   <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
@@ -494,7 +490,7 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="主系统全流程名称">
+            <el-form-item label="主系统全流程名称" prop="mainSysName">
               <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" clearable>
                 <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
                 <el-option label="本币交易系统" value="本币交易系统"></el-option>
@@ -506,7 +502,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="主系统全流程子系统名称">
+            <el-form-item label="主系统全流程子系统名称" prop="mainSysSonName">
               <el-select v-model="weekDialogObj.form.mainSysSonName" placeholder="请选择" clearable>
                 <el-option label="null" value="null"></el-option>
                 <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
@@ -520,7 +516,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="版本号">
+            <el-form-item label="版本号" prop="mainVersionNum">
               <el-dropdown @command="handleCommandWeekSonOperate">
                 <el-input v-model="weekDialogObj.form.mainVersionNum" placeholder="请输入内容">
                   <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
@@ -551,7 +547,7 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="变更类型">
+            <el-form-item label="变更类型" prop="crType">
               <el-select v-model="weekDialogObj.form.crType" placeholder="请选择" clearable>
                 <el-option label="正常" value="正常"></el-option>
                 <el-option label="紧急" value="紧急"></el-option>
@@ -562,7 +558,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="联测类别">
+            <el-form-item label="联测类别" prop="testType">
               <el-select v-model="weekDialogObj.form.testType" placeholder="请选择" clearable>
                 <el-option label="主系统" value="主系统"></el-option>
                 <el-option label="升级联测" value="升级联测"></el-option>
@@ -572,7 +568,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="目前项目阶段">
+            <el-form-item label="目前项目阶段" prop="projectStage">
               <el-select v-model="weekDialogObj.form.projectStage" placeholder="请选择" clearable>
                 <el-option label="测试准备" value="测试准备"></el-option>
                 <el-option label="UAT1测试" value="UAT1测试"></el-option>
@@ -589,7 +585,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="测试轮次">
+            <el-form-item label="测试轮次" prop="testRuns">
               <el-select v-model="weekDialogObj.form.testRuns" placeholder="请选择" clearable>
                 <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
               </el-select>
@@ -598,7 +594,7 @@
         </el-row>
         <el-row>
           <el-col :span="5">
-            <el-form-item label="项目整体进度">
+            <el-form-item label="项目整体进度" prop="overAllSchedule">
               <el-select v-model="weekDialogObj.form.overAllSchedule" placeholder="请选择" clearable>
                 <el-option label="正常" value="正常"></el-option>
                 <el-option label="延期" value="延期"></el-option>
@@ -609,7 +605,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="人力投入情况">
+            <el-form-item label="人力投入情况" prop="manPowerInput">
               <el-select v-model="weekDialogObj.form.manPowerInput" placeholder="请选择" clearable>
                 <el-option label="人力紧张" value="人力紧张"></el-option>
                 <el-option label="人力不足" value="人力不足"></el-option>
@@ -619,7 +615,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="版本质量">
+            <el-form-item label="版本质量" prop="versionQuality">
               <el-select v-model="weekDialogObj.form.versionQuality" placeholder="请选择" clearable>
                 <el-option label="质量一般" value="质量一般"></el-option>
                 <el-option label="质量较好" value="质量较好"></el-option>
@@ -629,7 +625,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="工作量情况">
+            <el-form-item label="工作量情况" prop="workload">
               <el-select v-model="weekDialogObj.form.workload" placeholder="请选择" clearable>
                 <el-option label="超签报" value="超签报"></el-option>
                 <el-option label="正常" value="正常"></el-option>
@@ -639,7 +635,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="性能测试">
+            <el-form-item label="性能测试" prop="performanceTest">
               <el-select v-model="weekDialogObj.form.performanceTest" placeholder="请选择" clearable>
                 <el-option label="有" value="有"></el-option>
                 <el-option label="无" value="无"></el-option>
@@ -649,7 +645,7 @@
         </el-row>
         <el-row>
           <el-col :span="5">
-            <el-form-item label="测试负责人">
+            <el-form-item label="测试负责人" prop="writter">
               <el-input v-model="weekDialogObj.form.writter" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
@@ -685,7 +681,7 @@
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-form-item label="原因说明">
+            <el-form-item label="原因说明" prop="reason">
               <el-input v-model="weekDialogObj.form.reason" type="textarea" :rows="6" :style="{ width: '600px'}"></el-input>
             </el-form-item>
           </el-col>
@@ -970,6 +966,17 @@ import echarts from 'echarts'
 
 export default {
   data() {
+    const requiredTrue = { 
+      required: true,
+      message: '此为必填项',
+      trigger: 'change'
+    }
+    const requiredDate = {
+      type: 'date',
+      required: true,
+      message: '此为必填项',
+      trigger: 'change'
+    }
     return {
       autoHeightSys: 200,
       autoHeightMeeting: 200,
@@ -985,15 +992,29 @@ export default {
       },
       // 周报 搜索条件
       weekFormSearch: {
-        sysName: '',
-        businessTime: null
+        sysName: '', // 全流程系统名称
+        versionNum: '', // 版本号
+        mainSysSonName: '', // 主系统全流程子系统名称
+        mainVersionNum: '', // 版本号
+        projectName: '', // 项目名称
+        planTime: null, // 生产上线日期
+        crType: '', // 变更类型
+        testType: '', // 联测类别
+        projectStage: '', // 目前项目阶段
+        testRuns: '', // 测试轮次
+        overAllSchedule: '', // 项目整体进度
+        manPowerInput: '', // 人力投入情况
+        versionQuality: '', // 版本质量
+        workload: '', // 工作量情况
+        writter: '', // 测试负责人
+        updateDate: null // 填写日期
       },
       // 周报信息
       weekObj: {
         height: 200,
         list: [],
         checkedList: [],
-        pageIndex: 0,
+        pageIndex: 1,
         pageSize: 20
       },
       list: [],
@@ -1038,6 +1059,25 @@ export default {
           isTechUp: 0, // 是否为技术上线
           isAutoDeploy: 0, // 是否为自动化部署
           isIncludeBusiness: 0 // 是否包含业务操作内容
+        },
+        rules: {
+          sysName: [requiredTrue],
+          sysSonName: [requiredTrue],
+          versionNum: [requiredTrue],
+          mainSysName: [requiredTrue],
+          mainSysSonName: [requiredTrue],
+          mainVersionNum: [requiredTrue],
+          crType: [requiredTrue],
+          testType: [requiredTrue],
+          projectStage: [requiredTrue],
+          testRuns: [requiredTrue],
+          overAllSchedule: [requiredTrue],
+          manPowerInput: [requiredTrue],
+          versionQuality: [requiredTrue],
+          workload: [requiredTrue],
+          performanceTest: [requiredTrue],
+          writter: [requiredTrue],
+          reason: [requiredTrue]
         }
       },
       // 需求条目dialog
@@ -1313,34 +1353,38 @@ export default {
           this.weekDialogObj.form = response.data
         })
       } else if (type === 'submit') {
-        if (this.weekDialogObj.title === '新增') {
-          const params = this.weekDialogObj.form
-          weekApi.addWeekReport(params).then(response => {
-            this.$notify({
-              title: '成功',
-              message: '新增成功',
-              type: 'success'
-            })
-            if (this.activeName ==='component-two') {
-              this.initWeek()
-              this.weekDialogObj.visible = false
+        this.$refs['weekForm'].validate((valid) => {
+          if (valid) {
+            if (this.weekDialogObj.title === '新增') {
+              const params = this.weekDialogObj.form
+              weekApi.addWeekReport(params).then(response => {
+                this.$notify({
+                  title: '成功',
+                  message: '新增成功',
+                  type: 'success'
+                })
+                if (this.activeName ==='component-two') {
+                  this.initWeek()
+                  this.weekDialogObj.visible = false
+                }
+              })
+            } else if (this.weekDialogObj.title === '修改') {
+              const params = this.weekDialogObj.form
+              params.uuid = this.weekDialogObj.uuid
+              weekApi.updateWeekReport(params).then(response => {
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success'
+                })
+                if (this.activeName ==='component-two') {
+                  this.initWeek()
+                  this.weekDialogObj.visible = false
+                }
+              })
             }
-          })
-        } else if (this.weekDialogObj.title === '修改') {
-          const params = this.weekDialogObj.form
-          params.uuid = this.weekDialogObj.uuid
-          weekApi.updateWeekReport(params).then(response => {
-            this.$notify({
-              title: '成功',
-              message: '修改成功',
-              type: 'success'
-            })
-            if (this.activeName ==='component-two') {
-              this.initWeek()
-              this.weekDialogObj.visible = false
-            }
-          })
-        }
+          }
+        })
       } else if (type === 'deleteMultiple') {
         console.log(this.weekObj.checkedList)
         this.$confirm('此操作将永久删除, 是否继续?', '提示', {
@@ -1727,42 +1771,37 @@ export default {
     },
     // 周报列表 当前页选择
     handleCurrentChangeWeek(val) {
-      this.weekObj.pageIndex = val - 1
+      this.weekObj.pageIndex = val
       this.onSearchWeek()
     },
-    // 查询周报列表
+    // 周报列表 查询
     onSearchWeek() {
       const params = {
         pageIndex: this.weekObj.pageIndex,
         pageSize: this.weekObj.pageSize,
-        sysName: this.weekFormSearch.sysName,
-        businessTimeStart: this.weekFormSearch.businessTime === null ? this.weekFormSearch.businessTime : this.weekFormSearch.businessTime[0],
-        businessTimeEnd: this.weekFormSearch.businessTime === null ? this.weekFormSearch.businessTime : this.weekFormSearch.businessTime[1]
+        planTimeStart: this.weekFormSearch.planTime === null ? this.weekFormSearch.planTime : this.weekFormSearch.planTime[0],
+        planTimeEnd: this.weekFormSearch.planTime === null ? this.weekFormSearch.planTime : this.weekFormSearch.planTime[1],
+        updateDateStart: this.weekFormSearch.updateDate === null ? this.weekFormSearch.updateDate : this.weekFormSearch.updateDate[0],
+        updateDateEnd: this.weekFormSearch.updateDate === null ? this.weekFormSearch.updateDate : this.weekFormSearch.updateDate[1]
       }
+      Object.assign(params, this.weekFormSearch)
+      delete params.planTime
+      delete params.updateDate
       weekApi.getWeekReportList(params).then(response => {
         this.weekObj.list = response.data.list
         this.weekObj.total = response.data.total
-        // console.log(response.data.items)
-        // this.weekReportOriginList = response.data.items
-        // // 设置能展开的行
-        // this.weekReportOriginList.forEach((e, i) => {
-        //   if (e.status !== '主系统') {
-        //     if (this.weekReportOriginList[i - 1].status === '主系统') {
-        //       this.weekReportOriginList[i - 1].isExpand = true
-        //     }
-        //   }
-        // })
-        // // this.weekReportList = response.data.items
-        // this.weekReportList = this.weekReportOriginList.filter(e => {
-        //   return e.status === '主系统'
-        // })
         this.listLoading = false
       })
     },
-    // 周报列表初始化
+    // 周报列表 初始化
     initWeek() {
-      this.weekObj.pageIndex = 0
+      this.weekObj.pageIndex = 1
       this.onSearchWeek()
+    },
+    // 周报列表 重置
+    resetWeek(formName) {
+      this.$refs[formName].resetFields()
+      this.initWeek()
     },
     fetchData() {
       this.listLoading = true
