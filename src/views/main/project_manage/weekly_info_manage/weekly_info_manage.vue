@@ -534,12 +534,12 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="项目名称">
+            <el-form-item label="项目名称" prop="projectName">
               <el-input v-model="weekDialogObj.form.projectName" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="生产上线日期">
+            <el-form-item label="生产上线日期" prop="planTime">
               <el-date-picker v-model="weekDialogObj.form.planTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
@@ -650,30 +650,30 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="功能点数量">
+            <el-form-item label="功能点数量" prop="funcNum">
               <el-input v-model="weekDialogObj.form.funcNum" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="代码量">
+            <el-form-item label="代码量" prop="codeNum">
               <el-input v-model="weekDialogObj.form.codeNum" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="业务上线时间">
+            <el-form-item label="业务上线时间" prop="businessTime">
               <el-date-picker v-model="weekDialogObj.form.businessTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="变更操作耗时">
+            <el-form-item label="变更操作耗时" prop="changeOperationTime">
               <el-input v-model="weekDialogObj.form.changeOperationTime" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="填写日期">
+            <el-form-item label="填写日期" prop="updateDate">
               <el-date-picker v-model="weekDialogObj.form.updateDate" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
@@ -966,17 +966,17 @@ import echarts from 'echarts'
 
 export default {
   data() {
-    const requiredTrue = { 
+    const requiredTrue = {
       required: true,
       message: '此为必填项',
       trigger: 'change'
     }
-    const requiredDate = {
-      type: 'date',
-      required: true,
-      message: '此为必填项',
-      trigger: 'change'
-    }
+    // const requiredDate = {
+    //   type: 'date',
+    //   required: true,
+    //   message: '此为必填项',
+    //   trigger: 'change'
+    // }
     return {
       autoHeightSys: 200,
       autoHeightMeeting: 200,
@@ -1344,6 +1344,18 @@ export default {
         this.weekDialogObj.visible = true
         this.weekDialogObj.title = '新增'
         this.weekDialogObj.uuid = null
+        this.$nextTick(() => {
+          this.$refs['weekForm'].resetFields()
+          Object.assign(this.weekDialogObj.form, {
+            isMainSystem: 0, // 是否为核心系统
+            isInfluenceMem: 0, // 是否影响会员（客户端和API更新）
+            isInfluenceOuter: 0, // 是否影响外部关联机构（CDC、清算所、金交所、总行、货币经济公司、第三方平台）
+            isNewOrHead: 0, // 是否为新业务上线或总行相关业务
+            isTechUp: 0, // 是否为技术上线
+            isAutoDeploy: 0, // 是否为自动化部署
+            isIncludeBusiness: 0 // 是否包含业务操作内容
+          })
+        })
       } else if (type === 'edit') {
         this.weekDialogObj.visible = true
         this.weekDialogObj.title = '修改'
@@ -1363,7 +1375,7 @@ export default {
                   message: '新增成功',
                   type: 'success'
                 })
-                if (this.activeName ==='component-two') {
+                if (this.activeName === 'component-two') {
                   this.initWeek()
                   this.weekDialogObj.visible = false
                 }
@@ -1377,7 +1389,7 @@ export default {
                   message: '修改成功',
                   type: 'success'
                 })
-                if (this.activeName ==='component-two') {
+                if (this.activeName === 'component-two') {
                   this.initWeek()
                   this.weekDialogObj.visible = false
                 }
@@ -1406,7 +1418,7 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });         
+          })
         })
       } else if (type === 'deleteSingle') {
         this.$confirm('此操作将永久删除, 是否继续?', '提示', {
@@ -1428,7 +1440,7 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });         
+          })
         })
       } else if (type === 'detail') {
         this.requirementDialogObj.visible = true
