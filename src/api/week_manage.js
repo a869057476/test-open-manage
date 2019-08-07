@@ -47,11 +47,34 @@ function addMeetingRecord(data) {
   })
 }
 
+function delMeetingRecord(data) {
+  return request({
+    url: '/pf/report/meetingRecord',
+    method: 'delete',
+    data
+  })
+}
+
 function updateMeetingRecord(data) {
   return request({
     url: '/pf/report/meetingRecord',
     method: 'put',
     data
+  })
+}
+
+function getMeetingRecordList(data) {
+  return request({
+    url: '/pf/report/meetingRecord/list',
+    method: 'post',
+    data
+  })
+}
+
+export function getMeetingRecord(uuid) {
+  return request({
+    url: `/pf/report/meetingRecord/${uuid}`,
+    method: 'get'
   })
 }
 
@@ -62,5 +85,8 @@ export default {
   getWeekReport,
   updateWeekReport,
   addMeetingRecord,
-  updateMeetingRecord
+  delMeetingRecord,
+  updateMeetingRecord,
+  getMeetingRecordList,
+  getMeetingRecord
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateWeek('add')">新增</el-button>
-    <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperatMeeting('add')">新增</el-button>
+    <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperateMeeting('add')">新增</el-button>
     <el-tabs v-model="activeName" type="card" @tab-click="onToggleTab">
       <el-tab-pane label="联测主系统列表" name="component-one" :style="{ height: tabpaneHeight + 'px', overflow: 'auto' }">
         <el-form ref="component-one" :inline="true" :model="formSearch">
@@ -390,30 +390,35 @@
           <el-form-item label="会议主题">
             <el-input v-model="meetingFormSearch.theme" placeholder="请输入" clearable></el-input>
           </el-form-item>
+          <el-form-item label="会议时间" prop="updateDate">
+            <el-date-picker v-model="meetingFormSearch.meetingDate" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="onSearch">查询</el-button>
+            <el-button type="primary" size="small" @click="initMeeting">查询</el-button>
+            <el-button type="danger" size="small" @click="onOperateMeeting('deleteMultiple')">删除</el-button>
             <!-- <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button> -->
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeightMeeting">
+        <el-table v-loading="listLoading" :data="meetingObj.list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="meetingObj.height" @selection-change="handleSelectionChangeMeeting">
           <el-table-column type="selection" width="55">
           </el-table-column>
-          <el-table-column label="会议主题" min-width="180" align="center">
+          <el-table-column label="主题" min-width="180" align="center">
             <template slot-scope="scope">
               {{ scope.row.theme }}
             </template>
           </el-table-column>
-          <el-table-column label="会议时间" min-width="120" align="center">
+          <el-table-column label="时间" min-width="120" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.meetingDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="会议地点" min-width="120" align="center">
+          <el-table-column label="地点" min-width="120" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.place }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="会议主持人" min-width="120" align="center">
+          <el-table-column label="主持人" min-width="120" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.host }}</span>
             </template>
@@ -423,21 +428,22 @@
               <span>{{ scope.row.recorder }}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="80">
+          <el-table-column fixed="right" label="操作" width="160">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="onOperatMeeting('edit', scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateMeeting('edit', scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" plain @click="onOperateMeeting('deleteSingle', scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <el-pagination
           class="mt20"
-          :current-page="currentPage"
+          :current-page="meetingObj.pageIndex"
           :page-sizes="[10, 20, 50, 100]"
-          :page-size="100"
+          :page-size="meetingObj.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChangeWeek"
-          @current-change="handleCurrentChangeWeek"
+          :total="meetingObj.total"
+          @size-change="handleSizeChangeMeeting"
+          @current-change="handleCurrentChangeMeeting"
         >
         </el-pagination>
       </el-tab-pane>
@@ -757,7 +763,7 @@
             <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">时间 Time</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
               <el-form-item label="" prop="meetingDate">
-                <el-date-picker v-model="meetingDialogObj.form.meetingDate" type="datetime" placeholder="请选择"></el-date-picker>
+                <el-date-picker v-model="meetingDialogObj.form.meetingDate" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="请选择"></el-date-picker>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col stable" :style="{ width: '150px' }">地点 Place</div>
@@ -848,22 +854,22 @@
           <div v-for="(item, index) in meetingDialogObj.form.remainingProblem" :key="item.index" class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
             <div class="meeting-record-row-col form-padding">
-              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="">
                 <el-input v-model="item.project" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding">
-              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="">
                 <el-input v-model="item.exhibitor" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding width2">
-              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'remainingProblem.' + index + '.work'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding width2">
-              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="">
                 <el-input v-model="item.leader" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -955,7 +961,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="meetingDialogObj.visible = false">取消</el-button>
-        <el-button type="primary" @click="onOperatMeeting('submit')">确定</el-button>
+        <el-button type="primary" @click="onOperateMeeting('submit')">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -982,7 +988,6 @@ export default {
     // }
     return {
       autoHeightSys: 200,
-      autoHeightMeeting: 200,
       autoHeightRequirement: 200,
       tabpaneHeight: 200,
       currentPage: 1,
@@ -1014,10 +1019,19 @@ export default {
       },
       // 会议记录 搜索条件
       meetingFormSearch: {
-        theme: '' // 会议主题
+        theme: '', // 会议主题
+        meetingDate: null // 会议时间
       },
       // 周报 信息
       weekObj: {
+        height: 200,
+        list: [],
+        checkedList: [],
+        pageIndex: 1,
+        pageSize: 20
+      },
+      // 会议记录 信息
+      meetingObj: {
         height: 200,
         list: [],
         checkedList: [],
@@ -1245,7 +1259,7 @@ export default {
         this.weekDialogObj.height = this.$root.$el.clientHeight - 280
         this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
         this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
-        this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
+        this.meetingObj.height = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
       }
     })
   },
@@ -1268,10 +1282,12 @@ export default {
       console.log(tab, event)
       if (tab.name === 'component-two') {
         this.onSearchWeek()
+      } else if (tab.name === 'component-three') {
+        this.onSearchMeeting()
       }
       this.$nextTick(() => {
         this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
-        this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
+        this.meetingObj.height = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
       })
     },
     // 展开/收起搜索条件
@@ -1338,9 +1354,13 @@ export default {
     handleSelectionChangeWeek(val) {
       this.weekObj.checkedList = val
     },
+    // 会议记录 设置列表选中的数据
+    handleSelectionChangeMeeting(val) {
+      this.meetingObj.checkedList = val
+    },
     /** 系统/周报 操作
      * @method onOperateWeek
-     * @param {String} type add: 新增;edit: 修改;deleteSingle: 单个删除;deleteMultiple: 批量删除;submit: 提交;detail: 查看;tree: 系统关系树状图
+     * @param {String} type add: 新增;edit: 修改;submit: 提交;deleteSingle: 单个删除;deleteMultiple: 批量删除;detail: 查看;tree: 系统关系树状图
      * @param {Object} row 当前行数据
      * @return 无
      */
@@ -1672,37 +1692,62 @@ export default {
       }
     },
     /** 会议记录 操作
-     * @method onOperatMeeting
-     * @param {String} type add:新增;edit:修改;submit: 提交
+     * @method onOperateMeeting
+     * @param {String} type add: 新增;edit: 修改;submit: 提交;deleteSingle: 单个删除;deleteMultiple: 批量删除
      * @param {Object} row 当前行数据
      * @return 无
      */
-    onOperatMeeting(type, row) {
-      console.log(type)
+    onOperateMeeting(type, row) {
       if (type === 'add') {
         this.meetingDialogObj.visible = true
         this.meetingDialogObj.title = '新增'
+        this.weekDialogObj.uuid = null
+        this.$nextTick(() => {
+          this.$refs['meetingForm'].resetFields()
+          this.meetingDialogObj.form.departmentStaff = [
+            {
+              department: '中汇公司',
+              value: ''
+            }
+          ]
+          this.meetingDialogObj.form.meetResult = [
+            {
+              value: ''
+            }
+          ]
+          this.meetingDialogObj.form.remainingProblem = []
+          this.meetingDialogObj.form.meetingWeekReportList = []
+        })
       } else if (type === 'edit') {
         this.meetingDialogObj.visible = true
         this.meetingDialogObj.title = '修改'
+        this.meetingDialogObj.uuid = row.uuid
+        const params = row.uuid
+        weekApi.getMeetingRecord(params).then(response => {
+          this.meetingDialogObj.form = response.data
+          this.meetingDialogObj.form.departmentStaff = JSON.parse(response.data.departmentStaff)
+          this.meetingDialogObj.form.meetResult = JSON.parse(response.data.meetResult)
+          this.meetingDialogObj.form.remainingProblem = JSON.parse(response.data.remainingProblem)
+        })
       } else if (type === 'submit') {
         this.$refs['meetingForm'].validate((valid) => {
           if (valid) {
-            console.log('submit!')
             console.log(this.meetingDialogObj)
+            const params = JSON.parse(JSON.stringify(this.meetingDialogObj.form))
+            params.departmentStaff = JSON.stringify(params.departmentStaff)
+            params.meetResult = JSON.stringify(params.meetResult)
+            params.remainingProblem = JSON.stringify(params.remainingProblem)
             if (this.meetingDialogObj.title === '新增') {
-              const params = this.meetingDialogObj.form
               weekApi.addMeetingRecord(params).then(response => {
                 this.$notify({
                   title: '成功',
                   message: '新增成功',
                   type: 'success'
                 })
-                this.initWeek()
+                this.initMeeting()
                 this.meetingDialogObj.visible = false
               })
             } else if (this.meetingDialogObj.title === '修改') {
-              const params = this.meetingDialogObj.form
               params.uuid = this.meetingDialogObj.uuid
               weekApi.updateMeetingRecord(params).then(response => {
                 this.$notify({
@@ -1710,14 +1755,56 @@ export default {
                   message: '修改成功',
                   type: 'success'
                 })
-                this.initWeek()
+                this.initMeeting()
                 this.meetingDialogObj.visible = false
               })
             }
-          } else {
-            console.log('error submit!!')
-            return false
           }
+        })
+      } else if (type === 'deleteMultiple') {
+        console.log(this.meetingObj.checkedList)
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = {
+            idList: this.meetingObj.checkedList.map(e => { return e.uuid })
+          }
+          weekApi.delMeetingRecord(params).then(response => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initMeeting()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      } else if (type === 'deleteSingle') {
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = {
+            idList: [row.uuid]
+          }
+          weekApi.delMeetingRecord(params).then(response => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initMeeting()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
         })
       }
     },
@@ -1802,14 +1889,6 @@ export default {
         }
       })
     },
-    // 每页条数选择
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    // 当前页选择
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-    },
     // 查询
     onSearch() {
       console.log('submit!')
@@ -1854,6 +1933,36 @@ export default {
       this.$refs[formName].resetFields()
       this.initWeek()
     },
+    // 会议记录列表 每页条数选择
+    handleSizeChangeMeeting(val) {
+      this.meetingObj.pageSize = val
+      this.initMeeting()
+    },
+    // 会议记录列表 当前页选择
+    handleCurrentChangeMeeting(val) {
+      this.meetingObj.pageIndex = val
+      this.onSearchMeeting()
+    },
+    // 会议记录列表 查询
+    onSearchMeeting() {
+      const params = {
+        pageIndex: this.meetingObj.pageIndex,
+        pageSize: this.meetingObj.pageSize,
+        theme: this.meetingFormSearch.theme,
+        meetingDateStart: this.meetingFormSearch.meetingDate === null ? this.meetingFormSearch.meetingDate : this.meetingFormSearch.meetingDate[0],
+        meetingDateEnd: this.meetingFormSearch.meetingDate === null ? this.meetingFormSearch.meetingDate : this.meetingFormSearch.meetingDate[1]
+      }
+      weekApi.getMeetingRecordList(params).then(response => {
+        this.meetingObj.list = response.data.list
+        this.meetingObj.total = response.data.total
+        this.listLoading = false
+      })
+    },
+    // 会议记录列表 初始化
+    initMeeting() {
+      this.meetingObj.pageIndex = 1
+      this.onSearchMeeting()
+    },
     fetchData() {
       this.listLoading = true
       // const params = {
@@ -1884,38 +1993,6 @@ export default {
         this.list = response.data.items
         this.listLoading = false
       })
-      this.meetingDialogObj.form.tableList = [
-        {
-          index: 1,
-          date: '2019-07-11',
-          mainSys: 'main1',
-          projectName: 'pri1',
-          type: '正常',
-          num: 0,
-          progress: '',
-          opinion: '已完成模拟测试，按计划上线'
-        },
-        {
-          index: 2,
-          date: '2019-07-15',
-          mainSys: 'main2',
-          projectName: 'pri2',
-          type: '快捷',
-          num: 1,
-          progress: '10月17日完成模拟测试',
-          opinion: '按快速变更流程，测完则上线'
-        },
-        {
-          index: 3,
-          date: '2019-08-22',
-          mainSys: 'main3',
-          projectName: 'pri3',
-          type: '正常',
-          num: 0,
-          progress: '10月05日完成模拟测试',
-          opinion: '若周三测试完成，按计划上线'
-        }
-      ]
     }
   }
 }
