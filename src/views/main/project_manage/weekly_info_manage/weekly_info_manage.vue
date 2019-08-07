@@ -93,7 +93,7 @@
       <el-tab-pane label="测试周报信息列表" name="component-two">
         <el-collapse value="1" @change="onChangeCollapse">
           <el-collapse-item title="展开/收起搜索条件" name="1">
-            <el-form ref="component-two" :inline="true" :model="weekFormSearch" label-width="100px">
+            <el-form ref="weekFormSearch" :inline="true" :model="weekFormSearch" label-width="100px">
               <el-form-item label="系统名称" prop="sysName">
                 <el-select v-model="weekFormSearch.sysName" placeholder="请选择" clearable>
                   <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
@@ -206,7 +206,7 @@
               </el-form-item>
               <div class="mb20">
                 <el-button type="primary" size="small" @click="initWeek">查询</el-button>
-                <el-button type="success" size="small" @click="resetWeek('component-two')">重置</el-button>
+                <el-button type="success" size="small" @click="resetWeek('weekFormSearch')">重置</el-button>
                 <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
                 <el-button type="danger" size="small" @click="onOperateWeek('deleteMultiple')">删除</el-button>
               </div>
@@ -386,9 +386,9 @@
         </el-pagination>
       </el-tab-pane>
       <el-tab-pane label="会议记录列表" name="component-three">
-        <el-form ref="component-three" :inline="true" :model="formSearch">
-          <el-form-item label="关键字">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+        <el-form ref="meetingFormSearch" :inline="true" :model="meetingFormSearch">
+          <el-form-item label="会议主题">
+            <el-input v-model="meetingFormSearch.theme" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="onSearch">查询</el-button>
@@ -400,27 +400,27 @@
           </el-table-column>
           <el-table-column label="会议主题" min-width="180" align="center">
             <template slot-scope="scope">
-              {{ scope.row.title }}
+              {{ scope.row.theme }}
             </template>
           </el-table-column>
           <el-table-column label="会议时间" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
+              <span>{{ scope.row.meetingDate }}</span>
             </template>
           </el-table-column>
           <el-table-column label="会议地点" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
+              <span>{{ scope.row.place }}</span>
             </template>
           </el-table-column>
           <el-table-column label="会议主持人" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
+              <span>{{ scope.row.host }}</span>
             </template>
           </el-table-column>
           <el-table-column label="记录人" min-width="120" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
+              <span>{{ scope.row.recorder }}</span>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="80">
@@ -446,94 +446,6 @@
       <el-form ref="weekForm" :model="weekDialogObj.form" :rules="weekDialogObj.rules" :style="{ height: weekDialogObj.height + 'px', overflow: 'auto' }" :inline="true" label-width="100px" label-position="top">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="全流程系统名称" prop="sysName">
-              <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" clearable>
-                <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
-                <el-option label="本币交易系统" value="本币交易系统"></el-option>
-                <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
-                <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
-                <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
-                <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="全流程子系统名称" prop="sysSonName">
-              <el-select v-model="weekDialogObj.form.sysSonName" placeholder="请选择" clearable>
-                <el-option label="null" value="null"></el-option>
-                <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
-                <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
-                <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
-                <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
-                <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
-                <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
-                <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="版本号" prop="versionNum">
-              <el-dropdown @command="handleCommandWeekMainOperate">
-                <el-input v-model="weekDialogObj.form.versionNum" placeholder="请输入内容">
-                  <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
-                </el-input>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="null">null</el-dropdown-item>
-                  <el-dropdown-item command="1.0.0">1.0.0</el-dropdown-item>
-                  <el-dropdown-item command="1.1.1">1.1.1</el-dropdown-item>
-                  <el-dropdown-item command="1.2.1">1.2.1</el-dropdown-item>
-                  <el-dropdown-item command="2.1.3">2.1.3</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="主系统全流程名称" prop="mainSysName">
-              <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" clearable>
-                <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
-                <el-option label="本币交易系统" value="本币交易系统"></el-option>
-                <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
-                <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
-                <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
-                <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="主系统全流程子系统名称" prop="mainSysSonName">
-              <el-select v-model="weekDialogObj.form.mainSysSonName" placeholder="请选择" clearable>
-                <el-option label="null" value="null"></el-option>
-                <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
-                <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
-                <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
-                <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
-                <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
-                <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
-                <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="版本号" prop="mainVersionNum">
-              <el-dropdown @command="handleCommandWeekSonOperate">
-                <el-input v-model="weekDialogObj.form.mainVersionNum" placeholder="请输入内容">
-                  <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
-                </el-input>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="null">null</el-dropdown-item>
-                  <el-dropdown-item command="1.0.0">1.0.0</el-dropdown-item>
-                  <el-dropdown-item command="1.1.1">1.1.1</el-dropdown-item>
-                  <el-dropdown-item command="1.2.1">1.2.1</el-dropdown-item>
-                  <el-dropdown-item command="2.1.3">2.1.3</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
             <el-form-item label="项目名称" prop="projectName">
               <el-input v-model="weekDialogObj.form.projectName" placeholder="请输入" clearable></el-input>
             </el-form-item>
@@ -545,6 +457,98 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-card header="本系统" class="mr20">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="系统名称" prop="sysName">
+                <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" clearable>
+                  <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
+                  <el-option label="本币交易系统" value="本币交易系统"></el-option>
+                  <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
+                  <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
+                  <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
+                  <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="子系统名称" prop="sysSonName">
+                <el-select v-model="weekDialogObj.form.sysSonName" placeholder="请选择" clearable>
+                  <el-option label="null" value="null"></el-option>
+                  <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
+                  <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
+                  <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
+                  <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
+                  <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
+                  <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
+                  <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="版本号" prop="versionNum">
+                <el-dropdown @command="handleCommandWeekMainOperate">
+                  <el-input v-model="weekDialogObj.form.versionNum" placeholder="请输入内容">
+                    <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
+                  </el-input>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="null">null</el-dropdown-item>
+                    <el-dropdown-item command="1.0.0">1.0.0</el-dropdown-item>
+                    <el-dropdown-item command="1.1.1">1.1.1</el-dropdown-item>
+                    <el-dropdown-item command="1.2.1">1.2.1</el-dropdown-item>
+                    <el-dropdown-item command="2.1.3">2.1.3</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-card>
+        <el-card header="主系统" class="mt20 mb20 mr20">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="全流程名称" prop="mainSysName">
+                <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" clearable>
+                  <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
+                  <el-option label="本币交易系统" value="本币交易系统"></el-option>
+                  <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
+                  <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
+                  <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
+                  <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="全流程子系统名称" prop="mainSysSonName">
+                <el-select v-model="weekDialogObj.form.mainSysSonName" placeholder="请选择" clearable>
+                  <el-option label="null" value="null"></el-option>
+                  <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
+                  <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
+                  <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
+                  <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
+                  <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
+                  <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
+                  <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="版本号" prop="mainVersionNum">
+                <el-dropdown @command="handleCommandWeekSonOperate">
+                  <el-input v-model="weekDialogObj.form.mainVersionNum" placeholder="请输入内容">
+                    <template slot="append"><i class="el-icon-arrow-down el-icon--right"></i></template>
+                  </el-input>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="null">null</el-dropdown-item>
+                    <el-dropdown-item command="1.0.0">1.0.0</el-dropdown-item>
+                    <el-dropdown-item command="1.1.1">1.1.1</el-dropdown-item>
+                    <el-dropdown-item command="1.2.1">1.2.1</el-dropdown-item>
+                    <el-dropdown-item command="2.1.3">2.1.3</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-card>
         <el-row>
           <el-col :span="6">
             <el-form-item label="变更类型" prop="crType">
@@ -740,23 +744,23 @@
     </el-dialog>
     <el-dialog :title="meetingDialogObj.title" :visible.sync="meetingDialogObj.visible" :fullscreen="true">
       <div :style="{ height: meetingDialogObj.height + 'px', overflow: 'auto' }">
-        <el-form ref="meetingForm" :model="meetingDialogObj.form" :rules="rules" class="meeting-record">
+        <el-form ref="meetingForm" :model="meetingDialogObj.form" :rules="meetingDialogObj.rules" class="meeting-record">
           <div class="meeting-record-row">
-            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议主题 Subject</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">主题 Subject</div>
             <div class="meeting-record-row-col form-padding form-padding change">
-              <el-form-item label="" prop="subject">
-                <el-input v-model="meetingDialogObj.form.subject" placeholder="请输入" clearable></el-input>
+              <el-form-item label="" prop="theme">
+                <el-input v-model="meetingDialogObj.form.theme" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
           </div>
           <div class="meeting-record-row">
-            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议时间 Date</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">时间 Time</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
-              <el-form-item label="" prop="time">
-                <el-date-picker v-model="meetingDialogObj.form.time" type="datetime" placeholder="请选择"></el-date-picker>
+              <el-form-item label="" prop="meetingDate">
+                <el-date-picker v-model="meetingDialogObj.form.meetingDate" type="datetime" placeholder="请选择"></el-date-picker>
               </el-form-item>
             </div>
-            <div class="meeting-record-row-col stable" :style="{ width: '150px' }">会议地点 Place</div>
+            <div class="meeting-record-row-col stable" :style="{ width: '150px' }">地点 Place</div>
             <div class="meeting-record-row-col form-padding change">
               <el-form-item label="" prop="place">
                 <el-input v-model="meetingDialogObj.form.place" placeholder="请输入" clearable></el-input>
@@ -764,16 +768,16 @@
             </div>
           </div>
           <div class="meeting-record-row">
-            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">会议主持人 Moderator</div>
+            <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">主持人 Moderator</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
-              <el-form-item label="" prop="moderator">
-                <el-input v-model="meetingDialogObj.form.moderator" placeholder="请输入" clearable></el-input>
+              <el-form-item label="" prop="host">
+                <el-input v-model="meetingDialogObj.form.host" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col stable" :style="{ width: '150px' }">记录人 Recorder</div>
             <div class="meeting-record-row-col form-padding change">
-              <el-form-item label="" prop="recoder">
-                <el-input v-model="meetingDialogObj.form.recoder" placeholder="请输入" clearable></el-input>
+              <el-form-item label="" prop="recorder">
+                <el-input v-model="meetingDialogObj.form.recorder" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
           </div>
@@ -789,15 +793,15 @@
             <div class="meeting-record-row-col word-big change">部门人员</div>
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
           </div>
-          <div v-for="(item, index) in meetingDialogObj.form.departmentList" :key="item.department" class="meeting-record-row">
+          <div v-for="(item, index) in meetingDialogObj.form.departmentStaff" :key="item.department" class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '200px' }">
-              <el-form-item label="" :prop="'departmentList.' + index + '.department'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'departmentStaff.' + index + '.department'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.department" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding change">
-              <el-form-item label="" :prop="'departmentList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'departmentStaff.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -816,10 +820,10 @@
             <div class="meeting-record-row-col word-big change">内容</div>
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
           </div>
-          <div v-for="(item, index) in meetingDialogObj.form.discussList" :key="item.index" class="meeting-record-row">
+          <div v-for="(item, index) in meetingDialogObj.form.meetResult" :key="item.index" class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
             <div class="meeting-record-row-col change form-padding">
-              <el-form-item label="" :prop="'discussList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'meetResult.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -841,25 +845,25 @@
             <div class="meeting-record-row-col word-big width2">负责人</div>
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">操作</div>
           </div>
-          <div v-for="(item, index) in meetingDialogObj.form.otherList" :key="item.index" class="meeting-record-row">
+          <div v-for="(item, index) in meetingDialogObj.form.remainingProblem" :key="item.index" class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
             <div class="meeting-record-row-col form-padding">
-              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.project" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding">
-              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.exhibitor" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding width2">
-              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding width2">
-              <el-form-item label="" :prop="'otherList.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <el-form-item label="" :prop="'remainingProblem.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
                 <el-input v-model="item.leader" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -868,19 +872,19 @@
             </div>
           </div>
         </el-form>
-        <el-form class="mt20" :inline="true" :model="formSearch">
+        <el-form class="mt20" :inline="true" :model="meetingDialogObj.wwkSearch">
           <el-form-item label="系统名称">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+            <el-input v-model="meetingDialogObj.wwkSearch.sysName" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item label="上线时间">
-            <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+            <el-date-picker v-model="meetingDialogObj.wwkSearch.planTime" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="onSearch">查询</el-button>
+            <el-button type="primary" size="small" @click="onSearchWeek">查询</el-button>
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="weekReportOriginList" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500">
+        <el-table v-loading="listLoading" :data="meetingDialogObj.form.meetingWeekReportList" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500">
           <el-table-column label="上线日期" min-width="120" align="center">
             <template slot-scope="scope">
               {{ scope.$index }}
@@ -951,8 +955,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="meetingDialogObj.visible = false">取消</el-button>
-        <!-- <el-button type="success" @click="meetingDialogObj.visible = false">重置</el-button> -->
-        <el-button type="primary" @click="submitForm('meetingForm')">确定</el-button>
+        <el-button type="primary" @click="onOperatMeeting('submit')">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -1009,7 +1012,11 @@ export default {
         writter: '', // 测试负责人
         updateDate: null // 填写日期
       },
-      // 周报信息
+      // 会议记录 搜索条件
+      meetingFormSearch: {
+        theme: '' // 会议主题
+      },
+      // 周报 信息
       weekObj: {
         height: 200,
         list: [],
@@ -1021,7 +1028,7 @@ export default {
       weekReportList: [],
       weekReportOriginList: [],
       listLoading: true,
-      // 联测主系统/周报dialog
+      // 联测主系统/周报 dialog
       weekDialogObj: {
         title: '新增',
         visible: false,
@@ -1080,46 +1087,56 @@ export default {
           reason: [requiredTrue]
         }
       },
-      // 需求条目dialog
+      // 需求条目 dialog
       requirementDialogObj: {
         visible: false,
         height: 200,
         list: []
       },
-      // 树状图dialog
+      // 树状图 dialog
       treeDialogObj: {
         visible: false
       },
-      // 会议记录dialog
+      // 会议记录 dialog
       meetingDialogObj: {
         title: '新增',
         visible: false,
         height: 200,
+        wwkSearch: {
+          sysName: '',
+          planTime: ''
+        },
         form: {
-          subject: '',
-          time: '',
-          place: '',
-          moderator: '',
-          recorder: '',
-          departmentList: [
+          theme: '', // 会议主题
+          meetingDate: '', // 会议时间
+          place: '', // 会议地点
+          host: '', // 会议主持人
+          recorder: '', // 记录人
+          // 参与部门与人员
+          departmentStaff: [
             {
               department: '中汇公司',
               value: ''
             }
           ],
-          discussList: [
+          // 会议讨论结果
+          meetResult: [
             {
               value: ''
             }
           ],
-          otherList: [],
-          tableList: []
+          // 会议遗留问题或工作
+          remainingProblem: [],
+          // 周报列表
+          meetingWeekReportList: []
+        },
+        rules: {
+          theme: [requiredTrue],
+          meetingDate: [requiredTrue],
+          place: [requiredTrue],
+          host: [requiredTrue],
+          recorder: [requiredTrue]
         }
-      },
-      rules: {
-        subject: [
-          { required: true, message: '此为必填项', trigger: 'blur' }
-        ]
       },
       pickerOptions: {
         shortcuts: [
@@ -1227,8 +1244,8 @@ export default {
         this.autoHeightRequirement = this.$root.$el.clientHeight - 380
         this.weekDialogObj.height = this.$root.$el.clientHeight - 280
         this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
-        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
-        this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['component-three'].$el.clientHeight - 160
+        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
+        this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
       }
     })
   },
@@ -1253,8 +1270,8 @@ export default {
         this.onSearchWeek()
       }
       this.$nextTick(() => {
-        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
-        this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['component-three'].$el.clientHeight - 160
+        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
+        this.autoHeightMeeting = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
       })
     },
     // 展开/收起搜索条件
@@ -1262,21 +1279,9 @@ export default {
       console.log(name)
       this.$nextTick(() => {
         if (name.length) {
-          this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['component-two'].$el.clientHeight - 240
+          this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
         } else {
           this.weekObj.height = this.$el.parentNode.clientHeight - 240
-        }
-      })
-    },
-    // 新增会议记录
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          console.log('submit!')
-          console.log(this.weekReportList)
-        } else {
-          console.log('error submit!!')
-          return false
         }
       })
     },
@@ -1288,12 +1293,12 @@ export default {
      */
     onDepartmentOperate(type, index) {
       if (type === 'add') {
-        this.meetingDialogObj.form.departmentList.push({
-          key: '',
+        this.meetingDialogObj.form.departmentStaff.push({
+          department: '',
           value: ''
         })
       } else if (type === 'delete') {
-        this.meetingDialogObj.form.departmentList.splice(index, 1)
+        this.meetingDialogObj.form.departmentStaff.splice(index, 1)
       }
     },
     /** 会议记录 会议讨论结果相关操作
@@ -1304,11 +1309,11 @@ export default {
      */
     onDiscussOperate(type, index) {
       if (type === 'add') {
-        this.meetingDialogObj.form.discussList.push({
+        this.meetingDialogObj.form.meetResult.push({
           value: ''
         })
       } else if (type === 'delete') {
-        this.meetingDialogObj.form.discussList.splice(index, 1)
+        this.meetingDialogObj.form.meetResult.splice(index, 1)
       }
     },
     /** 会议记录 会议遗留问题或工作相关操作
@@ -1319,14 +1324,14 @@ export default {
      */
     onOtherOperate(type, index) {
       if (type === 'add') {
-        this.meetingDialogObj.form.otherList.push({
+        this.meetingDialogObj.form.remainingProblem.push({
           project: '',
           exhibitor: '',
           work: '',
           leader: ''
         })
       } else if (type === 'delete') {
-        this.meetingDialogObj.form.otherList.splice(index, 1)
+        this.meetingDialogObj.form.remainingProblem.splice(index, 1)
       }
     },
     // 周报 设置列表选中的数据
@@ -1668,7 +1673,7 @@ export default {
     },
     /** 会议记录 操作
      * @method onOperatMeeting
-     * @param {String} type add:新增;edit:修改
+     * @param {String} type add:新增;edit:修改;submit: 提交
      * @param {Object} row 当前行数据
      * @return 无
      */
@@ -1680,6 +1685,40 @@ export default {
       } else if (type === 'edit') {
         this.meetingDialogObj.visible = true
         this.meetingDialogObj.title = '修改'
+      } else if (type === 'submit') {
+        this.$refs['meetingForm'].validate((valid) => {
+          if (valid) {
+            console.log('submit!')
+            console.log(this.meetingDialogObj)
+            if (this.meetingDialogObj.title === '新增') {
+              const params = this.meetingDialogObj.form
+              weekApi.addMeetingRecord(params).then(response => {
+                this.$notify({
+                  title: '成功',
+                  message: '新增成功',
+                  type: 'success'
+                })
+                this.initWeek()
+                this.meetingDialogObj.visible = false
+              })
+            } else if (this.meetingDialogObj.title === '修改') {
+              const params = this.meetingDialogObj.form
+              params.uuid = this.meetingDialogObj.uuid
+              weekApi.updateMeetingRecord(params).then(response => {
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success'
+                })
+                this.initWeek()
+                this.meetingDialogObj.visible = false
+              })
+            }
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       }
     },
     // 设置table行的class

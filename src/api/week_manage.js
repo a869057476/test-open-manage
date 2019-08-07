@@ -39,10 +39,28 @@ function updateWeekReport(data) {
   })
 }
 
+function addMeetingRecord(data) {
+  return request({
+    url: '/pf/report/meetingRecord',
+    method: 'post',
+    data
+  })
+}
+
+function updateMeetingRecord(data) {
+  return request({
+    url: '/pf/report/meetingRecord',
+    method: 'put',
+    data
+  })
+}
+
 export default {
   getWeekReportList,
   addWeekReport,
   delWeekReport,
   getWeekReport,
-  updateWeekReport
+  updateWeekReport,
+  addMeetingRecord,
+  updateMeetingRecord
 }
