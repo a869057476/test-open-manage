@@ -391,7 +391,7 @@
             <el-input v-model="meetingFormSearch.theme" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item label="会议时间" prop="updateDate">
-            <el-date-picker v-model="meetingFormSearch.meetingDate" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+            <el-date-picker v-model="meetingFormSearch.meetingDate" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
           <el-form-item>
@@ -467,27 +467,15 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="系统名称" prop="sysName">
-                <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" clearable>
-                  <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
-                  <el-option label="本币交易系统" value="本币交易系统"></el-option>
-                  <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
-                  <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
-                  <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
-                  <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
+                <el-select v-model="weekDialogObj.form.ownMainSys" value-key="itemSystemId" placeholder="请选择" @change="onChangeOwnMainSys">
+                  <el-option v-for="item in mainSysList" :key="item.itemSystemId" :label="item.itemAppName" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="子系统名称" prop="sysSonName">
                 <el-select v-model="weekDialogObj.form.sysSonName" placeholder="请选择" clearable>
-                  <el-option label="null" value="null"></el-option>
-                  <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
-                  <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
-                  <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
-                  <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
-                  <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
-                  <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
-                  <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
+                  <el-option v-for="item in ownSonSysList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -513,27 +501,15 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="全流程名称" prop="mainSysName">
-                <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" clearable>
-                  <el-option label="SWIFT交易中心接入系统" value="SWIFT交易中心接入系统"></el-option>
-                  <el-option label="本币交易系统" value="本币交易系统"></el-option>
-                  <el-option label="本币交易直通式处理系统" value="本币交易直通式处理系统"></el-option>
-                  <el-option label="本币市场监测系统" value="本币市场监测系统"></el-option>
-                  <el-option label="标准化外汇产品交易系统" value="标准化外汇产品交易系统"></el-option>
-                  <el-option label="新一代本币交易系统" value="新一代本币交易系统"></el-option>
+                <el-select v-model="weekDialogObj.form.mainMainSys" value-key="itemSystemId" placeholder="请选择" @change="onChangeMainMainSys">
+                  <el-option v-for="item in mainSysList" :key="item.itemSystemId" :label="item.itemAppName" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="全流程子系统名称" prop="mainSysSonName">
                 <el-select v-model="weekDialogObj.form.mainSysSonName" placeholder="请选择" clearable>
-                  <el-option label="null" value="null"></el-option>
-                  <el-option label="交易基础服务子系统" value="交易基础服务子系统"></el-option>
-                  <el-option label="货币及债务工具发行子系统" value="货币及债务工具发行子系统"></el-option>
-                  <el-option label="本币订单驱动交易子系统" value="本币订单驱动交易子系统"></el-option>
-                  <el-option label="本币报价驱动交易子系统" value="本币报价驱动交易子系统"></el-option>
-                  <el-option label="本币协商驱动交易子系统" value="本币协商驱动交易子系统"></el-option>
-                  <el-option label="本币用户统一认证子系统" value="本币用户统一认证子系统"></el-option>
-                  <el-option label="终端自检子系统" value="终端自检子系统"></el-option>
+                  <el-option v-for="item in mainSonSysList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -968,7 +944,7 @@
 </template>
 
 <script>
-import { getTestList } from '@/api/local'
+import { getWeekReportList } from '@/api/local'
 import weekApi from '@/api/week_manage'
 import { Calendar } from '@/utils'
 import echarts from 'echarts'
@@ -990,7 +966,6 @@ export default {
       autoHeightSys: 200,
       autoHeightRequirement: 200,
       tabpaneHeight: 200,
-      currentPage: 1,
       activeName: 'component-one',
       formSearch: {
         date: '',
@@ -1041,6 +1016,9 @@ export default {
       list: [],
       weekReportList: [],
       weekReportOriginList: [],
+      mainSysList: [],
+      ownSonSysList: [],
+      mainSonSysList: [],
       listLoading: true,
       // 联测主系统/周报 dialog
       weekDialogObj: {
@@ -1049,10 +1027,20 @@ export default {
         height: 200,
         uuid: null,
         form: {
+          ownMainSys: {
+            sysName: '',
+            itemSystemId: ''
+          },
           sysName: '', // 全流程系统名称
+          itemSystemId: '', // 全流程系统id
           sysSonName: '', // 全流程子系统名称
           versionNum: '', // 版本号
+          mainMainSys: {
+            sysName: '',
+            itemSystemId: ''
+          },
           mainSysName: '', // 主系统全流程名称
+          mainItemSystemId: '', // 主系统全流程id
           mainSysSonName: '', // 主系统全流程子系统名称
           mainVersionNum: '', // 版本号
           projectName: '', // 项目名称
@@ -1277,6 +1265,40 @@ export default {
       console.log(value)
       this.weekDialogObj.form.mainVersionNum = value
     },
+    // 获取主系统列表数据
+    onSearchMainSys() {
+      weekApi.getAllSys().then(response => {
+        this.mainSysList = response.data
+      })
+    },
+    /** 获取子系统列表数据
+     * @method onSearchSonSys
+     * @param {String} type own: 本系统;main: 主系统
+     * @return 无
+     */
+    onSearchSonSys(type, sysName) {
+      weekApi.getSonSysNames(sysName).then(response => {
+        if (type === 'own') {
+          this.ownSonSysList = response.data
+        } else if (type === 'main') {
+          this.mainSonSysList = response.data
+        }
+      })
+    },
+    // 选择本系统的主系统
+    onChangeOwnMainSys(val) {
+      this.onSearchSonSys('own', val.itemAppName)
+      this.weekDialogObj.form.itemSystemId = val.itemSystemId
+      this.weekDialogObj.form.sysName = val.itemAppName
+      this.weekDialogObj.form.sysSonName = ''
+    },
+    // 选择主系统的主系统
+    onChangeMainMainSys(val) {
+      this.onSearchSonSys('main', val.itemAppName)
+      this.weekDialogObj.form.mainItemSystemId = val.itemSystemId
+      this.weekDialogObj.form.mainSysName = val.itemAppName
+      this.weekDialogObj.form.mainSysSonName = ''
+    },
     // 切换tab
     onToggleTab(tab, event) {
       console.log(tab, event)
@@ -1371,6 +1393,18 @@ export default {
         this.weekDialogObj.uuid = null
         this.$nextTick(() => {
           this.$refs['weekForm'].resetFields()
+          this.weekDialogObj.form.sysName = ''
+          this.weekDialogObj.form.itemSystemId = ''
+          this.weekDialogObj.form.ownMainSys = {
+            sysName: '',
+            itemSystemId: ''
+          }
+          this.weekDialogObj.form.mainSysName = ''
+          this.weekDialogObj.form.mainItemSystemId = ''
+          this.weekDialogObj.form.mainMainSys = {
+            sysName: '',
+            itemSystemId: ''
+          }
           Object.assign(this.weekDialogObj.form, {
             isMainSystem: 0, // 是否为核心系统
             isInfluenceMem: 0, // 是否影响会员（客户端和API更新）
@@ -1388,6 +1422,16 @@ export default {
         const params = row.uuid
         weekApi.getWeekReport(params).then(response => {
           this.weekDialogObj.form = response.data
+          this.weekDialogObj.form.ownMainSys = {
+            sysName: response.data.sysName,
+            itemSystemId: response.data.itemSystemId
+          }
+          this.weekDialogObj.form.mainMainSys = {
+            sysName: response.data.mainSysName,
+            itemSystemId: response.data.mainItemSystemId
+          }
+          this.onSearchSonSys('own', response.data.sysName)
+          this.onSearchSonSys('main', response.data.mainSysName)
         })
       } else if (type === 'submit') {
         this.$refs['weekForm'].validate((valid) => {
@@ -1964,33 +2008,23 @@ export default {
       this.onSearchMeeting()
     },
     fetchData() {
+      this.onSearchMainSys()
       this.listLoading = true
-      // const params = {
-      //   pageIndex: 0,
-      //   pageSize: 10,
-      //   sysName: this.weekFormSearch.sysName,
-      //   businessTimeStart: this.weekFormSearch.businessTime[0],
-      //   businessTimeEnd: this.weekFormSearch.businessTime[1]
-      // }
-      // weekApi.getWeekReportList(params).then(response => {
-      //   console.log(response.data.items)
-      //   this.weekReportOriginList = response.data.items
-      //   // 设置能展开的行
-      //   this.weekReportOriginList.forEach((e, i) => {
-      //     if (e.status !== '主系统') {
-      //       if (this.weekReportOriginList[i - 1].status === '主系统') {
-      //         this.weekReportOriginList[i - 1].isExpand = true
-      //       }
-      //     }
-      //   })
-      //   // this.weekReportList = response.data.items
-      //   this.weekReportList = this.weekReportOriginList.filter(e => {
-      //     return e.status === '主系统'
-      //   })
-      //   this.listLoading = false
-      // })
-      getTestList().then(response => {
-        this.list = response.data.items
+      getWeekReportList().then(response => {
+        console.log(response.data.items)
+        this.weekReportOriginList = response.data.items
+        // 设置能展开的行
+        this.weekReportOriginList.forEach((e, i) => {
+          if (e.status !== '主系统') {
+            if (this.weekReportOriginList[i - 1].status === '主系统') {
+              this.weekReportOriginList[i - 1].isExpand = true
+            }
+          }
+        })
+        // this.weekReportList = response.data.items
+        this.weekReportList = this.weekReportOriginList.filter(e => {
+          return e.status === '主系统'
+        })
         this.listLoading = false
       })
     }

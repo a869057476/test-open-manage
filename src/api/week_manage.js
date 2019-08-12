@@ -78,6 +78,20 @@ export function getMeetingRecord(uuid) {
   })
 }
 
+export function getAllSys() {
+  return request({
+    url: `/sys/sysInfo`,
+    method: 'get'
+  })
+}
+
+export function getSonSysNames(sysName) {
+  return request({
+    url: `/sys/sonSysInfo/${sysName}`,
+    method: 'get'
+  })
+}
+
 export default {
   getWeekReportList,
   addWeekReport,
@@ -88,5 +102,7 @@ export default {
   delMeetingRecord,
   updateMeetingRecord,
   getMeetingRecordList,
-  getMeetingRecord
+  getMeetingRecord,
+  getAllSys,
+  getSonSysNames
 }
