@@ -78,9 +78,9 @@ export function getMeetingRecord(uuid) {
   })
 }
 
-export function getAllSys() {
+export function getAllSysName() {
   return request({
-    url: `/sys/sysInfo`,
+    url: `/sys/sysNames`,
     method: 'get'
   })
 }
@@ -103,6 +103,6 @@ export default {
   updateMeetingRecord,
   getMeetingRecordList,
   getMeetingRecord,
-  getAllSys,
+  getAllSysName,
   getSonSysNames
 }

@@ -3,13 +3,13 @@
     <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateWeek('add')">新增</el-button>
     <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperateMeeting('add')">新增</el-button>
     <el-tabs v-model="activeName" type="card" @tab-click="onToggleTab">
-      <el-tab-pane label="联测主系统列表" name="component-one" :style="{ height: tabpaneHeight + 'px', overflow: 'auto' }">
-        <el-form ref="component-one" :inline="true" :model="formSearch">
+      <el-tab-pane label="联测主系统列表" name="component-one">
+        <el-form ref="sysFormSearch" :inline="true" :model="sysFormSearch">
           <el-form-item label="系统名称">
-            <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
+            <el-input v-model="sysFormSearch.sysName" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item label="上线时间">
-            <el-date-picker v-model="formSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+            <el-date-picker v-model="sysFormSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
           <el-form-item>
@@ -17,10 +17,10 @@
             <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
           </el-form-item>
           <el-form-item label="展开">
-            <el-switch v-model="formSearch.expand" @change="onChangeExpandAll"></el-switch>
+            <el-switch v-model="sysFormSearch.expand" @change="onChangeExpandAll"></el-switch>
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="weekReportList" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeightSys">
+        <el-table v-loading="listLoading" :data="sysObj.list" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="sysObj.height">
           <el-table-column label="" min-width="60" align="center">
             <template v-if="scope.row.status === '主系统' && scope.row.isExpand" slot-scope="scope">
               <div v-if="!scope.row.expand" @click="onChangeExpandOne(true, scope.row)">
@@ -311,11 +311,6 @@
               <span>{{ scope.row.updateTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="是否为核心系统" min-width="120" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.isMainSystem }}</span>
-            </template>
-          </el-table-column>
           <el-table-column label="功能点数量" min-width="100" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.funcNum }}</span>
@@ -324,26 +319,6 @@
           <el-table-column label="代码量" min-width="100" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.codeNum }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否影响会员" min-width="120" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.isInfluenceMem }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否影响外部关联机构" min-width="180" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.isInfluenceOuter }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否为新业务上线或总行相关业务" min-width="240" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.isNewOrHead }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否为技术上线" min-width="120" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.isTechUp }}</span>
             </template>
           </el-table-column>
           <el-table-column label="业务上线时间" min-width="120" align="center">
@@ -356,14 +331,60 @@
               <span>{{ scope.row.changeOperationTime }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="是否为核心系统" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>
+                <i v-if="scope.row.isMainSystem === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isMainSystem === 0" class="el-icon-error"></i>
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否影响会员" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>
+                <i v-if="scope.row.isInfluenceMem === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isInfluenceMem === 0" class="el-icon-error"></i>
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否影响外部关联机构" min-width="180" align="center">
+            <template slot-scope="scope">
+              <span>
+                <i v-if="scope.row.isInfluenceOuter === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isInfluenceOuter === 0" class="el-icon-error"></i>
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否为新业务上线或总行相关业务" min-width="240" align="center">
+            <template slot-scope="scope">
+              <span>
+                <i v-if="scope.row.isNewOrHead === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isNewOrHead === 0" class="el-icon-error"></i>
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否为技术上线" min-width="120" align="center">
+            <template slot-scope="scope">
+              <span>
+                <i v-if="scope.row.isTechUp === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isTechUp === 0" class="el-icon-error"></i>
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column label="是否为自动化部署" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.isAutoDeploy }}</span>
+              <span>
+                <i v-if="scope.row.isAutoDeploy === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isAutoDeploy === 0" class="el-icon-error"></i>
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="是否包含业务操作内容" min-width="180" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.isIncludeBusiness }}</span>
+              <span>
+                <i v-if="scope.row.isIncludeBusiness === 1" class="el-icon-success"></i>
+                <i v-if="scope.row.isIncludeBusiness === 0" class="el-icon-error"></i>
+              </span>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="160">
@@ -467,15 +488,15 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="系统名称" prop="sysName">
-                <el-select v-model="weekDialogObj.form.ownMainSys" value-key="itemSystemId" placeholder="请选择" @change="onChangeOwnMainSys">
-                  <el-option v-for="item in mainSysList" :key="item.itemSystemId" :label="item.itemAppName" :value="item"></el-option>
+                <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" @change="onChangeOwnMainSys">
+                  <el-option v-for="item in mainSysList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="子系统名称" prop="sysSonName">
-                <el-select v-model="weekDialogObj.form.sysSonName" placeholder="请选择" clearable>
-                  <el-option v-for="item in ownSonSysList" :key="item" :label="item" :value="item"></el-option>
+                <el-select v-model="weekDialogObj.form.ownSonSys" value-key="itemAppNameSon" placeholder="请选择" clearable @change="onChangeOwnSonSys">
+                  <el-option v-for="item in ownSonSysList" :key="item.itemAppNameSon" :label="item.itemAppNameSon" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -501,15 +522,15 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="全流程名称" prop="mainSysName">
-                <el-select v-model="weekDialogObj.form.mainMainSys" value-key="itemSystemId" placeholder="请选择" @change="onChangeMainMainSys">
-                  <el-option v-for="item in mainSysList" :key="item.itemSystemId" :label="item.itemAppName" :value="item"></el-option>
+                <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" @change="onChangeMainMainSys">
+                  <el-option v-for="item in mainSysList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="全流程子系统名称" prop="mainSysSonName">
-                <el-select v-model="weekDialogObj.form.mainSysSonName" placeholder="请选择" clearable>
-                  <el-option v-for="item in mainSonSysList" :key="item" :label="item" :value="item"></el-option>
+                <el-select v-model="weekDialogObj.form.mainSonSys" value-key="itemAppNameSon" placeholder="请选择" clearable @change="onChangeMainSonSys">
+                  <el-option v-for="item in mainSonSysList" :key="item.itemAppNameSon" :label="item.itemAppNameSon" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -963,13 +984,12 @@ export default {
     //   trigger: 'change'
     // }
     return {
-      autoHeightSys: 200,
       autoHeightRequirement: 200,
-      tabpaneHeight: 200,
       activeName: 'component-one',
-      formSearch: {
+      // 系统 搜索条件
+      sysFormSearch: {
         date: '',
-        user: '',
+        sysName: '',
         region: '',
         type: '当月采购详情'
       },
@@ -997,6 +1017,12 @@ export default {
         theme: '', // 会议主题
         meetingDate: null // 会议时间
       },
+      // 系统 信息
+      sysObj: {
+        height: 200,
+        list: [],
+        originList: []
+      },
       // 周报 信息
       weekObj: {
         height: 200,
@@ -1013,12 +1039,9 @@ export default {
         pageIndex: 1,
         pageSize: 20
       },
-      list: [],
-      weekReportList: [],
-      weekReportOriginList: [],
-      mainSysList: [],
-      ownSonSysList: [],
-      mainSonSysList: [],
+      mainSysList: [], // 主系统列表
+      ownSonSysList: [], // 本系统的子系统列表
+      mainSonSysList: [], // 主系统的子系统列表
       listLoading: true,
       // 联测主系统/周报 dialog
       weekDialogObj: {
@@ -1027,16 +1050,16 @@ export default {
         height: 200,
         uuid: null,
         form: {
-          ownMainSys: {
-            sysName: '',
+          ownSonSys: {
+            itemAppNameSon: '',
             itemSystemId: ''
           },
           sysName: '', // 全流程系统名称
           itemSystemId: '', // 全流程系统id
           sysSonName: '', // 全流程子系统名称
           versionNum: '', // 版本号
-          mainMainSys: {
-            sysName: '',
+          mainSonSys: {
+            itemAppNameSon: '',
             itemSystemId: ''
           },
           mainSysName: '', // 主系统全流程名称
@@ -1140,6 +1163,7 @@ export default {
           recorder: [requiredTrue]
         }
       },
+      // 日期快捷选项
       pickerOptions: {
         shortcuts: [
           {
@@ -1234,15 +1258,13 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.tabpaneHeight = this.$root.$el.clientHeight - 180
-      this.autoHeightSys = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
+      this.sysObj.height = this.$el.parentNode.clientHeight - this.$refs['sysFormSearch'].$el.clientHeight - 100
       this.autoHeightRequirement = this.$root.$el.clientHeight - 380
       this.weekDialogObj.height = this.$root.$el.clientHeight - 280
       this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
 
       window.onresize = () => {
-        this.tabpaneHeight = this.$root.$el.clientHeight - 180
-        this.autoHeightSys = this.$el.parentNode.clientHeight - this.$refs['component-one'].$el.clientHeight - 100
+        this.sysObj.height = this.$el.parentNode.clientHeight - this.$refs['sysFormSearch'].$el.clientHeight - 100
         this.autoHeightRequirement = this.$root.$el.clientHeight - 380
         this.weekDialogObj.height = this.$root.$el.clientHeight - 280
         this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
@@ -1252,9 +1274,6 @@ export default {
     })
   },
   methods: {
-    handleCommand(value) {
-      console.log(value)
-    },
     // 选择主系统版本号
     handleCommandWeekMainOperate(value) {
       console.log(value)
@@ -1267,7 +1286,7 @@ export default {
     },
     // 获取主系统列表数据
     onSearchMainSys() {
-      weekApi.getAllSys().then(response => {
+      weekApi.getAllSysName().then(response => {
         this.mainSysList = response.data
       })
     },
@@ -1287,17 +1306,23 @@ export default {
     },
     // 选择本系统的主系统
     onChangeOwnMainSys(val) {
-      this.onSearchSonSys('own', val.itemAppName)
-      this.weekDialogObj.form.itemSystemId = val.itemSystemId
-      this.weekDialogObj.form.sysName = val.itemAppName
+      this.onSearchSonSys('own', val)
       this.weekDialogObj.form.sysSonName = ''
+    },
+    // 选择本系统的子系统
+    onChangeOwnSonSys(val) {
+      this.weekDialogObj.form.sysSonName = val.itemAppNameSon
+      this.weekDialogObj.form.itemSystemId = val.itemSystemId
     },
     // 选择主系统的主系统
     onChangeMainMainSys(val) {
-      this.onSearchSonSys('main', val.itemAppName)
-      this.weekDialogObj.form.mainItemSystemId = val.itemSystemId
-      this.weekDialogObj.form.mainSysName = val.itemAppName
+      this.onSearchSonSys('main', val)
       this.weekDialogObj.form.mainSysSonName = ''
+    },
+    // 选择主系统的子系统
+    onChangeMainSonSys(val) {
+      this.weekDialogObj.form.mainSysSonName = val.itemAppNameSon
+      this.weekDialogObj.form.mainItemSystemId = val.itemSystemId
     },
     // 切换tab
     onToggleTab(tab, event) {
@@ -1312,7 +1337,7 @@ export default {
         this.meetingObj.height = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
       })
     },
-    // 展开/收起搜索条件
+    // 周报 展开/收起搜索条件
     onChangeCollapse(name) {
       console.log(name)
       this.$nextTick(() => {
@@ -1323,7 +1348,11 @@ export default {
         }
       })
     },
-    /** 会议记录部门与人员相关操作
+    // 周报 设置列表选中的数据
+    handleSelectionChangeWeek(val) {
+      this.weekObj.checkedList = val
+    },
+    /** 会议记录 部门与人员相关操作
      * @method onDepartmentOperate
      * @param {String} type add:新增;delete:删除
      * @param {Number} index 当前行索引
@@ -1372,10 +1401,6 @@ export default {
         this.meetingDialogObj.form.remainingProblem.splice(index, 1)
       }
     },
-    // 周报 设置列表选中的数据
-    handleSelectionChangeWeek(val) {
-      this.weekObj.checkedList = val
-    },
     // 会议记录 设置列表选中的数据
     handleSelectionChangeMeeting(val) {
       this.meetingObj.checkedList = val
@@ -1395,14 +1420,14 @@ export default {
           this.$refs['weekForm'].resetFields()
           this.weekDialogObj.form.sysName = ''
           this.weekDialogObj.form.itemSystemId = ''
-          this.weekDialogObj.form.ownMainSys = {
-            sysName: '',
+          this.weekDialogObj.form.ownSonSys = {
+            itemAppNameSon: '',
             itemSystemId: ''
           }
           this.weekDialogObj.form.mainSysName = ''
           this.weekDialogObj.form.mainItemSystemId = ''
-          this.weekDialogObj.form.mainMainSys = {
-            sysName: '',
+          this.weekDialogObj.form.mainSonSys = {
+            itemAppNameSon: '',
             itemSystemId: ''
           }
           Object.assign(this.weekDialogObj.form, {
@@ -1422,12 +1447,12 @@ export default {
         const params = row.uuid
         weekApi.getWeekReport(params).then(response => {
           this.weekDialogObj.form = response.data
-          this.weekDialogObj.form.ownMainSys = {
-            sysName: response.data.sysName,
+          this.weekDialogObj.form.ownSonSys = {
+            itemAppNameSon: response.data.sysSonName,
             itemSystemId: response.data.itemSystemId
           }
-          this.weekDialogObj.form.mainMainSys = {
-            sysName: response.data.mainSysName,
+          this.weekDialogObj.form.mainSonSys = {
+            itemAppNameSon: response.data.mainSysSonName,
             itemSystemId: response.data.mainItemSystemId
           }
           this.onSearchSonSys('own', response.data.sysName)
@@ -1852,14 +1877,14 @@ export default {
         })
       }
     },
-    // 设置table行的class
+    // 系统 设置table行的class
     tableRowClassName({ row, rowIndex }) {
       if (row.status === '主系统') {
         return row.bgcolor
       }
       return ''
     },
-    /** 联测主系统 单个展开/收起
+    /** 系统 单个展开/收起
      * @method onChangeExpandAll
      * @param {Boolean} status false:收起;true:展开
      * @param {Object} row 当前行数据
@@ -1870,7 +1895,7 @@ export default {
       console.log(row)
       // 获取当前主系统的index
       let currentIndex = 0
-      this.weekReportList.some((e, i) => {
+      this.sysObj.list.some((e, i) => {
         if (e.id === row.id) {
           currentIndex = i
           return true
@@ -1878,11 +1903,11 @@ export default {
         return false
       })
       // 把当前的expand反转过来
-      this.weekReportList[currentIndex].expand = status
+      this.sysObj.list[currentIndex].expand = status
       if (status) {
         // 获取当前主系统下面的主系统
         const tempArr = []
-        this.weekReportOriginList.some((e, i) => {
+        this.sysObj.originList.some((e, i) => {
           if (i > row.index) {
             if (e.status !== '主系统') {
               tempArr.push(e)
@@ -1893,12 +1918,12 @@ export default {
           return false
         })
         console.log(tempArr)
-        this.weekReportList.splice(currentIndex + 1, 0, ...tempArr)
-        console.log(this.weekReportList)
+        this.sysObj.list.splice(currentIndex + 1, 0, ...tempArr)
+        console.log(this.sysObj.list)
       } else {
         // 获取当前主系统下的子系统个数
         let childLength = 0
-        this.weekReportList.some((e, i) => {
+        this.sysObj.list.some((e, i) => {
           if (i > currentIndex) {
             if (e.status !== '主系统') {
               childLength++
@@ -1908,26 +1933,26 @@ export default {
           }
           return false
         })
-        this.weekReportList.splice(currentIndex + 1, childLength)
+        this.sysObj.list.splice(currentIndex + 1, childLength)
       }
     },
-    /** 联测主系统 全部展开/收起
+    /** 系统 全部展开/收起
      * @method onChangeExpandAll
      * @param {Boolean} type false:收起;true:展开
      * @return 无
      */
     onChangeExpandAll(type) {
       console.log(type)
-      const weekReportOriginList = JSON.parse(JSON.stringify(this.weekReportOriginList))
+      const originList = JSON.parse(JSON.stringify(this.sysObj.originList))
       if (type) {
-        this.weekReportList = weekReportOriginList
+        this.sysObj.list = originList
       } else {
-        this.weekReportList = weekReportOriginList.filter(e => {
+        this.sysObj.list = originList.filter(e => {
           return e.status === '主系统'
         })
       }
       // 能展开的行expand变化
-      this.weekReportList.map(e => {
+      this.sysObj.list.map(e => {
         if (e.isExpand) {
           e.expand = type
         }
@@ -2012,17 +2037,17 @@ export default {
       this.listLoading = true
       getWeekReportList().then(response => {
         console.log(response.data.items)
-        this.weekReportOriginList = response.data.items
+        this.sysObj.originList = response.data.items
         // 设置能展开的行
-        this.weekReportOriginList.forEach((e, i) => {
+        this.sysObj.originList.forEach((e, i) => {
           if (e.status !== '主系统') {
-            if (this.weekReportOriginList[i - 1].status === '主系统') {
-              this.weekReportOriginList[i - 1].isExpand = true
+            if (this.sysObj.originList[i - 1].status === '主系统') {
+              this.sysObj.originList[i - 1].isExpand = true
             }
           }
         })
-        // this.weekReportList = response.data.items
-        this.weekReportList = this.weekReportOriginList.filter(e => {
+        // this.sysObj.list = response.data.items
+        this.sysObj.list = this.sysObj.originList.filter(e => {
           return e.status === '主系统'
         })
         this.listLoading = false
