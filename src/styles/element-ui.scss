@@ -49,10 +49,31 @@
   }
 }
 
-.el-table .green {
+.el-table .normal {
   background: #B4EEB4;
 }
 
-.el-table .red {
+.el-table .delay {
   background: #FF7256;
 }
+
+.el-table .pause {
+  background: #ADD8E6;
+}
+
+.el-table .obsolete {
+  background: #dac3c3;
+}
+
+.el-table .redCell {
+  background: red;
+}
+
+.el-table .delayCell {
+  background: #ffd700;
+}
+
+.el-table .emptyCell {
+  background: #ff7f50;
+}
+

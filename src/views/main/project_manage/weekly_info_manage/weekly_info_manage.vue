@@ -6,80 +6,80 @@
       <el-tab-pane label="联测主系统列表" name="component-one">
         <el-form ref="sysFormSearch" :inline="true" :model="sysFormSearch">
           <el-form-item label="系统名称">
-            <el-input v-model="sysFormSearch.sysName" placeholder="请输入" clearable></el-input>
+            <el-input v-model="sysFormSearch.searchStr" placeholder="请输入" clearable></el-input>
           </el-form-item>
-          <el-form-item label="上线时间">
-            <el-date-picker v-model="sysFormSearch.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+          <el-form-item label="生产上线时间">
+            <el-date-picker v-model="sysFormSearch.planTime" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" clearable>
             </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="onSearch">查询</el-button>
-            <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
+            <el-button type="primary" size="small" @click="onSearchSys">查询</el-button>
+            <el-button type="warning" size="small" @click="onSearchSys">导出Excel</el-button>
           </el-form-item>
           <el-form-item label="展开">
-            <el-switch v-model="sysFormSearch.expand" @change="onChangeExpandAll"></el-switch>
+            <el-switch v-model="sysFormSearch.isExpand" @change="onChangeExpandAll"></el-switch>
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="sysObj.list" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="sysObj.height">
+        <el-table v-loading="listLoading" :data="sysObj.list" :row-class-name="tableRowClassName" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="sysObj.height">
           <el-table-column label="" min-width="60" align="center">
-            <template v-if="scope.row.status === '主系统' && scope.row.isExpand" slot-scope="scope">
-              <div v-if="!scope.row.expand" @click="onChangeExpandOne(true, scope.row)">
+            <template v-if="scope.row.isMain && scope.row.isExpand" slot-scope="scope">
+              <div v-if="!scope.row.expandStatus" @click="onChangeExpandOne(true, scope.row)">
                 <i class="el-icon-arrow-down"></i>
               </div>
-              <div v-if="scope.row.expand" @click="onChangeExpandOne(false, scope.row)">
+              <div v-if="scope.row.expandStatus" @click="onChangeExpandOne(false, scope.row)">
                 <i class="el-icon-arrow-up"></i>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="上线日期" min-width="120" align="center">
+          <el-table-column label="生产上线日期" min-width="140" align="center">
             <template slot-scope="scope">
-              {{ scope.$index }}
+              {{ scope.row.planTime }}
             </template>
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status === '主系统'" type="text" size="mini" @click="onOperateWeek('tree', scope.row)">{{ scope.row.title }}</el-button>
-              <span v-if="scope.row.status !== '主系统'">{{ scope.row.title }}</span>
+              <span v-if="scope.row.isMain" :style="{ color: '#409EFF', cursor: 'pointer' }" @click="onOperateWeek('tree', scope.row)">{{ scope.row.sysName + scope.row.versionNum }}</span>
+              <span v-if="!scope.row.isMain">{{ scope.row.sysName + scope.row.versionNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="项目名称" min-width="300" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.projectName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="变更类型" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
+              <span>{{ scope.row.crType }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="主系统项目整体进度" min-width="150" align="center">
+          <el-table-column label="项目整体进度" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.overAllSchedule }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="项目阶段" min-width="100" align="center">
+          <el-table-column label="目前项目阶段" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.projectStage }}</span>
             </template>
           </el-table-column>
           <el-table-column label="升级联测系统数量" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.upgradeNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="无升级联测系统数量" min-width="150" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.noUpgradeNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="原因说明" min-width="300" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.reason }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="负责人" min-width="100" align="center">
+          <el-table-column label="测试负责人" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.writter }}</span>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
@@ -189,8 +189,8 @@
                   <el-option label="NA" value="NA"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="工作量情况" prop="region">
-                <el-select v-model="weekFormSearch.region" placeholder="请选择" clearable>
+              <el-form-item label="工作量情况" prop="workload">
+                <el-select v-model="weekFormSearch.workload" placeholder="请选择" clearable>
                   <el-option label="超签报" value="0"></el-option>
                   <el-option label="正常" value="1"></el-option>
                   <el-option label="超采购" value="0"></el-option>
@@ -207,7 +207,7 @@
               <div class="mb20">
                 <el-button type="primary" size="small" @click="initWeek">查询</el-button>
                 <el-button type="success" size="small" @click="resetWeek('weekFormSearch')">重置</el-button>
-                <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
+                <el-button type="warning" size="small" @click="initWeek">导出Excel</el-button>
                 <el-button type="danger" size="small" @click="onOperateWeek('deleteMultiple')">删除</el-button>
               </div>
             </el-form>
@@ -418,7 +418,7 @@
           <el-form-item>
             <el-button type="primary" size="small" @click="initMeeting">查询</el-button>
             <el-button type="danger" size="small" @click="onOperateMeeting('deleteMultiple')">删除</el-button>
-            <!-- <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button> -->
+            <!-- <el-button type="warning" size="small" @click="initMeeting">导出Excel</el-button> -->
           </el-form-item>
         </el-form>
         <el-table v-loading="listLoading" :data="meetingObj.list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="meetingObj.height" @selection-change="handleSelectionChangeMeeting">
@@ -988,10 +988,9 @@ export default {
       activeName: 'component-one',
       // 系统 搜索条件
       sysFormSearch: {
-        date: '',
-        sysName: '',
-        region: '',
-        type: '当月采购详情'
+        planTime: null, // 生产上线时间
+        searchStr: '', // 系统名称和子系统名称
+        isExpand: false
       },
       // 周报 搜索条件
       weekFormSearch: {
@@ -1297,6 +1296,9 @@ export default {
      */
     onSearchSonSys(type, sysName) {
       weekApi.getSonSysNames(sysName).then(response => {
+        response.data.map(e => {
+          e.itemAppNameSon = e.itemAppNameSon || 'null'
+        })
         if (type === 'own') {
           this.ownSonSysList = response.data
         } else if (type === 'main') {
@@ -1327,6 +1329,9 @@ export default {
     // 切换tab
     onToggleTab(tab, event) {
       console.log(tab, event)
+      if (tab.name === 'component-one') {
+        this.onSearchSys()
+      }
       if (tab.name === 'component-two') {
         this.onSearchWeek()
       } else if (tab.name === 'component-three') {
@@ -1447,12 +1452,14 @@ export default {
         const params = row.uuid
         weekApi.getWeekReport(params).then(response => {
           this.weekDialogObj.form = response.data
+          this.weekDialogObj.form.sysSonName = response.data.sysSonName || 'null'
+          this.weekDialogObj.form.mainSysSonName = response.data.mainSysSonName || 'null'
           this.weekDialogObj.form.ownSonSys = {
-            itemAppNameSon: response.data.sysSonName,
+            itemAppNameSon: this.weekDialogObj.form.sysSonName,
             itemSystemId: response.data.itemSystemId
           }
           this.weekDialogObj.form.mainSonSys = {
-            itemAppNameSon: response.data.mainSysSonName,
+            itemAppNameSon: this.weekDialogObj.form.mainSysSonName,
             itemSystemId: response.data.mainItemSystemId
           }
           this.onSearchSonSys('own', response.data.sysName)
@@ -1469,10 +1476,14 @@ export default {
                   message: '新增成功',
                   type: 'success'
                 })
-                if (this.activeName === 'component-two') {
+                if (this.activeName === 'component-one') {
+                  this.onSearchSys()
+                  this.weekDialogObj.visible = false
+                } else if (this.activeName === 'component-two') {
                   this.initWeek()
                   this.weekDialogObj.visible = false
                 }
+                this.sysFormSearch.isExpand = false
               })
             } else if (this.weekDialogObj.title === '修改') {
               const params = this.weekDialogObj.form
@@ -1483,10 +1494,14 @@ export default {
                   message: '修改成功',
                   type: 'success'
                 })
-                if (this.activeName === 'component-two') {
+                if (this.activeName === 'component-one') {
+                  this.onSearchSys()
+                  this.weekDialogObj.visible = false
+                } else if (this.activeName === 'component-two') {
                   this.initWeek()
                   this.weekDialogObj.visible = false
                 }
+                this.sysFormSearch.isExpand = false
               })
             }
           }
@@ -1879,14 +1894,39 @@ export default {
     },
     // 系统 设置table行的class
     tableRowClassName({ row, rowIndex }) {
-      if (row.status === '主系统') {
-        return row.bgcolor
+      if (row.isMain) {
+        switch(row.overAllSchedule) {
+          case '正常':
+            return 'normal'
+            break
+          case '延期':
+            return 'delay'
+            break
+          case '暂停':
+            return 'pause'
+            break
+          case '作废':
+            return 'obsolete'
+            break
+          default:
+            return ''
+        } 
       }
       return ''
     },
+    // 系统 设置table单元格的class
+    tableCellClassName({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 1 && !row.isMain) {
+        return row.differentTime ? 'redCell' : ''
+      } else if (columnIndex === 5 && !row.isMain) {
+        return row.overAllSchedule === '延期' ? 'delayCell' : ''
+      } else if (columnIndex === 10) {
+        return row.writter === '' ? 'emptyCell' : ''
+      }
+    },
     /** 系统 单个展开/收起
-     * @method onChangeExpandAll
-     * @param {Boolean} status false:收起;true:展开
+     * @method onChangeExpandOne
+     * @param {Boolean} status false: 收起;true: 展开
      * @param {Object} row 当前行数据
      * @return 无
      */
@@ -1896,26 +1936,37 @@ export default {
       // 获取当前主系统的index
       let currentIndex = 0
       this.sysObj.list.some((e, i) => {
-        if (e.id === row.id) {
+        if (e.uuid === row.uuid) {
           currentIndex = i
           return true
         }
         return false
       })
-      // 把当前的expand反转过来
-      this.sysObj.list[currentIndex].expand = status
+      // 把当前的expandStatus反转过来
+      this.sysObj.list[currentIndex].expandStatus = status
       if (status) {
-        // 获取当前主系统下面的主系统
-        const tempArr = []
-        this.sysObj.originList.some((e, i) => {
-          if (i > row.index) {
-            if (e.status !== '主系统') {
-              tempArr.push(e)
-              return false
-            }
-            return true
+        // 获取当前主系统下面的子系统
+        let tempArr = []
+        // this.sysObj.originList.some((e, i) => {
+        //   if (i > row.index) {
+        //     if (e.status !== '主系统') {
+        //       tempArr.push(e)
+        //       return false
+        //     }
+        //     return true
+        //   }
+        //   return false
+        // })
+        tempArr = this.sysObj.list[currentIndex].sonSys.map(e => {
+          e.isMain = false
+          e.isExpand = false
+          e.expandStatus = false
+          if (e.planTime === row.planTime) {
+            e.differentTime = false
+          } else {
+            e.differentTime = true
           }
-          return false
+          return e
         })
         console.log(tempArr)
         this.sysObj.list.splice(currentIndex + 1, 0, ...tempArr)
@@ -1923,17 +1974,19 @@ export default {
       } else {
         // 获取当前主系统下的子系统个数
         let childLength = 0
-        this.sysObj.list.some((e, i) => {
-          if (i > currentIndex) {
-            if (e.status !== '主系统') {
-              childLength++
-              return false
-            }
-            return true
-          }
-          return false
-        })
+        // this.sysObj.list.some((e, i) => {
+        //   if (i > currentIndex) {
+        //     if (e.status !== '主系统') {
+        //       childLength++
+        //       return false
+        //     }
+        //     return true
+        //   }
+        //   return false
+        // })
+        childLength = this.sysObj.list[currentIndex].sonSys.length
         this.sysObj.list.splice(currentIndex + 1, childLength)
+        console.log(this.sysObj.list)
       }
     },
     /** 系统 全部展开/收起
@@ -1943,25 +1996,56 @@ export default {
      */
     onChangeExpandAll(type) {
       console.log(type)
-      const originList = JSON.parse(JSON.stringify(this.sysObj.originList))
+      // const originList = JSON.parse(JSON.stringify(this.sysObj.originList))
+      // if (type) {
+      //   this.sysObj.list = originList
+      // } else {
+      //   this.sysObj.list = originList.filter(e => {
+      //     return e.status === '主系统'
+      //   })
+      // }
+      // // 能展开的行expand变化
+      // this.sysObj.list.map(e => {
+      //   if (e.isExpand) {
+      //     e.isExpand = type
+      //   }
+      // })
       if (type) {
-        this.sysObj.list = originList
+        const originList = JSON.parse(JSON.stringify(this.sysObj.list)).filter(e => {
+          if (e.isMain && e.sonSys.length > 0) {
+            e.isExpand = true
+            e.expandStatus = true
+          } else {
+            e.isExpand = false
+            e.expandStatus = false
+          }
+          return e.isMain
+        })
+        this.sysObj.list = []
+        originList.forEach((current, index, arr) => {
+          this.sysObj.list.push(current)
+          if (current.sonSys.length > 0) {
+            current.sonSys.map(e => {
+              e.isMain = false
+              e.isExpand = false
+              e.expandStatus = false
+              if (e.planTime === current.planTime) {
+                e.differentTime = false
+              } else {
+                e.differentTime = true
+              }
+            })
+            this.sysObj.list.push(...current.sonSys)
+          }
+        })
       } else {
-        this.sysObj.list = originList.filter(e => {
-          return e.status === '主系统'
+        this.sysObj.list = this.sysObj.list.filter(e => {
+          if (e.isMain) {
+            e.expandStatus = false
+          }
+          return e.isMain
         })
       }
-      // 能展开的行expand变化
-      this.sysObj.list.map(e => {
-        if (e.isExpand) {
-          e.expand = type
-        }
-      })
-    },
-    // 查询
-    onSearch() {
-      console.log('submit!')
-      this.fetchData()
     },
     // 周报列表 每页条数选择
     handleSizeChangeWeek(val) {
@@ -2032,26 +2116,50 @@ export default {
       this.meetingObj.pageIndex = 1
       this.onSearchMeeting()
     },
-    fetchData() {
-      this.onSearchMainSys()
-      this.listLoading = true
-      getWeekReportList().then(response => {
-        console.log(response.data.items)
-        this.sysObj.originList = response.data.items
-        // 设置能展开的行
-        this.sysObj.originList.forEach((e, i) => {
-          if (e.status !== '主系统') {
-            if (this.sysObj.originList[i - 1].status === '主系统') {
-              this.sysObj.originList[i - 1].isExpand = true
-            }
+    // 系统列表 查询
+    onSearchSys() {
+      const params = {
+        searchStr: this.sysFormSearch.searchStr,
+        planTimeStart: this.sysFormSearch.planTime === null ? this.sysFormSearch.planTime : this.sysFormSearch.planTime[0],
+        planTimeEnd: this.sysFormSearch.planTime === null ? this.sysFormSearch.planTime : this.sysFormSearch.planTime[1]
+      }
+      weekApi.getWeekReportRelationList(params).then(response => {
+        console.log(response)
+        this.sysObj.list = response.data.relationSysList.map(e => {
+          Object.assign(e, e.mainSys)
+          e.isMain = true
+          e.expandStatus = false
+          e.differentTime = false
+          if (e.sonSys.length === 0) {
+            e.isExpand = false
+          } else {
+            e.isExpand = true
           }
-        })
-        // this.sysObj.list = response.data.items
-        this.sysObj.list = this.sysObj.originList.filter(e => {
-          return e.status === '主系统'
+          return e
         })
         this.listLoading = false
       })
+    },
+    fetchData() {
+      this.onSearchSys()
+      this.onSearchMainSys()
+      // getWeekReportList().then(response => {
+      //   console.log(response.data.items)
+      //   this.sysObj.originList = response.data.items
+      //   // 设置能展开的行
+      //   this.sysObj.originList.forEach((e, i) => {
+      //     if (e.status !== '主系统') {
+      //       if (this.sysObj.originList[i - 1].status === '主系统') {
+      //         this.sysObj.originList[i - 1].isExpand = true
+      //       }
+      //     }
+      //   })
+      //   // this.sysObj.list = response.data.items
+      //   this.sysObj.list = this.sysObj.originList.filter(e => {
+      //     return e.status === '主系统'
+      //   })
+      //   this.listLoading = false
+      // })
     }
   }
 }

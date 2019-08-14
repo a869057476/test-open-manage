@@ -92,6 +92,14 @@ export function getSonSysNames(sysName) {
   })
 }
 
+function getWeekReportRelationList(data) {
+  return request({
+    url: '/pf/report/weekreports/relationList',
+    method: 'post',
+    data
+  })
+}
+
 export default {
   getWeekReportList,
   addWeekReport,
@@ -104,5 +112,6 @@ export default {
   getMeetingRecordList,
   getMeetingRecord,
   getAllSysName,
-  getSonSysNames
+  getSonSysNames,
+  getWeekReportRelationList
 }
