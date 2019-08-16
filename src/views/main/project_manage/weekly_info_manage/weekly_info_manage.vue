@@ -755,7 +755,7 @@
     </el-dialog>
     <el-dialog :title="meetingDialogObj.title" :visible.sync="meetingDialogObj.visible" :fullscreen="true">
       <div :style="{ height: meetingDialogObj.height + 'px', overflow: 'auto' }">
-        <el-form ref="meetingForm" :model="meetingDialogObj.form" :rules="meetingDialogObj.rules" class="meeting-record">
+        <el-form ref="meetingForm" class="meeting-record mb20" :model="meetingDialogObj.form" :rules="meetingDialogObj.rules">
           <div class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">主题 Subject</div>
             <div class="meeting-record-row-col form-padding form-padding change">
@@ -883,7 +883,7 @@
             </div>
           </div>
         </el-form>
-        <el-form class="mt20" :inline="true" :model="meetingDialogObj.weekSearch">
+        <el-form v-if="this.meetingDialogObj.title === '新增'" :inline="true" :model="meetingDialogObj.weekSearch">
           <el-form-item label="系统名称">
             <el-input v-model="meetingDialogObj.weekSearch.searchStr" placeholder="请输入" clearable></el-input>
           </el-form-item>
@@ -895,7 +895,7 @@
             <el-button type="primary" size="small" @click="onSearchMeetingSys">查询</el-button>
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="meetingDialogObj.form.meetingWeekReportList" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500" @selection-change="handleSelectionChangeWeek">
+        <el-table v-loading="listLoading" :data="meetingDialogObj.form.meetingWeekReportList" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500" @selection-change="handleSelectionChangeMeetingWeek">
           <el-table-column type="selection" width="55">
           </el-table-column>
           <el-table-column label="系统类型" min-width="80" align="center">
@@ -1167,6 +1167,7 @@ export default {
           // 周报列表
           meetingWeekReportList: []
         },
+        checkedList: [],
         rules: {
           theme: [requiredTrue],
           meetingDate: [requiredTrue],
@@ -1431,6 +1432,10 @@ export default {
     // 会议记录 设置列表选中的数据
     handleSelectionChangeMeeting(val) {
       this.meetingObj.checkedList = val
+    },
+    // 会议记录的周报 设置列表选中的数据
+    handleSelectionChangeMeetingWeek(val) {
+      this.meetingDialogObj.checkedList = val
     },
     /** 系统/周报 操作
      * @method onOperateWeek
@@ -1921,6 +1926,11 @@ export default {
           ]
           this.meetingDialogObj.form.remainingProblem = []
           this.meetingDialogObj.form.meetingWeekReportList = []
+          const calendar = new Calendar()
+          const start = calendar.getNowWeek().startDate
+          const end = calendar.getNowWeek().endDate
+          this.meetingDialogObj.weekSearch.planTime = [start, end]
+          this.onSearchMeetingSys()
         })
       } else if (type === 'edit') {
         this.meetingDialogObj.visible = true
@@ -1932,6 +1942,10 @@ export default {
           this.meetingDialogObj.form.departmentStaff = JSON.parse(response.data.departmentStaff)
           this.meetingDialogObj.form.meetResult = JSON.parse(response.data.meetResult)
           this.meetingDialogObj.form.remainingProblem = JSON.parse(response.data.remainingProblem)
+          this.meetingDialogObj.form.meetingWeekReportList = response.data.meetingWeekReportList.map(e => {
+            return JSON.parse(e.weekRepoetTotal)
+          })
+          console.log(this.meetingDialogObj.form.meetingWeekReportList)
         })
       } else if (type === 'submit') {
         this.$refs['meetingForm'].validate((valid) => {
@@ -1941,6 +1955,13 @@ export default {
             params.departmentStaff = JSON.stringify(params.departmentStaff)
             params.meetResult = JSON.stringify(params.meetResult)
             params.remainingProblem = JSON.stringify(params.remainingProblem)
+            params.meetingWeekReportList = this.meetingDialogObj.checkedList.map(e => {
+              e.weekRepoetTotal = JSON.stringify(e)
+              if (this.meetingDialogObj.title === '修改') {
+                e.meetingId = this.meetingDialogObj.uuid
+              }
+              return e
+            })
             if (this.meetingDialogObj.title === '新增') {
               weekApi.addMeetingRecord(params).then(response => {
                 this.$notify({
@@ -2324,10 +2345,13 @@ export default {
           }
         })
         this.meetingDialogObj.form.meetingWeekReportList.map(e => {
-          e.progress = ''
-          e.opinion = ''
+          delete e.mainSys
+          delete e.sonSys
+          // e.progress = ''
+          // e.opinion = ''
           return e
         })
+        console.log(this.meetingDialogObj.form.meetingWeekReportList)
         this.listLoading = false
       })
     },
