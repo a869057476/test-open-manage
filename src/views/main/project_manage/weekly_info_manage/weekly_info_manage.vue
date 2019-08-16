@@ -9,7 +9,7 @@
             <el-input v-model="sysFormSearch.searchStr" placeholder="请输入" clearable></el-input>
           </el-form-item>
           <el-form-item label="生产上线时间">
-            <el-date-picker v-model="sysFormSearch.planTime" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" clearable>
+            <el-date-picker v-model="sysFormSearch.planTime" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" clearable>
             </el-date-picker>
           </el-form-item>
           <el-form-item>
@@ -20,7 +20,7 @@
             <el-switch v-model="sysFormSearch.isExpand" @change="onChangeExpandAll"></el-switch>
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="sysObj.list" :row-class-name="tableRowClassName" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="sysObj.height">
+        <el-table v-loading="listLoading" :data="sysObj.list" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row :max-height="sysObj.height">
           <el-table-column label="" min-width="60" align="center">
             <template v-if="scope.row.isMain && scope.row.isExpand" slot-scope="scope">
               <div v-if="!scope.row.expandStatus" @click="onChangeExpandOne(true, scope.row)">
@@ -31,6 +31,14 @@
               </div>
             </template>
           </el-table-column>
+          <el-table-column label="系统类型" min-width="80" align="center">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.testType === '主系统'" type="success">主</el-tag>
+              <el-tag v-if="scope.row.testType === '升级联测'" type="info">升级</el-tag>
+              <el-tag v-if="scope.row.testType === '无升级联测'" type="warning">无升级</el-tag>
+              <el-tag v-if="scope.row.testType === '未回复'" type="danger">未</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="生产上线日期" min-width="140" align="center">
             <template slot-scope="scope">
               {{ scope.row.planTime }}
@@ -38,8 +46,8 @@
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.isMain" :style="{ color: '#409EFF', cursor: 'pointer' }" @click="onOperateWeek('tree', scope.row)">{{ scope.row.sysName + scope.row.versionNum }}</span>
-              <span v-if="!scope.row.isMain">{{ scope.row.sysName + scope.row.versionNum }}</span>
+              <span v-if="scope.row.isMain" :style="{ color: '#409EFF', cursor: 'pointer' }" @click="onOperateWeek('tree', scope.row)">{{ scope.row.sysName + (scope.row.sysSonName ? scope.row.sysSonName : '') + scope.row.versionNum }}</span>
+              <span v-if="!scope.row.isMain">{{ scope.row.sysName + (scope.row.sysSonName ? scope.row.sysSonName : '') + scope.row.versionNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="项目名称" min-width="300" align="center">
@@ -472,15 +480,14 @@
     <el-dialog :title="weekDialogObj.title" :visible.sync="weekDialogObj.visible" top="5vh" width="1200px">
       <el-form ref="weekForm" :model="weekDialogObj.form" :rules="weekDialogObj.rules" :style="{ height: weekDialogObj.height + 'px', overflow: 'auto' }" :inline="true" label-width="100px" label-position="top">
         <el-row>
-          <el-col :span="6">
-            <el-form-item label="项目名称" prop="projectName">
-              <el-input v-model="weekDialogObj.form.projectName" placeholder="请输入" clearable></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="生产上线日期" prop="planTime">
-              <el-date-picker v-model="weekDialogObj.form.planTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
-              </el-date-picker>
+          <el-col :span="24">
+            <el-form-item label="联测类别" prop="testType">
+              <el-select v-model="weekDialogObj.form.testType" placeholder="请选择" clearable>
+                <el-option label="主系统" value="主系统"></el-option>
+                <el-option label="升级联测" value="升级联测"></el-option>
+                <el-option label="无升级联测" value="无升级联测"></el-option>
+                <el-option label="未回复" value="未回复"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -518,7 +525,7 @@
             </el-col>
           </el-row>
         </el-card>
-        <el-card header="主系统" class="mt20 mb20 mr20">
+        <el-card v-if="weekDialogObj.form.testType !== '主系统'" header="主系统" class="mt20 mr20">
           <el-row>
             <el-col :span="6">
               <el-form-item label="全流程名称" prop="mainSysName">
@@ -552,8 +559,19 @@
             </el-col>
           </el-row>
         </el-card>
-        <el-row>
-          <el-col :span="6">
+        <el-row class="mt20">
+          <el-col :span="5">
+            <el-form-item label="项目名称" prop="projectName">
+              <el-input v-model="weekDialogObj.form.projectName" placeholder="请输入" clearable></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="生产上线日期" prop="planTime">
+              <el-date-picker v-model="weekDialogObj.form.planTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
             <el-form-item label="变更类型" prop="crType">
               <el-select v-model="weekDialogObj.form.crType" placeholder="请选择" clearable>
                 <el-option label="正常" value="正常"></el-option>
@@ -564,17 +582,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="联测类别" prop="testType">
-              <el-select v-model="weekDialogObj.form.testType" placeholder="请选择" clearable>
-                <el-option label="主系统" value="主系统"></el-option>
-                <el-option label="升级联测" value="升级联测"></el-option>
-                <el-option label="无升级联测" value="无升级联测"></el-option>
-                <el-option label="未回复" value="未回复"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="目前项目阶段" prop="projectStage">
               <el-select v-model="weekDialogObj.form.projectStage" placeholder="请选择" clearable>
                 <el-option label="测试准备" value="测试准备"></el-option>
@@ -591,7 +599,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="测试轮次" prop="testRuns">
               <el-select v-model="weekDialogObj.form.testRuns" placeholder="请选择" clearable>
                 <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
@@ -742,7 +750,7 @@
     </el-dialog>
     <el-dialog title="系统关系树状图" :visible.sync="treeDialogObj.visible" :fullscreen="true">
       <div id="myChart" :style="{width: '100%', height: '400px'}"></div>
-      <div>项目整体进度：正常----延期----暂停----作废----NA</div>
+      <div style="font-size: 18px;font-weight: bold;padding-left: 5px;">项目整体进度：<span style="color: #00ff00">正常</span>----<span style="color: #FF7256">延期</span>----<span style="color: #ADD8E6">暂停</span>----<span style="color: #808080">作废</span>----<span style="color: #FFFF00">NA</span></div>
       <div id="myChart2" :style="{width: '100%', height: '580px'}"></div>
     </el-dialog>
     <el-dialog :title="meetingDialogObj.title" :visible.sync="meetingDialogObj.visible" :fullscreen="true">
@@ -875,67 +883,78 @@
             </div>
           </div>
         </el-form>
-        <el-form class="mt20" :inline="true" :model="meetingDialogObj.wwkSearch">
+        <el-form class="mt20" :inline="true" :model="meetingDialogObj.weekSearch">
           <el-form-item label="系统名称">
-            <el-input v-model="meetingDialogObj.wwkSearch.sysName" placeholder="请输入" clearable></el-input>
+            <el-input v-model="meetingDialogObj.weekSearch.searchStr" placeholder="请输入" clearable></el-input>
           </el-form-item>
-          <el-form-item label="上线时间">
-            <el-date-picker v-model="meetingDialogObj.wwkSearch.planTime" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+          <el-form-item label="生产上线时间">
+            <el-date-picker v-model="meetingDialogObj.weekSearch.planTime" type="daterange" value-format="yyyy-MM-dd" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="onSearchWeek">查询</el-button>
+            <el-button type="primary" size="small" @click="onSearchMeetingSys">查询</el-button>
           </el-form-item>
         </el-form>
-        <el-table v-loading="listLoading" :data="meetingDialogObj.form.meetingWeekReportList" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500">
-          <el-table-column label="上线日期" min-width="120" align="center">
+        <el-table v-loading="listLoading" :data="meetingDialogObj.form.meetingWeekReportList" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500" @selection-change="handleSelectionChangeWeek">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
+          <el-table-column label="系统类型" min-width="80" align="center">
             <template slot-scope="scope">
-              {{ scope.$index }}
+              <el-tag v-if="scope.row.testType === '主系统'" type="success">主</el-tag>
+              <el-tag v-if="scope.row.testType === '升级联测'" type="info">升级</el-tag>
+              <el-tag v-if="scope.row.testType === '无升级联测'" type="warning">无升级</el-tag>
+              <el-tag v-if="scope.row.testType === '未回复'" type="danger">未</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="生产上线日期" min-width="140" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.planTime }}
             </template>
           </el-table-column>
           <el-table-column label="系统名称" min-width="180" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.title }}</span>
+              <span v-if="scope.row.isMain" :style="{ color: '#409EFF', cursor: 'pointer' }" @click="onOperateWeek('tree', scope.row)">{{ scope.row.sysName + (scope.row.sysSonName ? scope.row.sysSonName : '') + scope.row.versionNum }}</span>
+              <span v-if="!scope.row.isMain">{{ scope.row.sysName + (scope.row.sysSonName ? scope.row.sysSonName : '') + scope.row.versionNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="项目名称" min-width="300" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.projectName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="变更类型" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
+              <span>{{ scope.row.crType }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="主系统项目整体进度" min-width="150" align="center">
+          <el-table-column label="项目整体进度" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.overAllSchedule }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="项目阶段" min-width="100" align="center">
+          <el-table-column label="目前项目阶段" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.projectStage }}</span>
             </template>
           </el-table-column>
           <el-table-column label="升级联测系统数量" min-width="140" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.upgradeNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="无升级联测系统数量" min-width="150" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.noUpgradeNum }}</span>
             </template>
           </el-table-column>
           <el-table-column label="原因说明" min-width="300" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.reason }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="负责人" min-width="100" align="center">
+          <el-table-column label="测试负责人" min-width="100" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
+              <span>{{ scope.row.writter }}</span>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="目前进展" width="200">
@@ -948,12 +967,6 @@
               <el-input v-model="scope.row.opinion" placeholder="请输入" clearable></el-input>
             </template>
           </el-table-column>
-          <!-- <el-table-column fixed="right" label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="onOperateWeek('edit', scope.row)">修改</el-button>
-              <el-button size="mini" type="primary" plain @click="onOperateWeek('detail', scope.row)">查看需求条目</el-button>
-            </template>
-          </el-table-column> -->
         </el-table>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -1126,8 +1139,8 @@ export default {
         title: '新增',
         visible: false,
         height: 200,
-        wwkSearch: {
-          sysName: '',
+        weekSearch: {
+          searchStr: '',
           planTime: ''
         },
         form: {
@@ -1298,6 +1311,7 @@ export default {
       weekApi.getSonSysNames(sysName).then(response => {
         response.data.map(e => {
           e.itemAppNameSon = e.itemAppNameSon || 'null'
+          return e
         })
         if (type === 'own') {
           this.ownSonSysList = response.data
@@ -1308,8 +1322,12 @@ export default {
     },
     // 选择本系统的主系统
     onChangeOwnMainSys(val) {
+      this.weekDialogObj.form.ownSonSys = {
+        itemAppNameSon: '',
+        itemSystemId: ''
+      }
+      this.weekDialogObj.form.sysSonName = null
       this.onSearchSonSys('own', val)
-      this.weekDialogObj.form.sysSonName = ''
     },
     // 选择本系统的子系统
     onChangeOwnSonSys(val) {
@@ -1318,8 +1336,12 @@ export default {
     },
     // 选择主系统的主系统
     onChangeMainMainSys(val) {
+      this.weekDialogObj.form.mainSonSys = {
+        itemAppNameSon: '',
+        itemSystemId: ''
+      }
+      this.weekDialogObj.form.mainSysSonName = null
       this.onSearchSonSys('main', val)
-      this.weekDialogObj.form.mainSysSonName = ''
     },
     // 选择主系统的子系统
     onChangeMainSonSys(val) {
@@ -1451,25 +1473,35 @@ export default {
         this.weekDialogObj.uuid = row.uuid
         const params = row.uuid
         weekApi.getWeekReport(params).then(response => {
-          this.weekDialogObj.form = response.data
+          Object.assign(this.weekDialogObj.form, response.data)
           this.weekDialogObj.form.sysSonName = response.data.sysSonName || 'null'
           this.weekDialogObj.form.mainSysSonName = response.data.mainSysSonName || 'null'
           this.weekDialogObj.form.ownSonSys = {
-            itemAppNameSon: this.weekDialogObj.form.sysSonName,
+            itemAppNameSon: response.data.sysSonName || 'null',
             itemSystemId: response.data.itemSystemId
           }
           this.weekDialogObj.form.mainSonSys = {
-            itemAppNameSon: this.weekDialogObj.form.mainSysSonName,
+            itemAppNameSon: response.data.mainSysSonName || 'null',
             itemSystemId: response.data.mainItemSystemId
           }
           this.onSearchSonSys('own', response.data.sysName)
           this.onSearchSonSys('main', response.data.mainSysName)
+        }).catch(error => {
+          this.$message({
+            message: error || 'Error',
+            type: 'error'
+          })
         })
       } else if (type === 'submit') {
         this.$refs['weekForm'].validate((valid) => {
           if (valid) {
+            const params = this.weekDialogObj.form
+            params.mainItemSystemId = params.testType === '主系统' ? params.itemSystemId : params.mainItemSystemId
+            params.sysSonName = params.sysSonName === 'null' ? null : params.sysSonName
+            params.mainSysName = params.testType === '主系统' ? params.sysName : params.mainSysName
+            params.mainSysSonName = params.testType === '主系统' ? params.sysSonName : params.mainSysSonName
+            params.mainVersionNum = params.testType === '主系统' ? params.versionNum : params.mainVersionNum
             if (this.weekDialogObj.title === '新增') {
-              const params = this.weekDialogObj.form
               weekApi.addWeekReport(params).then(response => {
                 this.$notify({
                   title: '成功',
@@ -1484,9 +1516,13 @@ export default {
                   this.weekDialogObj.visible = false
                 }
                 this.sysFormSearch.isExpand = false
+              }).catch(error => {
+                this.$message({
+                  message: error || 'Error',
+                  type: 'error'
+                })
               })
             } else if (this.weekDialogObj.title === '修改') {
-              const params = this.weekDialogObj.form
               params.uuid = this.weekDialogObj.uuid
               weekApi.updateWeekReport(params).then(response => {
                 this.$notify({
@@ -1502,6 +1538,11 @@ export default {
                   this.weekDialogObj.visible = false
                 }
                 this.sysFormSearch.isExpand = false
+              }).catch(error => {
+                this.$message({
+                  message: error || 'Error',
+                  type: 'error'
+                })
               })
             }
           }
@@ -1575,202 +1616,281 @@ export default {
         // })
       } else if (type === 'tree') {
         this.treeDialogObj.visible = true
-        this.$nextTick(() => {
-          // 基于准备好的dom，初始化echarts实例
-          const myChart = echarts.init(document.getElementById('myChart'))
-          const data = {
-            'name': 'flare',
-            'children': [
-              {
-                'name': 'data',
-                'children': [
-                  {
-                    'name': 'converters',
-                    'children': [
-                      {
-                        'name': 'Converters',
-                        'value': 721
-                      },
-                      {
-                        'name': 'DelimitedTextConverter',
-                        'value': 4294
-                      }
-                    ]
-                  },
-                  {
-                    'name': 'DataUtil',
-                    'value': 3322
-                  }
-                ]
-              },
-              {
-                'name': 'display',
-                'children': [
-                  {
-                    'name': 'DirtySprite',
-                    'value': 8833
-                  },
-                  {
-                    'name': 'LineSprite',
-                    'value': 1732
-                  },
-                  {
-                    'name': 'RectSprite',
-                    'value': 3623
-                  }
-                ]
-              },
-              {
-                'name': 'flex',
-                'children': [
-                  {
-                    'name': 'FlareVis',
-                    'value': 4116
-                  }
-                ]
+        const params = row.uuid
+        let treeData = {}
+        let progressKeyData = []
+        let progressValueData = []
+        const progressArr = ['', '测试准备', 'UAT1测试', 'UAT1完成', '验收流程', '验收测试', '验收完成', '模拟流程', '模拟测试', '模拟完成', '已上线']
+        // 递归tree
+        function recursionTree(data) {
+          let tempData = []
+          if (Array.isArray(data)) {
+            data.forEach((current, index, arr) => {
+              let color = ''
+              let symbol = ''
+              switch (current.overAllSchedule) {
+                case '正常':
+                  color = '#00ff00'
+                  break
+                case '延期':
+                  color = '#FF7256'
+                  break
+                case '暂停':
+                  color = '#ADD8E6'
+                  break
+                case '作废':
+                  color = '#808080'
+                  break
+                case 'NA':
+                  color = '#FFFF00'
+                  break
+                default:
+                  color = '#00ff00'
               }
-            ]
-          }
-          myChart.setOption({
-            tooltip: {
-              trigger: 'item',
-              triggerOn: 'mousemove'
-            },
-            toolbox: {
-              show: true,
-              feature: {
-                saveAsImage: {}
+              switch (current.testType) {
+                case '主系统':
+                  symbol = 'diamond'
+                  break
+                case '升级联测':
+                  symbol = 'circle'
+                  break
+                case '无升级联测':
+                  symbol = 'rect'
+                  break
+                case '未回复':
+                  symbol = 'triangle'
+                  break
+                default:
+                  symbol = 'diamond'
               }
-            },
-            legend: {
-              top: '2%',
-              left: '3%',
-              orient: 'vertical',
-              borderColor: '#c23531'
-            },
-            series: [
-              {
-                type: 'tree',
-                data: [data],
-                top: '5%',
-                left: '7%',
-                bottom: '2%',
-                right: '60%',
-                symbolSize: 7,
-                label: {
-                  normal: {
-                    position: 'left',
-                    verticalAlign: 'middle',
-                    align: 'right'
-                  }
+              tempData.push({
+                name: current.sysName,
+                value: current.projectStage,
+                symbol: symbol,
+                itemStyle: {
+                  color: color
                 },
-                leaves: {
+                children: recursionTree(current.sonSys)
+              })
+            })
+          }
+          return tempData
+        }
+        // 递归progress
+        function recursionProgress(data) {
+          data.forEach((current, index, arr) => {
+            progressKeyData.push(current.sysName)
+            progressValueData.push(mapProgress(current.projectStage))
+            if (current.sonSys.length > 0) {
+              recursionProgress(current.sonSys)
+            }
+          })
+        }
+        // 映射progress
+        function mapProgress(key) {
+          switch (key) {
+            case '':
+              return 0
+              break
+            case '测试准备':
+              return 1
+              break
+            case 'UAT1测试':
+              return 2
+              break
+            case 'UAT1完成':
+              return 3
+              break
+            case '验收流程':
+              return 4
+              break
+            case '验收测试':
+              return 5
+              break
+            case '验收完成':
+              return 6
+              break
+            case '模拟流程':
+              return 7
+              break
+            case '模拟测试':
+              return 8
+              break
+            case '模拟完成':
+              return 9
+              break
+            case '已上线':
+              return 10
+              break
+            default:
+              return 0
+          }
+        }
+        weekApi.getProgress(params).then(response => {
+          console.log(response.data)
+          treeData = {
+            name: response.data.sysName,
+            value: response.data.projectStage,
+            // symbol: 'image://static/img/user.ecba1844.gif',
+            symbol: 'diamond',
+            children: recursionTree(response.data.sonSys)
+          }
+          recursionProgress([response.data])
+          console.log(treeData)
+          this.$nextTick(() => {
+            // 基于准备好的dom，初始化echarts实例
+            const myChart = echarts.init(document.getElementById('myChart'))
+            myChart.setOption({
+              title : {
+                text: '联测系统关系图',
+                subtext:'升级联测--圆形,无升级测试--矩形,未回复--三角形'
+              },
+              tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c}',
+                triggerOn: 'mousemove'
+              },
+              toolbox: {
+                show: true,
+                feature: {
+                  saveAsImage: {}
+                }
+              },
+              legend: {
+                top: '2%',
+                left: '3%',
+                orient: 'vertical',
+                borderColor: '#c23531'
+              },
+              series: [
+                {
+                  type: 'tree',
+                  data: [treeData],
+                  top: '1%',
+                  left: '7%',
+                  bottom: '1%',
+                  right: '20%',
+                  symbolSize: 20,
+                  roam: true,
                   label: {
                     normal: {
                       position: 'right',
+                      formatter: "{b}",
                       verticalAlign: 'middle',
-                      align: 'left'
+                      fontSize: 16
                     }
-                  }
-                },
-                expandAndCollapse: true,
-                animationDuration: 550,
-                animationDurationUpdate: 750
-              }
-            ]
-          })
+                  },
+                  // leaves: {
+                  //   label: {
+                  //     normal: {
+                  //       position: 'right',
+                  //       verticalAlign: 'middle',
+                  //       align: 'left'
+                  //     }
+                  //   }
+                  // },
+                  expandAndCollapse: true,
+                  animationDuration: 550,
+                  animationDurationUpdate: 750
+                }
+              ]
+            })
 
-          // 基于准备好的dom，初始化echarts实例
-          const myChart2 = echarts.init(document.getElementById('myChart2'))
-          // 绘制图表
-          myChart2.setOption({
-            title: { text: '项目目前阶段' },
-            tooltip: {
-              formatter: (params, ticket, callback) => {
-                // console.log(params)
-                let res = params[0].name
-                for (var i = 0, l = params.length; i < l; i++) {
-                  res += '<br/>' + params[i].seriesName
-                  res += ' : '
-                  res += ['', '测试准备', 'UAT1测试', 'UAT1完成', '验收流程', '验收测试', '验收完成', '模拟流程', '模拟测试', '模拟完成', '已上线'][parseInt(params[i].value)]
-                }
-                setTimeout(() => {
-                  // 仅为了模拟异步回调
-                  callback(ticket, res)
-                }, 0)
-                return 'loading'
-              },
-              trigger: 'axis',
-              axisPointer: { // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-              }
-            },
-            toolbox: {
-              show: true,
-              feature: {
-                saveAsImage: {}
-              }
-            },
-            legend: {
-              data: ['项目阶段']
-            },
-            calculable: true,
-            grid: {
-              left: '3%',
-              right: '4%',
-              bottom: '3%',
-              containLabel: true
-            },
-            xAxis: {
-              type: 'value',
-              splitNumber: 10,
-              axisTick: {
-                show: true,
-                interval: 0
-              },
-              axisLabel: {
-                show: true,
-                margin: 8,
-                formatter: function(value, index) {
-                  return ['    ', '测试准备', 'UAT1测试', 'UAT1完成', '验收流程', '验收测试', '验收完成', '模拟流程', '模拟测试', '模拟完成', '已上线'][value]
+            // 基于准备好的dom，初始化echarts实例
+            const myChart2 = echarts.init(document.getElementById('myChart2'))
+            // 绘制图表
+            myChart2.setOption({
+              title: { text: '项目目前阶段' },
+              tooltip: {
+                formatter: (params, ticket, callback) => {
+                  // console.log(params)
+                  let res = params[0].name
+                  for (var i = 0, l = params.length; i < l; i++) {
+                    res += '<br/>' + params[i].seriesName
+                    res += ' : '
+                    res += progressArr[parseInt(params[i].value)]
+                  }
+                  setTimeout(() => {
+                    // 仅为了模拟异步回调
+                    callback(ticket, res)
+                  }, 0)
+                  return 'loading'
                 },
-                textStyle: {
-                  color: 'blue',
-                  fontFamily: 'sans-serif',
-                  fontSize: 15,
-                  fontStyle: 'italic',
-                  fontWeight: 'bold'
+                trigger: 'axis',
+                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                  type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
                 }
-              }
-            },
-            yAxis: {
-              show: false,
-              type: 'category',
-              axisTick: {
-                show: false
               },
-              data: ['test1V1.1.1', 'test2V2.1.1', 'test3V2.1.1', 'test4V1.3.1', 'test5V5.1.1', 'test6V1.6.1', 'test7V4.1.1']
-            },
-            series: [
-              {
-                name: '系统测试',
-                type: 'bar',
-                barWidth: 35,
-                itemStyle: {
-                  normal: {
-                    label: {
-                      show: true,
-                      position: 'insideBottom',
-                      formatter: '{b} ',
-                      textStyle: {
-                        fontSize: 16
+              toolbox: {
+                show: true,
+                feature: {
+                  saveAsImage: {}
+                }
+              },
+              legend: {
+                data: ['项目阶段']
+              },
+              calculable: true,
+              grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+              },
+              xAxis: {
+                type: 'value',
+                splitNumber: 10,
+                min: 0,
+                max: 10,
+                axisTick: {
+                  show: true,
+                  interval: 0
+                },
+                axisLabel: {
+                  show: true,
+                  margin: 8,
+                  interval: 0,
+                  formatter: function(value, index) {
+                    return progressArr[index]
+                  },
+                  textStyle: {
+                    color: 'blue',
+                    fontFamily: 'sans-serif',
+                    fontSize: 15,
+                    fontStyle: 'italic',
+                    fontWeight: 'bold'
+                  }
+                }
+              },
+              yAxis: {
+                show: false,
+                type: 'category',
+                axisTick: {
+                  show: false
+                },
+                data: progressKeyData
+              },
+              series: [
+                {
+                  name: '项目阶段',
+                  type: 'bar',
+                  barWidth: 35,
+                  itemStyle: {
+                    normal: {
+                      label: {
+                        show: true,
+                        position: 'insideBottom',
+                        formatter: '{b}',
+                        textStyle: {
+                          fontSize: 16
+                        }
                       }
                     }
-                  }
-                },
-                data: [9, 9, 9, 8, 7, 6, 9]
-              }
-            ]
+                  },
+                  data: progressValueData
+                }
+              ]
+            })
           })
         })
       }
@@ -1893,8 +2013,32 @@ export default {
       }
     },
     // 系统 设置table行的class
-    tableRowClassName({ row, rowIndex }) {
-      if (row.isMain) {
+    // tableRowClassName({ row, rowIndex }) {
+    //   if (row.isMain) {
+    //     switch(row.overAllSchedule) {
+    //       case '正常':
+    //         return 'normal'
+    //         break
+    //       case '延期':
+    //         return 'delay'
+    //         break
+    //       case '暂停':
+    //         return 'pause'
+    //         break
+    //       case '作废':
+    //         return 'obsolete'
+    //         break
+    //       default:
+    //         return ''
+    //     }
+    //   }
+    //   return ''
+    // },
+    // 系统 设置table单元格的class
+    tableCellClassName({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 2 && !row.isMain) {
+        return row.differentTime ? 'redCell' : ''
+      } else if (columnIndex === 6) {
         switch(row.overAllSchedule) {
           case '正常':
             return 'normal'
@@ -1910,17 +2054,8 @@ export default {
             break
           default:
             return ''
-        } 
-      }
-      return ''
-    },
-    // 系统 设置table单元格的class
-    tableCellClassName({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 1 && !row.isMain) {
-        return row.differentTime ? 'redCell' : ''
-      } else if (columnIndex === 5 && !row.isMain) {
-        return row.overAllSchedule === '延期' ? 'delayCell' : ''
-      } else if (columnIndex === 10) {
+        }
+      } else if (columnIndex === 11) {
         return row.writter === '' ? 'emptyCell' : ''
       }
     },
@@ -2135,6 +2270,62 @@ export default {
           } else {
             e.isExpand = true
           }
+          return e
+        })
+        this.listLoading = false
+      })
+    },
+    // 会议记录的系统列表 查询
+    onSearchMeetingSys() {
+      const params = {
+        searchStr: this.meetingDialogObj.weekSearch.searchStr,
+        planTimeStart: this.meetingDialogObj.weekSearch.planTime === null ? this.meetingDialogObj.weekSearch.planTime : this.meetingDialogObj.weekSearch.planTime[0],
+        planTimeEnd: this.meetingDialogObj.weekSearch.planTime === null ? this.meetingDialogObj.weekSearch.planTime : this.meetingDialogObj.weekSearch.planTime[1]
+      }
+      weekApi.getWeekReportRelationList(params).then(response => {
+        console.log(response)
+        this.meetingDialogObj.form.meetingWeekReportList = response.data.relationSysList.map(e => {
+          Object.assign(e, e.mainSys)
+          e.isMain = true
+          e.expandStatus = false
+          e.differentTime = false
+          if (e.sonSys.length === 0) {
+            e.isExpand = false
+          } else {
+            e.isExpand = true
+          }
+          return e
+        })
+        const originList = JSON.parse(JSON.stringify(this.meetingDialogObj.form.meetingWeekReportList)).filter(e => {
+          if (e.isMain && e.sonSys.length > 0) {
+            e.isExpand = true
+            e.expandStatus = true
+          } else {
+            e.isExpand = false
+            e.expandStatus = false
+          }
+          return e.isMain
+        })
+        this.meetingDialogObj.form.meetingWeekReportList = []
+        originList.forEach((current, index, arr) => {
+          this.meetingDialogObj.form.meetingWeekReportList.push(current)
+          if (current.sonSys.length > 0) {
+            current.sonSys.map(e => {
+              e.isMain = false
+              e.isExpand = false
+              e.expandStatus = false
+              if (e.planTime === current.planTime) {
+                e.differentTime = false
+              } else {
+                e.differentTime = true
+              }
+            })
+            this.meetingDialogObj.form.meetingWeekReportList.push(...current.sonSys)
+          }
+        })
+        this.meetingDialogObj.form.meetingWeekReportList.map(e => {
+          e.progress = ''
+          e.opinion = ''
           return e
         })
         this.listLoading = false

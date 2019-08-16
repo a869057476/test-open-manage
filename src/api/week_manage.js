@@ -100,6 +100,13 @@ function getWeekReportRelationList(data) {
   })
 }
 
+export function getProgress(uuid) {
+  return request({
+    url: `/pf/report/weekreports/progress/${uuid}`,
+    method: 'get'
+  })
+}
+
 export default {
   getWeekReportList,
   addWeekReport,
@@ -113,5 +120,6 @@ export default {
   getMeetingRecord,
   getAllSysName,
   getSonSysNames,
-  getWeekReportRelationList
+  getWeekReportRelationList,
+  getProgress
 }
