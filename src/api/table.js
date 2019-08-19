@@ -1,7 +1,7 @@
-import request from '@/utils/request'
+import axios from 'axios'
 
 export function getList(params) {
-  return request({
+  return axios({
     url: '/mock-api/table/list',
     method: 'get',
     params

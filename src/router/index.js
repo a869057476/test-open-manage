@@ -69,43 +69,64 @@ export const constantRoutes = [
         redirect: '/project_manage/need_manage/xqtm_list',
         name: 'need_manage',
         component: Center,
-        meta: { title: '需求管理', icon: 'example' },
+        meta: { title: '需求管理' },
         children: [
           {
             path: 'xqtm_list',
             name: 'xqtm_list',
             component: () => import('@/views/main/project_manage/need_manage/xqtm_list/xqtm_list'),
-            meta: { title: '需求条目列表', icon: 'table' }
+            meta: { title: '需求条目列表' }
           },
           {
             path: 'redmine_work',
             name: 'redmine_work',
             component: () => import('@/views/main/project_manage/need_manage/redmine_work/redmine_work'),
-            meta: { title: '报工量汇总情况', icon: 'table' }
+            meta: { title: '报工量汇总情况' }
           },
           {
             path: 'cq_release',
             name: 'cq_release',
             component: () => import('@/views/main/project_manage/need_manage/cq_release/cq_release'),
-            meta: { title: '缺陷Reopen统计报表', icon: 'table' }
+            meta: { title: '缺陷Reopen统计报表' }
           },
           {
             path: 'cq_release_all',
             name: 'cq_release_all',
             component: () => import('@/views/main/project_manage/need_manage/cq_release_all/cq_release_all'),
-            meta: { title: '缺陷Release统计报表', icon: 'table' }
+            meta: { title: '缺陷Release统计报表' }
           },
           {
             path: 'edit_group_project',
             name: 'edit_group_project',
             component: () => import('@/views/main/project_manage/need_manage/edit_group_project/edit_group_project'),
-            meta: { title: '编辑或新增组-系统间权限', icon: 'table' }
+            meta: { title: '编辑或新增组-系统间权限' }
           },
           {
             path: 'manage_year',
             name: 'manage_year',
             component: () => import('@/views/main/project_manage/need_manage/manage_year/manage_year'),
-            meta: { title: '测试管理汇总表', icon: 'table' }
+            meta: { title: '测试管理汇总表' }
+          }
+        ]
+      },
+      {
+        path: 'workload_manage',
+        redirect: '/project_manage/workload_manage/statistics_manage',
+        name: 'workload_manage',
+        component: Center,
+        meta: { title: '工作量管理' },
+        children: [
+          {
+            path: 'statistics_manage',
+            name: 'statistics_manage',
+            component: () => import('@/views/table/index'),
+            meta: { title: '工作量统计管理' }
+          },
+          {
+            path: 'bpm_manage',
+            name: 'bpm_manage',
+            component: () => import('@/views/main/project_manage/workload_manage/bpm_manage/bpm_manage'),
+            meta: { title: 'BPM工作量管理' }
           }
         ]
       },
@@ -113,33 +134,33 @@ export const constantRoutes = [
         path: 'weekly_info_manage',
         name: 'weekly_info_manage',
         component: () => import('@/views/main/project_manage/weekly_info_manage/weekly_info_manage'),
-        meta: { title: '测试周报管理', icon: 'example' }
+        meta: { title: '测试周报管理' }
       },
       {
         path: 'project_process_quality',
         component: Center,
         redirect: '/project_manage/project_process_quality/analyze/QA_singleproj_DRE',
         name: 'project_process_quality',
-        meta: { title: '项目过程质量', icon: 'example' },
+        meta: { title: '项目过程质量' },
         children: [
           {
             path: 'analyze',
             component: Center,
             name: 'analyze',
-            meta: { title: '项目过程质量分析', icon: 'table' },
+            meta: { title: '项目过程质量分析' },
             redirect: '/project_manage/project_process_quality/analyze/QA_singleproj_DRE',
             children: [
               {
                 path: 'QA_singleproj_DRE',
                 component: () => import('@/views/main/project_manage/project_process_quality/analyze/QA_singleproj_DRE/QA_singleproj_DRE'),
                 name: 'QA_singleproj_DRE',
-                meta: { title: '单项目DRE', icon: 'nested' }
+                meta: { title: '单项目DRE' }
               },
               {
                 path: 'QA_singlesys_DRE',
                 component: () => import('@/views/main/project_manage/project_process_quality/analyze/QA_singlesys_DRE/QA_singlesys_DRE'),
                 name: 'QA_singlesys_DRE',
-                meta: { title: '单系统DRE', icon: 'nested' }
+                meta: { title: '单系统DRE' }
               }
             ]
           },
@@ -147,50 +168,50 @@ export const constantRoutes = [
             path: 'check',
             component: Center,
             name: 'check',
-            meta: { title: '项目过程质量检查', icon: 'table' },
+            meta: { title: '项目过程质量检查' },
             redirect: '/project_manage/project_process_quality/check/QA_table',
             children: [
               {
                 path: 'QA_table',
                 component: () => import('@/views/main/project_manage/project_process_quality/check/QA_table/QA_table'),
                 name: 'QA_table',
-                meta: { title: '项目过程质量检查', icon: 'nested' }
+                meta: { title: '项目过程质量检查' }
               },
               {
                 path: 'QA_weekreport',
                 component: () => import('@/views/main/project_manage/project_process_quality/check/QA_weekreport/QA_weekreport'),
                 name: 'QA_weekreport',
-                meta: { title: '项目审计周报', icon: 'nested' }
+                meta: { title: '项目审计周报' }
               },
               {
                 path: 'plot_QA_weekreport',
                 component: () => import('@/views/nested/menu1/menu1-1'),
                 name: 'plot_QA_weekreport',
-                meta: { title: '项目审计周报（测试）', icon: 'nested' }
+                meta: { title: '项目审计周报（测试）' }
               },
               {
                 path: 'QA_auth',
                 component: () => import('@/views/nested/menu1/menu1-1'),
                 name: 'QA_auth',
-                meta: { title: '项目人员权限管理', icon: 'nested' }
+                meta: { title: '项目人员权限管理' }
               },
               {
                 path: 'Test_auth',
                 component: () => import('@/views/nested/menu1/menu1-1'),
                 name: 'Test_auth',
-                meta: { title: '过程审计员权限管理', icon: 'nested' }
+                meta: { title: '过程审计员权限管理' }
               },
               {
                 path: 'Proj_all',
                 component: () => import('@/views/main/project_manage/project_process_quality/check/Proj_all/Proj_all'),
                 name: 'Proj_all',
-                meta: { title: '项目基础信息', icon: 'nested' }
+                meta: { title: '项目基础信息' }
               },
               {
                 path: 'Sys_all',
                 component: () => import('@/views/main/project_manage/project_process_quality/check/Sys_all/Sys_all'),
                 name: 'Sys_all',
-                meta: { title: '系统基础信息', icon: 'nested' }
+                meta: { title: '系统基础信息' }
               }
             ]
           }
@@ -201,7 +222,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/Smartbi_report_info/testreport_sys',
         name: 'Smartbi_report_info',
-        meta: { title: 'Smartbi报表信息', icon: 'example' },
+        meta: { title: 'Smartbi报表信息' },
         children: [
           {
             path: 'testreport_sys',
@@ -264,25 +285,25 @@ export const constantRoutes = [
         component: Layout,
         redirect: '/version_plan_manage/version_plan',
         name: 'version_plan_manage',
-        meta: { title: '版本计划', icon: 'example' },
+        meta: { title: '版本计划' },
         children: [
           {
             path: 'version_plan',
             name: 'version_plan',
             component: () => import('@/views/table/index'),
-            meta: { title: '版本计划查看', icon: 'table' }
+            meta: { title: '版本计划查看' }
           },
           {
             path: 'version_plan_add',
             name: 'version_plan_add',
             component: () => import('@/views/table/index'),
-            meta: { title: '新增版本计划', icon: 'table' }
+            meta: { title: '新增版本计划' }
           },
           {
             path: 'version_risk',
             name: 'version_risk',
             component: () => import('@/views/table/index'),
-            meta: { title: '版本风险', icon: 'table' }
+            meta: { title: '版本风险' }
           }
         ]
       },
@@ -291,19 +312,19 @@ export const constantRoutes = [
         component: Layout,
         redirect: '/workload_calendar_manage/workload_calendar',
         name: 'workload_calendar_manage',
-        meta: { title: '工作日历', icon: 'example' },
+        meta: { title: '工作日历' },
         children: [
           {
             path: 'workload_calendar',
             name: 'workload_calendar',
             component: () => import('@/views/table/index'),
-            meta: { title: '工作日历', icon: 'table' }
+            meta: { title: '工作日历' }
           },
           {
             path: 'my_staff',
             name: 'my_staff',
             component: () => import('@/views/table/index'),
-            meta: { title: '负责人员情况', icon: 'table' }
+            meta: { title: '负责人员情况' }
           }
         ]
       },
@@ -312,13 +333,13 @@ export const constantRoutes = [
         component: Layout,
         redirect: '/version_staff_manage/staff_manage',
         name: 'version_staff_manage',
-        meta: { title: '版本人员管理', icon: 'example' },
+        meta: { title: '版本人员管理' },
         children: [
           {
             path: 'staff_manage',
             name: 'staff_manage',
             component: () => import('@/views/table/index'),
-            meta: { title: '人员分配', icon: 'table' }
+            meta: { title: '人员分配' }
           }
         ]
       },
@@ -327,19 +348,19 @@ export const constantRoutes = [
         component: Center,
         redirect: '/project_manage/board_manage/message_list',
         name: 'board_manage',
-        meta: { title: '看板管理', icon: 'example' },
+        meta: { title: '看板管理' },
         children: [
           {
             path: 'message_list',
             name: 'message_list',
             component: () => import('@/views/main/project_manage/board_manage/message_list/message_list'),
-            meta: { title: '消息查看', icon: 'table' }
+            meta: { title: '消息查看' }
           },
           {
             path: 'download_manage',
             name: 'download_manage',
             component: () => import('@/views/main/project_manage/board_manage/download_manage/download_manage'),
-            meta: { title: '下载管理', icon: 'table' }
+            meta: { title: '下载管理' }
           }
         ]
       },
@@ -348,43 +369,43 @@ export const constantRoutes = [
         component: Layout,
         redirect: '/setting_manage/group_user',
         name: 'setting_manage',
-        meta: { title: '设置', icon: 'example' },
+        meta: { title: '设置' },
         children: [
           {
             path: 'group_user',
             name: 'group_user',
             component: () => import('@/views/table/index'),
-            meta: { title: '组人员管理', icon: 'table' }
+            meta: { title: '组人员管理' }
           },
           {
             path: 'group_sys',
             name: 'group_sys',
             component: () => import('@/views/table/index'),
-            meta: { title: '组关联系统管理', icon: 'table' }
+            meta: { title: '组关联系统管理' }
           },
           {
             path: 'user_auth',
             name: 'user_auth',
             component: () => import('@/views/table/index'),
-            meta: { title: '人员权限管理', icon: 'table' }
+            meta: { title: '人员权限管理' }
           },
           {
             path: 'set_staff_leader',
             name: 'set_staff_leader',
             component: () => import('@/views/table/index'),
-            meta: { title: '负责人设置', icon: 'table' }
+            meta: { title: '负责人设置' }
           },
           {
             path: 'email_change',
             name: 'email_change',
             component: () => import('@/views/table/index'),
-            meta: { title: '个人信息管理', icon: 'table' }
+            meta: { title: '个人信息管理' }
           },
           {
             path: 'group_send_email',
             name: 'group_send_email',
             component: () => import('@/views/table/index'),
-            meta: { title: '邮件发送功能', icon: 'table' }
+            meta: { title: '邮件发送功能' }
           }
         ]
       },
@@ -393,19 +414,19 @@ export const constantRoutes = [
         component: Center,
         redirect: '/project_manage/defect_requir_manage/defect_manages',
         name: 'defect_requir_manage',
-        meta: { title: '缺陷与需求', icon: 'example' },
+        meta: { title: '缺陷与需求' },
         children: [
           {
             path: 'defect_manages',
             name: 'defect_manages',
             component: () => import('@/views/main/project_manage/defect_requir_manage/defect_manages/defect_manages'),
-            meta: { title: '缺陷管理', icon: 'table' }
+            meta: { title: '缺陷管理' }
           },
           {
             path: 'requir_manages',
             name: 'requir_manages',
             component: () => import('@/views/main/project_manage/defect_requir_manage/requir_manages/requir_manages'),
-            meta: { title: '需求管理', icon: 'table' }
+            meta: { title: '需求管理' }
           }
         ]
       },
@@ -414,13 +435,13 @@ export const constantRoutes = [
         component: Center,
         redirect: '/project_manage/bata_entrance_manage/clms_project',
         name: 'bata_entrance_manage',
-        meta: { title: '报工公测入口', icon: 'example' },
+        meta: { title: '报工公测入口' },
         children: [
           {
             path: 'clms_project',
             name: 'clms_project',
             component: () => import('@/views/main/project_manage/bata_entrance_manage/clms_project/clms_project'),
-            meta: { title: '精益系统项目情况', icon: 'table' }
+            meta: { title: '精益系统项目情况' }
           }
         ]
       }
@@ -451,7 +472,7 @@ export const constantRoutes = [
       path: 'permission',
       name: 'permission',
       component: () => import('@/views/main/permission_manage/permission_manage'),
-      meta: { title: '权限管理', icon: 'example' }
+      meta: { title: '权限管理' }
     }]
   },
 

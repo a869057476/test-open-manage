@@ -99,7 +99,7 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="测试周报信息列表" name="component-two">
-        <el-collapse value="1" @change="onChangeCollapse">
+        <el-collapse value="1">
           <el-collapse-item title="展开/收起搜索条件" name="1">
             <el-form ref="weekFormSearch" :inline="true" :model="weekFormSearch" label-width="100px">
               <el-form-item label="系统名称" prop="sysName">
@@ -1036,7 +1036,7 @@ export default {
       },
       // 周报 信息
       weekObj: {
-        height: 200,
+        height: 280,
         list: [],
         checkedList: [],
         pageIndex: 1,
@@ -1283,7 +1283,6 @@ export default {
         this.autoHeightRequirement = this.$root.$el.clientHeight - 380
         this.weekDialogObj.height = this.$root.$el.clientHeight - 280
         this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
-        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
         this.meetingObj.height = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
       }
     })
@@ -1363,19 +1362,7 @@ export default {
         this.onSearchMeeting()
       }
       this.$nextTick(() => {
-        this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
         this.meetingObj.height = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
-      })
-    },
-    // 周报 展开/收起搜索条件
-    onChangeCollapse(name) {
-      console.log(name)
-      this.$nextTick(() => {
-        if (name.length) {
-          this.weekObj.height = this.$el.parentNode.clientHeight - this.$refs['weekFormSearch'].$el.clientHeight - 240
-        } else {
-          this.weekObj.height = this.$el.parentNode.clientHeight - 240
-        }
       })
     },
     // 周报 设置列表选中的数据
