@@ -320,7 +320,7 @@ export default {
       }).then(() => {
         console.log('删除成功')
       }).catch(() => {
-        console.log('取消删除')         
+        console.log('取消删除')
       })
     },
     // 每页条数选择

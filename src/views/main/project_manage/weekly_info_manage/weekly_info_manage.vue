@@ -495,14 +495,14 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="系统名称" prop="sysName">
-                <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" @change="onChangeOwnMainSys">
+                <el-select v-model="weekDialogObj.form.sysName" placeholder="请选择" filterable @change="onChangeOwnMainSys">
                   <el-option v-for="item in mainSysList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="子系统名称" prop="sysSonName">
-                <el-select v-model="weekDialogObj.form.ownSonSys" value-key="itemAppNameSon" placeholder="请选择" clearable @change="onChangeOwnSonSys">
+                <el-select v-model="weekDialogObj.form.ownSonSys" value-key="itemAppNameSon" placeholder="请选择" filterable clearable @change="onChangeOwnSonSys">
                   <el-option v-for="item in ownSonSysList" :key="item.itemAppNameSon" :label="item.itemAppNameSon" :value="item"></el-option>
                 </el-select>
               </el-form-item>
@@ -529,14 +529,14 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="全流程名称" prop="mainSysName">
-                <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" @change="onChangeMainMainSys">
+                <el-select v-model="weekDialogObj.form.mainSysName" placeholder="请选择" filterable @change="onChangeMainMainSys">
                   <el-option v-for="item in mainSysList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="全流程子系统名称" prop="mainSysSonName">
-                <el-select v-model="weekDialogObj.form.mainSonSys" value-key="itemAppNameSon" placeholder="请选择" clearable @change="onChangeMainSonSys">
+                <el-select v-model="weekDialogObj.form.mainSonSys" value-key="itemAppNameSon" placeholder="请选择" clearable filterable @change="onChangeMainSonSys">
                   <el-option v-for="item in mainSonSysList" :key="item.itemAppNameSon" :label="item.itemAppNameSon" :value="item"></el-option>
                 </el-select>
               </el-form-item>
@@ -883,7 +883,7 @@
             </div>
           </div>
         </el-form>
-        <el-form v-if="this.meetingDialogObj.title === '新增'" :inline="true" :model="meetingDialogObj.weekSearch">
+        <el-form v-if="meetingDialogObj.title === '新增'" :inline="true" :model="meetingDialogObj.weekSearch">
           <el-form-item label="系统名称">
             <el-input v-model="meetingDialogObj.weekSearch.searchStr" placeholder="请输入" clearable></el-input>
           </el-form-item>
@@ -978,7 +978,6 @@
 </template>
 
 <script>
-import { getWeekReportList } from '@/api/local'
 import weekApi from '@/api/week_manage'
 import { Calendar } from '@/utils'
 import echarts from 'echarts'
@@ -1132,7 +1131,10 @@ export default {
       },
       // 树状图 dialog
       treeDialogObj: {
-        visible: false
+        visible: false,
+        treeData: {}, // 树状图数据
+        progressKeyData: [], // 项目目前阶段key
+        progressValueData: [] // 项目目前阶段value
       },
       // 会议记录 dialog
       meetingDialogObj: {
@@ -1622,133 +1624,28 @@ export default {
       } else if (type === 'tree') {
         this.treeDialogObj.visible = true
         const params = row.uuid
-        let treeData = {}
-        let progressKeyData = []
-        let progressValueData = []
+        this.treeDialogObj.treeData = {}
+        this.treeDialogObj.progressKeyData = []
+        this.treeDialogObj.progressValueData = []
         const progressArr = ['', '测试准备', 'UAT1测试', 'UAT1完成', '验收流程', '验收测试', '验收完成', '模拟流程', '模拟测试', '模拟完成', '已上线']
-        // 递归tree
-        function recursionTree(data) {
-          let tempData = []
-          if (Array.isArray(data)) {
-            data.forEach((current, index, arr) => {
-              let color = ''
-              let symbol = ''
-              switch (current.overAllSchedule) {
-                case '正常':
-                  color = '#00ff00'
-                  break
-                case '延期':
-                  color = '#FF7256'
-                  break
-                case '暂停':
-                  color = '#ADD8E6'
-                  break
-                case '作废':
-                  color = '#808080'
-                  break
-                case 'NA':
-                  color = '#FFFF00'
-                  break
-                default:
-                  color = '#00ff00'
-              }
-              switch (current.testType) {
-                case '主系统':
-                  symbol = 'diamond'
-                  break
-                case '升级联测':
-                  symbol = 'circle'
-                  break
-                case '无升级联测':
-                  symbol = 'rect'
-                  break
-                case '未回复':
-                  symbol = 'triangle'
-                  break
-                default:
-                  symbol = 'diamond'
-              }
-              tempData.push({
-                name: current.sysName,
-                value: current.projectStage,
-                symbol: symbol,
-                itemStyle: {
-                  color: color
-                },
-                children: recursionTree(current.sonSys)
-              })
-            })
-          }
-          return tempData
-        }
-        // 递归progress
-        function recursionProgress(data) {
-          data.forEach((current, index, arr) => {
-            progressKeyData.push(current.sysName)
-            progressValueData.push(mapProgress(current.projectStage))
-            if (current.sonSys.length > 0) {
-              recursionProgress(current.sonSys)
-            }
-          })
-        }
-        // 映射progress
-        function mapProgress(key) {
-          switch (key) {
-            case '':
-              return 0
-              break
-            case '测试准备':
-              return 1
-              break
-            case 'UAT1测试':
-              return 2
-              break
-            case 'UAT1完成':
-              return 3
-              break
-            case '验收流程':
-              return 4
-              break
-            case '验收测试':
-              return 5
-              break
-            case '验收完成':
-              return 6
-              break
-            case '模拟流程':
-              return 7
-              break
-            case '模拟测试':
-              return 8
-              break
-            case '模拟完成':
-              return 9
-              break
-            case '已上线':
-              return 10
-              break
-            default:
-              return 0
-          }
-        }
         weekApi.getProgress(params).then(response => {
           console.log(response.data)
-          treeData = {
+          this.treeDialogObj.treeData = {
             name: response.data.sysName,
             value: response.data.projectStage,
             // symbol: 'image://static/img/user.ecba1844.gif',
             symbol: 'diamond',
-            children: recursionTree(response.data.sonSys)
+            children: this.recursionTree(response.data.sonSys)
           }
-          recursionProgress([response.data])
-          console.log(treeData)
+          this.recursionProgress([response.data])
+          console.log(this.treeDialogObj.treeData)
           this.$nextTick(() => {
             // 基于准备好的dom，初始化echarts实例
             const myChart = echarts.init(document.getElementById('myChart'))
             myChart.setOption({
-              title : {
+              title: {
                 text: '联测系统关系图',
-                subtext:'升级联测--圆形,无升级测试--矩形,未回复--三角形'
+                subtext: '升级联测--圆形,无升级测试--矩形,未回复--三角形'
               },
               tooltip: {
                 trigger: 'item',
@@ -1770,7 +1667,7 @@ export default {
               series: [
                 {
                   type: 'tree',
-                  data: [treeData],
+                  data: [this.treeDialogObj.treeData],
                   top: '1%',
                   left: '7%',
                   bottom: '1%',
@@ -1780,7 +1677,7 @@ export default {
                   label: {
                     normal: {
                       position: 'right',
-                      formatter: "{b}",
+                      formatter: '{b}',
                       verticalAlign: 'middle',
                       fontSize: 16
                     }
@@ -1873,7 +1770,7 @@ export default {
                 axisTick: {
                   show: false
                 },
-                data: progressKeyData
+                data: this.treeDialogObj.progressKeyData
               },
               series: [
                 {
@@ -1892,12 +1789,106 @@ export default {
                       }
                     }
                   },
-                  data: progressValueData
+                  data: this.treeDialogObj.progressValueData
                 }
               ]
             })
           })
         })
+      }
+    },
+    // 递归tree
+    recursionTree(data) {
+      const tempData = []
+      if (Array.isArray(data)) {
+        data.forEach((current, index, arr) => {
+          let color = ''
+          let symbol = ''
+          switch (current.overAllSchedule) {
+            case '正常':
+              color = '#00ff00'
+              break
+            case '延期':
+              color = '#FF7256'
+              break
+            case '暂停':
+              color = '#ADD8E6'
+              break
+            case '作废':
+              color = '#808080'
+              break
+            case 'NA':
+              color = '#FFFF00'
+              break
+            default:
+              color = '#00ff00'
+          }
+          switch (current.testType) {
+            case '主系统':
+              symbol = 'diamond'
+              break
+            case '升级联测':
+              symbol = 'circle'
+              break
+            case '无升级联测':
+              symbol = 'rect'
+              break
+            case '未回复':
+              symbol = 'triangle'
+              break
+            default:
+              symbol = 'diamond'
+          }
+          tempData.push({
+            name: current.sysName,
+            value: current.projectStage,
+            symbol: symbol,
+            itemStyle: {
+              color: color
+            },
+            children: this.recursionTree(current.sonSys)
+          })
+        })
+      }
+      return tempData
+    },
+    // 递归progress
+    recursionProgress(data) {
+      data.forEach((current, index, arr) => {
+        this.treeDialogObj.progressKeyData.push(current.sysName)
+        this.treeDialogObj.progressValueData.push(this.mapProgress(current.projectStage))
+        if (current.sonSys.length > 0) {
+          this.recursionProgress(current.sonSys)
+        }
+      })
+    },
+    // 映射progress
+    mapProgress(key) {
+      switch (key) {
+        case '':
+          return 0
+        case '测试准备':
+          return 1
+        case 'UAT1测试':
+          return 2
+        case 'UAT1完成':
+          return 3
+        case '验收流程':
+          return 4
+        case '验收测试':
+          return 5
+        case '验收完成':
+          return 6
+        case '模拟流程':
+          return 7
+        case '模拟测试':
+          return 8
+        case '模拟完成':
+          return 9
+        case '已上线':
+          return 10
+        default:
+          return 0
       }
     },
     /** 会议记录 操作
@@ -2060,19 +2051,15 @@ export default {
       if (columnIndex === 2 && !row.isMain) {
         return row.differentTime ? 'redCell' : ''
       } else if (columnIndex === 6) {
-        switch(row.overAllSchedule) {
+        switch (row.overAllSchedule) {
           case '正常':
             return 'normal'
-            break
           case '延期':
             return 'delay'
-            break
           case '暂停':
             return 'pause'
-            break
           case '作废':
             return 'obsolete'
-            break
           default:
             return ''
         }
@@ -2358,23 +2345,6 @@ export default {
     fetchData() {
       this.onSearchSys()
       this.onSearchMainSys()
-      // getWeekReportList().then(response => {
-      //   console.log(response.data.items)
-      //   this.sysObj.originList = response.data.items
-      //   // 设置能展开的行
-      //   this.sysObj.originList.forEach((e, i) => {
-      //     if (e.status !== '主系统') {
-      //       if (this.sysObj.originList[i - 1].status === '主系统') {
-      //         this.sysObj.originList[i - 1].isExpand = true
-      //       }
-      //     }
-      //   })
-      //   // this.sysObj.list = response.data.items
-      //   this.sysObj.list = this.sysObj.originList.filter(e => {
-      //     return e.status === '主系统'
-      //   })
-      //   this.listLoading = false
-      // })
     }
   }
 }
