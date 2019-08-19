@@ -896,7 +896,7 @@
           </el-form-item>
         </el-form>
         <el-table v-loading="listLoading" :data="meetingDialogObj.form.meetingWeekReportList" :cell-class-name="tableCellClassName" element-loading-text="Loading" border fit highlight-current-row max-height="500" @selection-change="handleSelectionChangeMeetingWeek">
-          <el-table-column type="selection" width="55">
+          <el-table-column v-if="meetingDialogObj.title === '新增'" type="selection" width="55">
           </el-table-column>
           <el-table-column label="系统类型" min-width="80" align="center">
             <template slot-scope="scope">
@@ -1933,14 +1933,14 @@ export default {
             params.departmentStaff = JSON.stringify(params.departmentStaff)
             params.meetResult = JSON.stringify(params.meetResult)
             params.remainingProblem = JSON.stringify(params.remainingProblem)
-            params.meetingWeekReportList = this.meetingDialogObj.checkedList.map(e => {
-              e.weekRepoetTotal = JSON.stringify(e)
-              if (this.meetingDialogObj.title === '修改') {
-                e.meetingId = this.meetingDialogObj.uuid
-              }
-              return e
-            })
             if (this.meetingDialogObj.title === '新增') {
+              params.meetingWeekReportList = this.meetingDialogObj.checkedList.map(e => {
+                e.weekRepoetTotal = JSON.stringify(e)
+                if (this.meetingDialogObj.title === '修改') {
+                  e.meetingId = this.meetingDialogObj.uuid
+                }
+                return e
+              })
               weekApi.addMeetingRecord(params).then(response => {
                 this.$notify({
                   title: '成功',
@@ -1952,6 +1952,13 @@ export default {
               })
             } else if (this.meetingDialogObj.title === '修改') {
               params.uuid = this.meetingDialogObj.uuid
+              params.meetingWeekReportList = this.meetingDialogObj.form.meetingWeekReportList.map(e => {
+                e.weekRepoetTotal = JSON.stringify(e)
+                if (this.meetingDialogObj.title === '修改') {
+                  e.meetingId = this.meetingDialogObj.uuid
+                }
+                return e
+              })
               weekApi.updateMeetingRecord(params).then(response => {
                 this.$notify({
                   title: '成功',
