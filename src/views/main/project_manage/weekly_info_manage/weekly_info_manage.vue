@@ -15,6 +15,7 @@
           <el-form-item>
             <el-button type="primary" size="small" @click="onSearchSys">查询</el-button>
             <el-button type="warning" size="small" @click="onSearchSys">导出Excel</el-button>
+            <el-button type="info" size="small" @click="onOperateWeek('meeting')">新增会议记录</el-button>
           </el-form-item>
           <el-form-item label="展开">
             <el-switch v-model="sysFormSearch.isExpand" @change="onChangeExpandAll"></el-switch>
@@ -753,7 +754,7 @@
       <div style="font-size: 18px;font-weight: bold;padding-left: 5px;">项目整体进度：<span style="color: #00ff00">正常</span>----<span style="color: #FF7256">延期</span>----<span style="color: #ADD8E6">暂停</span>----<span style="color: #808080">作废</span>----<span style="color: #FFFF00">NA</span></div>
       <div id="myChart2" :style="{width: '100%', height: '580px'}"></div>
     </el-dialog>
-    <el-dialog :title="meetingDialogObj.title" :visible.sync="meetingDialogObj.visible" :fullscreen="true">
+    <el-dialog :title="meetingDialogObj.title" :visible.sync="meetingDialogObj.visible" :fullscreen="true" @close="onCloseMeeingDialog">
       <div :style="{ height: meetingDialogObj.height + 'px', overflow: 'auto' }">
         <el-form ref="meetingForm" class="meeting-record mb20" :model="meetingDialogObj.form" :rules="meetingDialogObj.rules">
           <div class="meeting-record-row">
@@ -998,6 +999,7 @@ export default {
     return {
       autoHeightRequirement: 200,
       activeName: 'component-one',
+      isAddMeeingByWeek: false,
       // 系统 搜索条件
       sysFormSearch: {
         planTime: null, // 生产上线时间
@@ -1040,7 +1042,8 @@ export default {
         list: [],
         checkedList: [],
         pageIndex: 1,
-        pageSize: 20
+        pageSize: 20,
+        total: 0
       },
       // 会议记录 信息
       meetingObj: {
@@ -1048,7 +1051,8 @@ export default {
         list: [],
         checkedList: [],
         pageIndex: 1,
-        pageSize: 20
+        pageSize: 20,
+        total: 0
       },
       mainSysList: [], // 主系统列表
       ownSonSysList: [], // 本系统的子系统列表
@@ -1182,11 +1186,11 @@ export default {
       pickerOptions: {
         shortcuts: [
           {
-            text: '本周',
+            text: '下周',
             onClick(picker) {
               const calendar = new Calendar()
-              const start = calendar.getNowWeek().startDate
-              const end = calendar.getNowWeek().endDate
+              const start = calendar.getNextWeekOther().startDate
+              const end = calendar.getNextWeekOther().endDate
               picker.$emit('pick', [start, end])
             }
           },
@@ -1200,11 +1204,11 @@ export default {
             }
           },
           {
-            text: '下周',
+            text: '本周',
             onClick(picker) {
               const calendar = new Calendar()
-              const start = calendar.getNextWeekOther().startDate
-              const end = calendar.getNextWeekOther().endDate
+              const start = calendar.getNowWeek().startDate
+              const end = calendar.getNowWeek().endDate
               picker.$emit('pick', [start, end])
             }
           },
@@ -1351,8 +1355,8 @@ export default {
       this.weekDialogObj.form.mainItemSystemId = val.itemSystemId
     },
     // 切换tab
-    onToggleTab(tab, event) {
-      console.log(tab, event)
+    onToggleTab(tab) {
+      console.log(tab)
       if (tab.name === 'component-one') {
         this.onSearchSys()
       }
@@ -1428,7 +1432,7 @@ export default {
     },
     /** 系统/周报 操作
      * @method onOperateWeek
-     * @param {String} type add: 新增;edit: 修改;submit: 提交;deleteSingle: 单个删除;deleteMultiple: 批量删除;detail: 查看;tree: 系统关系树状图
+     * @param {String} type add: 新增;edit: 修改;submit: 提交;deleteSingle: 单个删除;deleteMultiple: 批量删除;detail: 查看;tree: 系统关系树状图; meeting: 新增会议记录
      * @param {Object} row 当前行数据
      * @return 无
      */
@@ -1782,6 +1786,11 @@ export default {
             })
           })
         })
+      } else if (type === 'meeting') {
+        this.activeName = 'component-three'
+        this.isAddMeeingByWeek = true
+        this.onToggleTab({ name: 'component-three'})
+        this.onOperateMeeting('add')
       }
     },
     // 递归tree
@@ -1878,6 +1887,9 @@ export default {
           return 0
       }
     },
+    onCloseMeeingDialog() {
+      this.isAddMeeingByWeek = false
+    },
     /** 会议记录 操作
      * @method onOperateMeeting
      * @param {String} type add: 新增;edit: 修改;submit: 提交;deleteSingle: 单个删除;deleteMultiple: 批量删除
@@ -1905,9 +1917,10 @@ export default {
           this.meetingDialogObj.form.remainingProblem = []
           this.meetingDialogObj.form.meetingWeekReportList = []
           const calendar = new Calendar()
-          const start = calendar.getNowWeek().startDate
-          const end = calendar.getNowWeek().endDate
-          this.meetingDialogObj.weekSearch.planTime = [start, end]
+          const start = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? this.sysFormSearch.planTime[0] : null) : calendar.getNextWeekOther().startDate
+          const end = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? this.sysFormSearch.planTime[1] : null) :  calendar.getNextWeekOther().endDate
+          this.meetingDialogObj.weekSearch.planTime = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? [start, end] : null) : [start, end]
+          this.meetingDialogObj.weekSearch.searchStr = this.isAddMeeingByWeek ? this.sysFormSearch.searchStr : ''
           this.onSearchMeetingSys()
         })
       } else if (type === 'edit') {

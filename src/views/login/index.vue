@@ -123,8 +123,12 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch(() => {
+          }).catch(error => {
             this.loading = false
+            this.$message({
+              type: 'error',
+              message: error
+            })
           })
         } else {
           console.log('error submit!!')
