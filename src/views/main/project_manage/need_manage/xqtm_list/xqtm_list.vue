@@ -1,143 +1,156 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" :model="formSearch" label-width="110px">
-      <el-form-item label="系统名称">
-        <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-          <el-option label="债券基础信息系统" value="0"></el-option>
-          <el-option label="交易后处理系统" value="1"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="子系统名称">
-        <el-select v-model="formSearch.region" placeholder="请选择" clearable>
-          <el-option label="子系统1" value="0"></el-option>
-          <el-option label="子系统2" value="1"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="计划上线版本号">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="需求条目编号">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="需求条目主题">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="需求设计编号">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="需求设计名称">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="实际上线版本号">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="BPM签报号">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="BPM项目名">
-        <el-input v-model="formSearch.user" placeholder="请输入" clearable></el-input>
-      </el-form-item>
-      <div class="mb20">
-        <el-button type="primary" size="small" @click="onSearch">查询</el-button>
-        <el-button type="success" size="small" @click="onSearch">重置</el-button>
-        <el-button type="warning" size="small" @click="onSearch">导出Excel</el-button>
-      </div>
-    </el-form>
-    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row :max-height="autoHeight">
+    <el-collapse value="1">
+      <el-collapse-item title="展开/收起搜索条件" name="1">
+        <el-form ref="requireFormSearch" :inline="true" :model="requireFormSearch" label-width="110px">
+          <el-form-item label="系统名称" prop="item_req_realize_sys">
+            <el-select v-model="requireFormSearch.item_req_realize_sys" placeholder="请选择" clearable @change="onChangeSysName">
+              <el-option v-for="item in requireObj.sysNameList" :key="item" :label="item" :value="item"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="子系统名称" prop="item_req_realize_sys_son">
+            <el-select v-model="requireFormSearch.item_req_realize_sys_son" placeholder="请选择" clearable>
+              <el-option v-for="item in requireObj.sysSonNameList" :key="item.itemAppNameSon" :label="item.itemAppNameSon" :value="item.itemAppNameSon"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="计划上线版本号" prop="item_plan_release_ver">
+            <el-input v-model="requireFormSearch.item_plan_release_ver" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="实际上线版本号" prop="item_current_release_ver">
+            <el-input v-model="requireFormSearch.item_current_release_ver" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="需求条目编号" prop="item_req_list_id">
+            <el-input v-model="requireFormSearch.item_req_list_id" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="需求条目主题" prop="item_req_title">
+            <el-input v-model="requireFormSearch.item_req_title" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="需求设计编号" prop="item_sj_list_id">
+            <el-input v-model="requireFormSearch.item_sj_list_id" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="需求设计名称" prop="item_sj_list_title">
+            <el-input v-model="requireFormSearch.item_sj_list_title" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="测试版本号" prop="test_version">
+            <el-input v-model="requireFormSearch.test_version" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="BPM签报号" prop="item_proj_start_signno">
+            <el-input v-model="requireFormSearch.item_proj_start_signno" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="BPM项目名" prop="item_proj_name">
+            <el-input v-model="requireFormSearch.item_proj_name" placeholder="请输入" clearable></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="是否可用">
+            <el-switch v-model="requireFormSearch.user"></el-switch>
+          </el-form-item> -->
+          <div class="mb20">
+            <el-button type="primary" size="small" @click="onSearchRequireList">查询</el-button>
+            <el-button type="success" size="small" @click="onResetRequire('requireFormSearch')">重置</el-button>
+            <el-button type="warning" size="small" @click="onExport">导出Excel</el-button>
+          </div>
+        </el-form>
+      </el-collapse-item>
+    </el-collapse>
+    <el-table v-loading="listLoading" :data="requireObj.list" element-loading-text="Loading" border fit highlight-current-row :max-height="requireObj.height" @cell-dblclick="cellDbclick">
       <!-- <el-table-column
         type="selection"
         width="55">
       </el-table-column> -->
-      <el-table-column label="需求设计单号" width="120" align="center">
+      <el-table-column label="需求设计编号" width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.row.item_sj_list_id }}
         </template>
       </el-table-column>
       <el-table-column label="需求设计名称" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.item_sj_list_title }}
         </template>
       </el-table-column>
       <el-table-column label="需求条目编号" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.item_req_list_id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="需求条目主题" width="200" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_req_title }}
         </template>
       </el-table-column>
       <el-table-column label="提出部门" width="100" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_depart }}
         </template>
       </el-table-column>
-      <el-table-column label="实现系统" width="150" align="center">
+      <el-table-column label="系统" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_req_realize_sys }}
         </template>
       </el-table-column>
-      <el-table-column label="实现子系统" width="150" align="center">
+      <el-table-column label="子系统" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_req_realize_sys_son }}
         </template>
       </el-table-column>
       <el-table-column label="计划上线版本" width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Bpm签报号" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Bpm项目名" width="200" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column label="计划上线时间" width="120" align="center">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          {{ scope.row.date }}
+          {{ scope.row.item_plan_release_ver }}
         </template>
       </el-table-column>
       <el-table-column label="svn实际上线版本" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_current_release_ver }}
         </template>
       </el-table-column>
-      <el-table-column label="实际上线时间" width="120" align="center">
+      <el-table-column label="Bpm签报号" width="120" align="center">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
-          {{ scope.row.date }}
+          {{ scope.row.item_proj_start_signno }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Bpm项目名" width="200" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.item_proj_name }}
+        </template>
+      </el-table-column>
+      <el-table-column label="计划上线时间" width="120" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.item_plan_finish_date }}
         </template>
       </el-table-column>
       <el-table-column label="需求部门负责人" width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_req_char }}
         </template>
       </el-table-column>
       <el-table-column label="设计部门负责人" width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_sj_char }}
         </template>
       </el-table-column>
       <el-table-column label="开发部门负责人" width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.item_dev_char }}
         </template>
       </el-table-column>
+      <el-table-column label="测试版本" min-width="100" align="center">
+        <template slot-scope="scope">
+          <span v-if="!scope.row.isEditTestVersion">{{ scope.row.test_version }}</span>
+          <el-input v-if="scope.row.isEditTestVersion" v-model="scope.row.test_version" placeholder="请输入" clearable @blur="blurTestVersion"></el-input>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="项目名称" min-width="100" align="center">
+        <template slot-scope="scope">
+          <span v-if="!scope.row.isEdit">{{ scope.row.ITEM_DESC }}</span>
+          <el-input v-if="scope.row.isEdit" v-model="scope.row.ITEM_DESC" placeholder="请输入" clearable @blur="blurDesc"></el-input>
+        </template>
+      </el-table-column> -->
     </el-table>
     <el-pagination
       class="mt20"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="requireObj.pageIndex"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="requireObj.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="requireObj.total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     >
@@ -146,7 +159,7 @@
 </template>
 
 <script>
-import { getTestList } from '@/api/local'
+import requireManageApi from '@/api/require_manage_api'
 
 export default {
   filters: {
@@ -161,13 +174,32 @@ export default {
   },
   data() {
     return {
-      autoHeight: 200,
-      currentPage: 1,
-      formSearch: {
-        user: '',
-        region: ''
+      currentRow: {},
+      // 需求条目 搜索条件
+      requireFormSearch: {
+        item_req_realize_sys: null, // 系统名称
+        item_req_realize_sys_son: null, // 子系统名称
+        item_plan_release_ver: '', // 计划上线版本号
+        item_current_release_ver: '', // 实际上线版本号
+        item_req_list_id: '', // 需求条目编号
+        item_req_title: '', // 需求条目主题
+        item_sj_list_id: '', // 需求设计编号
+        item_sj_list_title: '', // 需求设计名称
+        test_version: '', // 测试版本号
+        item_proj_start_signno: '', // BPM签报号
+        item_proj_name: '' // BPM项目名
+        // user: '' // 是否可用
       },
-      list: [],
+      // 需求条目 信息
+      requireObj: {
+        height: 280,
+        list: [],
+        sysNameList: [],
+        sysSonNameList: [],
+        pageIndex: 1,
+        pageSize: 20,
+        total: 0
+      },
       listLoading: true
     }
   },
@@ -175,29 +207,158 @@ export default {
     this.fetchData()
   },
   mounted() {
-    this.$nextTick(() => {
-      this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
-    })
+    // this.$nextTick(() => {
+    //   this.autoHeight = this.$el.parentNode.clientHeight - this.$el.childNodes[0].clientHeight - 100
+    // })
   },
   methods: {
-    // 每页条数选择
+    onExport() {
+      this.listLoading = true
+      // axios({
+      //   method: 'post',
+      //   url: 'qcp-app/requirement/download',
+      //   data: this.requireFormSearch,
+      //   responseType: 'blob'
+      // }).then(response => {
+      //   this.listLoading = false
+      //   this.download(response.data)
+      // }).catch(error => {
+      //   this.$message({
+      //     type: 'error',
+      //     message: error
+      //   })
+      // })
+      requireManageApi.downloadRequire(this.requireFormSearch).then(response => {
+        this.download(response)
+        this.listLoading = false
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
+    },
+    // 下载文件
+    download(data) {
+      if (!data) {
+        return
+      }
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', '需求条目列表.xls')
+      document.body.appendChild(link)
+      link.click()
+    },
+    // 双击修改
+    cellDbclick(row, column, cell, event) {
+      if (column.label === '测试版本') {
+        this.currentRow = row
+        this.requireObj.list.forEach((current, index, arr) => {
+          if (current.item_req_list_id === row.item_req_list_id) {
+            this.requireObj.list[index].isEditTestVersion = true
+            return
+          }
+        })
+      }
+    },
+    // 失去焦点 测试版本
+    blurTestVersion(event) {
+      this.listLoading = true
+      const params = {
+        item_req_list_id: this.currentRow.item_req_list_id,
+        test_version: event.target.value
+      }
+      requireManageApi.updateRequireVersion(params).then(response => {
+        this.requireObj.list.forEach((current, index, arr) => {
+          if (current.item_req_list_id === this.currentRow.item_req_list_id) {
+            this.requireObj.list[index].isEditTestVersion = false
+            return
+          }
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+        })
+        this.listLoading = false
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
+    },
+    // 需求条目列表 每页条数选择
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      this.requireObj.pageSize = val
+      this.initRequire()
     },
-    // 当前页选择
+    // 需求条目列表 当前页选择
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      this.requireObj.pageIndex = val
+      this.onSearchRequireList()
     },
-    // 查询
-    onSearch() {
-      console.log('submit!')
+    // 需求条目列表 初始化
+    initRequire() {
+      this.requireObj.pageIndex = 1
+      this.onSearchRequireList()
+    },
+    // 需求条目列表 重置
+    onResetRequire(formName) {
+      this.$refs[formName].resetFields()
+      this.initRequire()
+    },
+    // 需求条目列表 查询
+    onSearchRequireList() {
+      this.listLoading = true
+      const params = {
+        pageIndex: this.requireObj.pageIndex,
+        pageSize: this.requireObj.pageSize
+      }
+      Object.assign(params, this.requireFormSearch)
+      requireManageApi.getRequireList(params).then(response => {
+        this.requireObj.list = response.data.list.map(e => {
+          e.isEditTestVersion = false
+          return e
+        })
+        this.requireObj.total = response.data.total
+        this.listLoading = false
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
+    },
+    // 查询 系统名称列表
+    onSearchSysNameList() {
+      requireManageApi.getSysNameList().then(response => {
+        this.requireObj.sysNameList = response.data
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
+    },
+    // 查询 子系统名称列表
+    onChangeSysName(val) {
+      const params = {
+        sysName: val
+      }
+      requireManageApi.getSysSonNameList(params).then(response => {
+        this.requireObj.sysSonNameList = response.data
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
     },
     fetchData() {
-      this.listLoading = true
-      getTestList().then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
+      this.onSearchRequireList()
+      this.onSearchSysNameList()
     }
   }
 }

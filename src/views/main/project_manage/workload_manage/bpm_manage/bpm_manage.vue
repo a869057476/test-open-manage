@@ -100,7 +100,7 @@
       </el-table-column>
       <el-table-column fixed="left" label="系统名称" min-width="140" align="center">
         <template slot-scope="scope">
-          <span :style="{ color: '#409EFF', cursor: 'pointer' }" @click="onShowDetail(scope.row)">{{ scope.row.SYS_NAME + (scope.row.SYS_SON_NAME ? scope.row.SYS_SON_NAME : '')  + scope.row.VERSION }}</span>
+          <span :style="{ color: '#409EFF', cursor: 'pointer' }" @click="onShowDetail(scope.row)">{{ scope.row.SYS_NAME + (scope.row.SYS_SON_NAME ? scope.row.SYS_SON_NAME : '') + scope.row.VERSION }}</span>
         </template>
       </el-table-column>
       <el-table-column fixed="left" label="测试负责人" min-width="120" align="center">
@@ -263,7 +263,7 @@ export default {
     cellDbclick(row, column, cell, event) {
       if (column.label === '说明' && this.userInfo && this.userInfo.usernameZh === row.USERNAME_ZH) {
         this.currentRow = row
-        this.bpmObj.list.forEach((current, index ,arr) => {
+        this.bpmObj.list.forEach((current, index, arr) => {
           if (current.CWEID === row.CWEID) {
             this.bpmObj.list[index].isEdit = true
             return
@@ -279,7 +279,7 @@ export default {
         itemDesc: event.target.value
       }
       bpmManageApi.updateItemDesc(params).then(response => {
-        this.bpmObj.list.forEach((current, index ,arr) => {
+        this.bpmObj.list.forEach((current, index, arr) => {
           if (current.CWEID === this.currentRow.CWEID) {
             this.bpmObj.list[index].isEdit = false
             return

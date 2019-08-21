@@ -1789,7 +1789,7 @@ export default {
       } else if (type === 'meeting') {
         this.activeName = 'component-three'
         this.isAddMeeingByWeek = true
-        this.onToggleTab({ name: 'component-three'})
+        this.onToggleTab({ name: 'component-three' })
         this.onOperateMeeting('add')
       }
     },
@@ -1918,7 +1918,7 @@ export default {
           this.meetingDialogObj.form.meetingWeekReportList = []
           const calendar = new Calendar()
           const start = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? this.sysFormSearch.planTime[0] : null) : calendar.getNextWeekOther().startDate
-          const end = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? this.sysFormSearch.planTime[1] : null) :  calendar.getNextWeekOther().endDate
+          const end = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? this.sysFormSearch.planTime[1] : null) : calendar.getNextWeekOther().endDate
           this.meetingDialogObj.weekSearch.planTime = this.isAddMeeingByWeek ? (this.sysFormSearch.planTime ? [start, end] : null) : [start, end]
           this.meetingDialogObj.weekSearch.searchStr = this.isAddMeeingByWeek ? this.sysFormSearch.searchStr : ''
           this.onSearchMeetingSys()
