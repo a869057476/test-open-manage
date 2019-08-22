@@ -109,6 +109,25 @@ export function param2Obj(url) {
   )
 }
 
+/**
+ * 下载
+ * @param {Blob} file
+ * @param {string} name
+ * @returns 无
+ */
+export function download(file, name) {
+  if (!file) {
+    return
+  }
+  const url = window.URL.createObjectURL(new Blob([file]))
+  const link = document.createElement('a')
+  link.style.display = 'none'
+  link.href = url
+  link.setAttribute('download', `${name}.xls`)
+  document.body.appendChild(link)
+  link.click()
+}
+
 export class Calendar {
   static now = new Date() // 当前日期
   static nowDayOfWeek = Calendar.now.getDay() // 今天本周的第几天

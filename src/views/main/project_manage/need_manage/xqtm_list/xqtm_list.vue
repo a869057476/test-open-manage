@@ -160,6 +160,7 @@
 
 <script>
 import requireManageApi from '@/api/require_manage_api'
+import { download } from '@/utils'
 
 export default {
   filters: {
@@ -212,6 +213,7 @@ export default {
     // })
   },
   methods: {
+    // 导出
     onExport() {
       this.listLoading = true
       // axios({
@@ -229,7 +231,7 @@ export default {
       //   })
       // })
       requireManageApi.downloadRequire(this.requireFormSearch).then(response => {
-        this.download(response)
+        download(response, '需求条目列表')
         this.listLoading = false
       }).catch(error => {
         this.$message({
@@ -237,19 +239,6 @@ export default {
           message: error
         })
       })
-    },
-    // 下载文件
-    download(data) {
-      if (!data) {
-        return
-      }
-      const url = window.URL.createObjectURL(new Blob([data]))
-      const link = document.createElement('a')
-      link.style.display = 'none'
-      link.href = url
-      link.setAttribute('download', '需求条目列表.xls')
-      document.body.appendChild(link)
-      link.click()
     },
     // 双击修改
     cellDbclick(row, column, cell, event) {
