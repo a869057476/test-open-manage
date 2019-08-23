@@ -14,7 +14,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="onSearchSys">查询</el-button>
-            <el-button type="warning" size="small" @click="onSearchSys">导出Excel</el-button>
+            <el-button type="warning" size="small" @click="onExportWeekMain">导出Excel</el-button>
             <el-button type="info" size="small" @click="onOperateWeek('meeting')">新增会议记录</el-button>
           </el-form-item>
           <el-form-item label="展开">
@@ -982,6 +982,7 @@
 import weekApi from '@/api/week_manage'
 import { Calendar } from '@/utils'
 import echarts from 'echarts'
+import { download } from '@/utils'
 
 export default {
   data() {
@@ -1292,6 +1293,10 @@ export default {
     })
   },
   methods: {
+    // 导出主系统列表
+    onExportWeekMain() {
+      download(document.documentElement.innerHTML, '联测主系统列表.html')
+    },
     // 选择主系统版本号
     handleCommandWeekMainOperate(value) {
       console.log(value)
