@@ -2,28 +2,28 @@ import request from '@/utils/request'
 
 function getItemCurLink() {
   return request({
-    url: `/bpm/itemCurLink`,
+    url: `/pf/bpm/itemCurLink`,
     method: 'get'
   })
 }
 
 function getTestUserNameAll() {
   return request({
-    url: `/bpm/testUserName`,
+    url: `/pf/bpm/testUserName`,
     method: 'get'
   })
 }
 
 function getUpdateTime() {
   return request({
-    url: `/bpm/updateTime`,
+    url: `/pf/bpm/updateTime`,
     method: 'get'
   })
 }
 
 function getBpmApprovalByParam(data) {
   return request({
-    url: '/bpm/bpmApprovalByParam',
+    url: '/pf/bpm/bpmApprovalByParam',
     method: 'post',
     data
   })
@@ -31,7 +31,7 @@ function getBpmApprovalByParam(data) {
 
 function updateItemDesc(data) {
   return request({
-    url: '/bpm/itemDesc',
+    url: '/pf/bpm/itemDesc',
     method: 'post',
     data
   })
@@ -39,7 +39,7 @@ function updateItemDesc(data) {
 
 function getBpmDetail(data) {
   return request({
-    url: '/bpm/bpmApprovalDetail',
+    url: '/pf/bpm/bpmApprovalDetail',
     method: 'post',
     data
   })
@@ -47,7 +47,7 @@ function getBpmDetail(data) {
 
 function getCurrentBpm(data) {
   return request({
-    url: '/bpm/bpmApproval/list',
+    url: '/pf/bpm/bpmApproval/list',
     method: 'post',
     data
   })
@@ -55,14 +55,14 @@ function getCurrentBpm(data) {
 
 function getReqNumList() {
   return request({
-    url: '/bpm/itemReqRun/lists',
+    url: '/pf/bpm/itemReqRun/lists',
     method: 'get'
   })
 }
 
 function downloadBpm(data) {
   return request({
-    url: `/bpm/exportBpmApproval`,
+    url: `/pf/bpm/exportBpmApproval`,
     method: 'post',
     data: data,
     responseType: 'blob'
@@ -71,7 +71,7 @@ function downloadBpm(data) {
 
 function downloadCurrentBpm() {
   return request({
-    url: `/bpm/exportBpmApprovalMonitor`,
+    url: `/pf/bpm/exportBpmApprovalMonitor`,
     method: 'post',
     responseType: 'blob'
   })
@@ -79,7 +79,7 @@ function downloadCurrentBpm() {
 
 function ignoreBpmBatch(data) {
   return request({
-    url: '/bpm/batchIgnor',
+    url: '/pf/bpm/batchIgnor',
     method: 'post',
     data
   })
@@ -87,14 +87,14 @@ function ignoreBpmBatch(data) {
 
 function getWorkShare() {
   return request({
-    url: `/msc/quMsc`,
+    url: `/pf/msc/quMsc`,
     method: 'get'
   })
 }
 
 function opdateWorkShare(data) {
   return request({
-    url: '/msc/upMsc',
+    url: '/pf/msc/upMsc',
     method: 'post',
     data
   })

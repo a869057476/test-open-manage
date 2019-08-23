@@ -187,7 +187,150 @@
     >
     </el-pagination>
     <el-dialog title="BPM系统工作量详情" :visible.sync="bpmDialogObj.visible" :fullscreen="true">
-      111
+      <el-form ref="bpmFormSearch" :inline="true" :model="bpmFormSearch">
+        <el-form-item label="项目名">
+          <el-input v-model="bpmDialogObj.data.ITEM_PROJ_NAME" style="width: 600px;" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="系统名">
+          <el-input v-model="sysName" style="width: 600px;" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="info" size="small" @click="onExportDetail">导出Excel</el-button>
+        </el-form-item>
+      </el-form>
+      <div id="only_sys" class="bpm-detail">
+        <table cellspacing="0" cellpadding="0" border="0">
+          <thead>
+            <tr>
+              <th colspan="2">工作量评估类别</th>
+              <th colspan="3">工作量评估分类</th>
+              <th>评估工作量(人天)</th>
+              <th>项目名</th>
+              <th>系统名</th>
+              <th>申请单号</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="4">1</td>
+              <td rowspan="4">系统测试、部署及用户支持工作量</td>
+              <td>系统测试</td>
+              <td class="active">✔功能</td>
+              <td>×性能</td>
+              <td>{{ bpmDialogObj.data.UAT_TEST }}</td>
+              <td rowspan="4">{{ bpmDialogObj.data.ITEM_PROJ_NAME }}</td>
+              <td rowspan="4">{{ sysName }}</td>
+              <td rowspan="4">{{ bpmDialogObj.data.ITEM_REQ_NUM }}</td>
+            </tr>
+            <tr>
+              <td>系统测试</td>
+              <td>×功能</td>
+              <td class="active">✔性能</td>
+              <td>{{ bpmDialogObj.data.UAT_TEST_ADD }}</td>
+            </tr>
+            <tr>
+              <td colspan="3">系统配置部署工作量</td>
+              <td>{{ bpmDialogObj.data.SCM_DEPLOY_DAY }}</td>
+            </tr>
+            <tr>
+              <td colspan="3">用户支持工作量</td>
+              <td>{{ bpmDialogObj.data.USER_SUPPORT_DAY }}</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>组织级管理工作量(高层管理、PMO&amp;QA及工具支持)</td>
+              <td colspan="3">组织级管理工作量</td>
+              <td>{{ bpmDialogObj.data.ORG_MANAGE_DAY }}</td>
+              <td>{{ bpmDialogObj.data.ITEM_PROJ_NAME }}</td>
+              <td>{{ sysName }}</td>
+              <td>{{ bpmDialogObj.data.ITEM_REQ_NUM }}</td>
+            </tr>
+            <tr>
+              <td rowspan="6">3</td>
+              <td rowspan="6">验收测试部署、验收测试及模拟测试工作量</td>
+              <td>验收测试</td>
+              <td class="active">✔功能</td>
+              <td>×性能</td>
+              <td>{{ bpmDialogObj.data.CHECK_TEST }}</td>
+              <td rowspan="6">{{ bpmDialogObj.data.ITEM_PROJ_NAME }}</td>
+              <td rowspan="6">{{ sysName }}</td>
+              <td rowspan="6">{{ bpmDialogObj.data.ITEM_REQ_NUM }}</td>
+            </tr>
+            <tr>
+              <td>验收测试</td>
+              <td>×功能</td>
+              <td class="active">✔性能</td>
+              <td>{{ bpmDialogObj.data.CHECK_TEST_ADD }}</td>
+            </tr>
+            <tr>
+              <td colspan="3">系统配置及验收测试环境部署工作量</td>
+              <td>{{ bpmDialogObj.data.SC_CHECK_DEPLOY_DAY }}</td>
+            </tr>
+            <tr>
+              <td colspan="3">验收测试交付流流程工作量</td>
+              <td>{{ bpmDialogObj.data.CHECK_DEPLOY_DAY }}</td>
+            </tr>
+            <tr>
+              <td>模拟测试</td>
+              <td class="active">✔功能</td>
+              <td>×性能</td>
+              <td>{{ bpmDialogObj.data.MOCK_TEST }}</td>
+            </tr>
+            <tr>
+              <td>模拟测试</td>
+              <td>×功能</td>
+              <td class="active">✔性能</td>
+              <td>{{ bpmDialogObj.data.MOCK_TEST_ADD }}</td>
+            </tr>
+            <tr>
+              <td colspan="2">工作量总计(人天)</td>
+              <td>{{ bpmDialogObj.data.ITEM_TOTAL_MAN_DAY }}</td>
+              <td>工作量总计折算(人月)</td>
+              <td>{{ bpmDialogObj.data.WORKS_MAN_MONTH }}</td>
+              <td></td>
+              <td>本币市场监测系统需求汇总2017Q4</td>
+              <td>数据传输中间件V12.21.0.0</td>
+              <td>XQSJ1712200001</td>
+            </tr>
+            <tr>
+              <td colspan="2">备注</td>
+              <td colspan="7">{{ bpmDialogObj.data.ITEM_REMARK }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- <el-table v-loading="listLoading" :data="bpmDialogObj.list" element-loading-text="Loading" border fit :max-height="bpmDialogObj.height">
+        <el-table-column label="工作量评估类别" min-width="180" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.DATA_FROM }}
+          </template>
+        </el-table-column>
+        <el-table-column label="工作量评估分类" min-width="180" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.DATA_FROM }}
+          </template>
+        </el-table-column>
+        <el-table-column label="评估工作量(人天)" min-width="180" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.DATA_FROM }}
+          </template>
+        </el-table-column>
+        <el-table-column label="项目名" min-width="180" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.DATA_FROM }}
+          </template>
+        </el-table-column>
+        <el-table-column label="系统名" min-width="180" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.DATA_FROM }}
+          </template>
+        </el-table-column>
+        <el-table-column label="申请单号" min-width="180" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.DATA_FROM }}
+          </template>
+        </el-table-column>
+      </el-table> -->
     </el-dialog>
     <el-dialog title="立项工作量占比监控" :visible.sync="currentBpmDialogObj.visible" :fullscreen="true">
       <el-form :inline="true" :model="currentBpmDialogObj.form">
@@ -382,7 +525,7 @@ export default {
         itemCurLink: null, // 当前环节
         usernameZh: null // 测试负责人
       },
-      // bpm 信息
+      // bpm实时 信息
       bpmObj: {
         height: 280,
         list: [],
@@ -407,10 +550,31 @@ export default {
         pageSize: 20,
         total: 0
       },
-      // bpm dialog
+      // bpm详情 dialog
       bpmDialogObj: {
         visible: false,
-        data: {}
+        height: 280,
+        data: {
+          ITEM_PROJ_NAME: '', // 项目名
+          SYS_NAME: '', // 系统名
+          SYS_SON_NAME: '', // 子系统名
+          VERSION: '', // 版本号
+          ITEM_REQ_NUM: '', // 申请单号
+          UAT_TEST: '', // 系统测试功能
+          UAT_TEST_ADD: '', // 系统测试性能
+          SCM_DEPLOY_DAY: '', // 系统配置部署工作量
+          USER_SUPPORT_DAY: '', // 用户支持工作量
+          ORG_MANAGE_DAY: '', // 组织级管理工作量
+          CHECK_TEST: '', // 验收测试功能
+          CHECK_TEST_ADD: '', // 验收测试性能
+          SC_CHECK_DEPLOY_DAY: '', // 系统配置及验收测试环境部署工作量
+          CHECK_DEPLOY_DAY: '', // 验收测试交付流流程工作量
+          MOCK_TEST: '', // 模拟测试功能
+          MOCK_TEST_ADD: '', // 模拟测试性能
+          ITEM_TOTAL_MAN_DAY: '', // 工作量总计(人天)
+          WORKS_MAN_MONTH: '', // 工作量总计折算(人月)
+          ITEM_REMARK: '' // 备注
+        }
       },
       // bpm实时 dialog
       seetingDialogObj: {
@@ -434,6 +598,11 @@ export default {
         }
       },
       listLoading: true
+    }
+  },
+  computed: {
+    sysName() {
+      return `${this.bpmDialogObj.data.SYS_NAME}-${this.bpmDialogObj.data.SYS_SON_NAME}${this.bpmDialogObj.data.VERSION}`
     }
   },
   created() {
@@ -467,6 +636,25 @@ export default {
           message: error
         })
       })
+    },
+    onExportDetail() {
+      const uri = 'data:application/vnd.ms-excel;base64,'
+      const template = '<html><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>'
+      const base64 = s => {
+        return window.btoa(unescape(encodeURIComponent(s)))
+      }
+      const format = (s, c) => {
+        return s.replace(/{(\w+)}/g, (m, p) => {
+          return c[p]
+        })
+      }
+      const table = document.getElementById('only_sys')
+      const name = null
+      const ctx = {
+        worksheet: name || 'Worksheet',
+        table: table.innerHTML
+      }
+      window.location.href = uri + base64(format(template, ctx))
     },
     // 实时工作量 设置列表选中的数据
     handleSelectionChangeCurrentBpm(val) {
@@ -521,6 +709,7 @@ export default {
       }
       bpmManageApi.getBpmDetail(params).then(response => {
         console.log(response.data)
+        this.bpmDialogObj.data = response.data
       }).catch(error => {
         this.$message({
           type: 'error',
@@ -733,3 +922,36 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.bpm-detail {
+  table {
+    border: 2px solid #BED7F0;
+    width: 100%;
+    table-layout: fixed;
+    thead {
+      tr {
+        th {
+          padding: 5px 0;
+          border-right: 2px solid #BED7F0;
+          &:last-child {
+            border-right: none;
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          padding: 5px;
+          text-align: center;
+          border-top: 2px solid #BED7F0;
+          border-right: 2px solid #BED7F0;
+          &.active {
+            background-color: #ffc8cd;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
