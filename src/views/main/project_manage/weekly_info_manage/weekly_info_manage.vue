@@ -601,7 +601,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="测试轮次" prop="testRuns">
+            <el-form-item label="测试轮次">
               <el-select v-model="weekDialogObj.form.testRuns" placeholder="请选择" clearable>
                 <el-option v-for="item in 100" :key="item" :label="item" :value="item"></el-option>
               </el-select>
@@ -768,13 +768,13 @@
           <div class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">时间 Time</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
-              <el-form-item label="" prop="meetingDate">
+              <el-form-item label="">
                 <el-date-picker v-model="meetingDialogObj.form.meetingDate" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="请选择"></el-date-picker>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col stable" :style="{ width: '150px' }">地点 Place</div>
             <div class="meeting-record-row-col form-padding change">
-              <el-form-item label="" prop="place">
+              <el-form-item label="">
                 <el-input v-model="meetingDialogObj.form.place" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -782,13 +782,13 @@
           <div class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '200px' }">主持人 Moderator</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '300px' }">
-              <el-form-item label="" prop="host">
+              <el-form-item label="">
                 <el-input v-model="meetingDialogObj.form.host" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col stable" :style="{ width: '150px' }">记录人 Recorder</div>
             <div class="meeting-record-row-col form-padding change">
-              <el-form-item label="" prop="recorder">
+              <el-form-item label="">
                 <el-input v-model="meetingDialogObj.form.recorder" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -808,12 +808,18 @@
           <div v-for="(item, index) in meetingDialogObj.form.departmentStaff" :key="item.department" class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
             <div class="meeting-record-row-col form-padding stable" :style="{ width: '200px' }">
-              <el-form-item label="" :prop="'departmentStaff.' + index + '.department'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <!-- <el-form-item label="" :prop="'departmentStaff.' + index + '.department'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.department" placeholder="请输入" clearable></el-input>
+              </el-form-item> -->
+              <el-form-item label="">
                 <el-input v-model="item.department" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding change">
-              <el-form-item label="" :prop="'departmentStaff.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <!-- <el-form-item label="" :prop="'departmentStaff.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
+              </el-form-item> -->
+              <el-form-item label="">
                 <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -835,7 +841,10 @@
           <div v-for="(item, index) in meetingDialogObj.form.meetResult" :key="item.index" class="meeting-record-row">
             <div class="meeting-record-row-col word-big stable" :style="{ width: '100px' }">{{ index + 1 }}</div>
             <div class="meeting-record-row-col change form-padding">
-              <el-form-item label="" :prop="'meetResult.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <!-- <el-form-item label="" :prop="'meetResult.' + index + '.value'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
+              </el-form-item> -->
+              <el-form-item label="">
                 <el-input v-model="item.value" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -870,7 +879,10 @@
               </el-form-item>
             </div>
             <div class="meeting-record-row-col form-padding width2">
-              <el-form-item label="" :prop="'remainingProblem.' + index + '.work'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+              <!-- <el-form-item label="" :prop="'remainingProblem.' + index + '.work'" :rules="{ required: true, message: '此为必填项', trigger: 'blur' }">
+                <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
+              </el-form-item> -->
+              <el-form-item label="">
                 <el-input v-model="item.work" placeholder="请输入" clearable></el-input>
               </el-form-item>
             </div>
@@ -980,7 +992,7 @@
 
 <script>
 import weekApi from '@/api/week_manage'
-import { Calendar } from '@/utils'
+import { Calendar, parseTime } from '@/utils'
 import echarts from 'echarts'
 import { download } from '@/utils'
 
@@ -1118,7 +1130,6 @@ export default {
           crType: [requiredTrue],
           testType: [requiredTrue],
           projectStage: [requiredTrue],
-          testRuns: [requiredTrue],
           overAllSchedule: [requiredTrue],
           manPowerInput: [requiredTrue],
           versionQuality: [requiredTrue],
@@ -1151,13 +1162,37 @@ export default {
           planTime: ''
         },
         form: {
-          theme: '', // 会议主题
+          theme: '变更碰头会' + parseTime(new Date(), '{y}{m}{d} {h}:{i}:{s}'), // 会议主题
           meetingDate: '', // 会议时间
           place: '', // 会议地点
           host: '', // 会议主持人
           recorder: '', // 记录人
           // 参与部门与人员
           departmentStaff: [
+            {
+              department: '市场一部',
+              value: ''
+            },
+            {
+              department: '信息部',
+              value: ''
+            },
+            {
+              department: '清算部',
+              value: ''
+            },
+            {
+              department: '技术开发部',
+              value: ''
+            },
+            {
+              department: '风险管理部',
+              value: ''
+            },
+            {
+              department: '工程运行部',
+              value: ''
+            },
             {
               department: '中汇公司',
               value: ''
@@ -1909,6 +1944,30 @@ export default {
         this.$nextTick(() => {
           this.$refs['meetingForm'].resetFields()
           this.meetingDialogObj.form.departmentStaff = [
+            {
+              department: '市场一部',
+              value: ''
+            },
+            {
+              department: '信息部',
+              value: ''
+            },
+            {
+              department: '清算部',
+              value: ''
+            },
+            {
+              department: '技术开发部',
+              value: ''
+            },
+            {
+              department: '风险管理部',
+              value: ''
+            },
+            {
+              department: '工程运行部',
+              value: ''
+            },
             {
               department: '中汇公司',
               value: ''

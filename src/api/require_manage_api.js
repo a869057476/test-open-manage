@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 function downloadRequire(data) {
   return request({
-    url: `/requirement/download`,
+    url: `/pf/requirement/download`,
     method: 'post',
     data: data,
     responseType: 'blob'
@@ -11,14 +11,14 @@ function downloadRequire(data) {
 
 function getSysNameList() {
   return request({
-    url: `/requirement/sysNames`,
+    url: `/pf/requirement/sysNames`,
     method: 'get'
   })
 }
 
 function getSysSonNameList(data) {
   return request({
-    url: '/requirement/sonSysNames',
+    url: '/pf/requirement/sonSysNames',
     method: 'post',
     params: data
   })
@@ -26,7 +26,7 @@ function getSysSonNameList(data) {
 
 function getRequireList(data) {
   return request({
-    url: '/requirement/list',
+    url: '/pf/requirement/list',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ function getRequireList(data) {
 
 function updateRedmineProject(data) {
   return request({
-    url: 'requirement/updateRedmineProject',
+    url: '/pf/requirement/updateRedmineProject',
     method: 'post',
     data
   })
@@ -42,7 +42,7 @@ function updateRedmineProject(data) {
 
 function updateRequireVersion(data) {
   return request({
-    url: '/requirement/updateTestversion',
+    url: '/pf/requirement/updateTestversion',
     method: 'post',
     data
   })
