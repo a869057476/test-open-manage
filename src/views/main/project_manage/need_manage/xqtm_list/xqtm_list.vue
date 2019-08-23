@@ -231,7 +231,7 @@ export default {
       //   })
       // })
       requireManageApi.downloadRequire(this.requireFormSearch).then(response => {
-        download(response, '需求条目列表')
+        download(response, '需求条目列表.xls')
         this.listLoading = false
       }).catch(error => {
         this.$message({

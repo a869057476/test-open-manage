@@ -68,7 +68,7 @@
         </el-form>
       </el-collapse-item>
     </el-collapse>
-    <el-table v-loading="listLoading" :data="bpmObj.list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="bpmObj.height" @cell-dblclick="cellDbclick">
+    <el-table class="bpm-detail" v-loading="listLoading" :data="bpmObj.list" element-loading-text="Loading" border fit stripe highlight-current-row :max-height="bpmObj.height" @cell-dblclick="cellDbclick">
       <!-- <el-table-column
         type="selection"
         width="55">
@@ -187,7 +187,7 @@
     >
     </el-pagination>
     <el-dialog title="BPM系统工作量详情" :visible.sync="bpmDialogObj.visible" :fullscreen="true">
-      <el-form ref="bpmFormSearch" :inline="true" :model="bpmFormSearch">
+      <!-- <el-form ref="bpmFormSearch" :inline="true" :model="bpmFormSearch">
         <el-form-item label="项目名">
           <el-input v-model="bpmDialogObj.data.ITEM_PROJ_NAME" style="width: 600px;" readonly></el-input>
         </el-form-item>
@@ -197,8 +197,13 @@
         <el-form-item label="">
           <el-button type="info" size="small" @click="onExportDetail">导出Excel</el-button>
         </el-form-item>
-      </el-form>
-      <div id="only_sys" class="bpm-detail">
+      </el-form> -->
+      <div class="bpm-detail-title">
+        <div class="bpm-detail-title-item"><span>项目名：</span>{{ bpmDialogObj.data.ITEM_PROJ_NAME }}</div>
+        <div class="bpm-detail-title-item"><span>系统名：</span>{{ bpmDialogObj.data.ITEM_PROJ_NAME }}</div>
+        <el-button type="info" size="small" @click="onExportDetail">导出Excel</el-button>
+      </div>
+      <div class="bpm-detail-table">
         <table cellspacing="0" cellpadding="0" border="0">
           <thead>
             <tr>
@@ -288,9 +293,9 @@
               <td>工作量总计折算(人月)</td>
               <td>{{ bpmDialogObj.data.WORKS_MAN_MONTH }}</td>
               <td></td>
-              <td>本币市场监测系统需求汇总2017Q4</td>
-              <td>数据传输中间件V12.21.0.0</td>
-              <td>XQSJ1712200001</td>
+              <td>{{ bpmDialogObj.data.ITEM_PROJ_NAME }}</td>
+              <td>{{ sysName }}</td>
+              <td>{{ bpmDialogObj.data.ITEM_REQ_NUM }}</td>
             </tr>
             <tr>
               <td colspan="2">备注</td>
@@ -615,7 +620,7 @@ export default {
     onExportBpm() {
       this.listLoading = true
       bpmManageApi.downloadBpm(this.bpmFormSearch).then(response => {
-        download(response, 'bpm工作量')
+        download(response, 'bpm工作量.xls')
         this.listLoading = false
       }).catch(error => {
         this.$message({
@@ -628,7 +633,7 @@ export default {
     onExportCurrentBpm() {
       this.listLoading = true
       bpmManageApi.downloadCurrentBpm().then(response => {
-        download(response, 'bpm实时工作量')
+        download(response, 'bpm实时工作量.xls')
         this.listLoading = false
       }).catch(error => {
         this.$message({
@@ -637,24 +642,9 @@ export default {
         })
       })
     },
+    // 导出工作量详情
     onExportDetail() {
-      const uri = 'data:application/vnd.ms-excel;base64,'
-      const template = '<html><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>'
-      const base64 = s => {
-        return window.btoa(unescape(encodeURIComponent(s)))
-      }
-      const format = (s, c) => {
-        return s.replace(/{(\w+)}/g, (m, p) => {
-          return c[p]
-        })
-      }
-      const table = document.getElementById('only_sys')
-      const name = null
-      const ctx = {
-        worksheet: name || 'Worksheet',
-        table: table.innerHTML
-      }
-      window.location.href = uri + base64(format(template, ctx))
+      download(document.documentElement.innerHTML, 'bpm系统工作量详情.html')
     },
     // 实时工作量 设置列表选中的数据
     handleSelectionChangeCurrentBpm(val) {
@@ -924,30 +914,44 @@ export default {
 </script>
 <style lang="scss" scoped>
 .bpm-detail {
-  table {
-    border: 2px solid #BED7F0;
-    width: 100%;
-    table-layout: fixed;
-    thead {
-      tr {
-        th {
-          padding: 5px 0;
-          border-right: 2px solid #BED7F0;
-          &:last-child {
-            border-right: none;
+  &-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    &-item {
+      margin-right: 20px;
+      &>span {
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+  }
+  &-table {
+    table {
+      border: 2px solid #BED7F0;
+      width: 100%;
+      table-layout: fixed;
+      thead {
+        tr {
+          th {
+            padding: 5px 0;
+            border-right: 2px solid #BED7F0;
+            &:last-child {
+              border-right: none;
+            }
           }
         }
       }
-    }
-    tbody {
-      tr {
-        td {
-          padding: 5px;
-          text-align: center;
-          border-top: 2px solid #BED7F0;
-          border-right: 2px solid #BED7F0;
-          &.active {
-            background-color: #ffc8cd;
+      tbody {
+        tr {
+          td {
+            padding: 5px;
+            text-align: center;
+            border-top: 2px solid #BED7F0;
+            border-right: 2px solid #BED7F0;
+            &.active {
+              background-color: #ffc8cd;
+            }
           }
         }
       }

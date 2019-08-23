@@ -123,7 +123,7 @@ export function download(file, name) {
   const link = document.createElement('a')
   link.style.display = 'none'
   link.href = url
-  link.setAttribute('download', `${name}.xls`)
+  link.setAttribute('download', `${name}`)
   document.body.appendChild(link)
   link.click()
 }
