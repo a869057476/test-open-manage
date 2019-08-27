@@ -62,7 +62,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard' }
+      meta: { title: 'Dashboard', icon: 'example' }
     }]
   },
 
@@ -78,7 +78,7 @@ export const constantRoutes = [
         redirect: '/project_manage/need_manage/xqtm_list',
         name: 'need_manage',
         component: Center,
-        meta: { title: '需求管理' },
+        meta: { title: '需求管理', icon: 'example' },
         children: [
           {
             path: 'xqtm_list',
@@ -123,7 +123,7 @@ export const constantRoutes = [
         redirect: '/project_manage/workload_manage/statistics_manage',
         name: 'workload_manage',
         component: Center,
-        meta: { title: '工作量管理' },
+        meta: { title: '工作量管理', icon: 'example' },
         children: [
           {
             path: 'statistics_manage',
@@ -143,14 +143,14 @@ export const constantRoutes = [
         path: 'weekly_info_manage',
         name: 'weekly_info_manage',
         component: () => import('@/views/main/project_manage/weekly_info_manage/weekly_info_manage'),
-        meta: { title: '测试周报管理' }
+        meta: { title: '测试周报管理', icon: 'example' }
       },
       {
         path: 'project_process_quality',
         component: Center,
         redirect: '/project_manage/project_process_quality/analyze/QA_singleproj_DRE',
         name: 'project_process_quality',
-        meta: { title: '项目过程质量' },
+        meta: { title: '项目过程质量', icon: 'example' },
         children: [
           {
             path: 'analyze',
@@ -231,7 +231,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/Smartbi_report_info/testreport_sys',
         name: 'Smartbi_report_info',
-        meta: { title: 'Smartbi报表信息' },
+        meta: { title: 'Smartbi报表信息', icon: 'example' },
         children: [
           {
             path: 'testreport_sys',
@@ -294,7 +294,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/version_plan_manage/version_plan',
         name: 'version_plan_manage',
-        meta: { title: '版本计划' },
+        meta: { title: '版本计划', icon: 'example' },
         children: [
           {
             path: 'version_plan',
@@ -321,7 +321,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/workload_calendar_manage/workload_calendar',
         name: 'workload_calendar_manage',
-        meta: { title: '工作日历' },
+        meta: { title: '工作日历', icon: 'example' },
         children: [
           {
             path: 'workload_calendar',
@@ -342,7 +342,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/version_staff_manage/staff_manage',
         name: 'version_staff_manage',
-        meta: { title: '版本人员管理' },
+        meta: { title: '版本人员管理', icon: 'example' },
         children: [
           {
             path: 'staff_manage',
@@ -357,7 +357,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/project_manage/board_manage/message_list',
         name: 'board_manage',
-        meta: { title: '看板管理' },
+        meta: { title: '看板管理', icon: 'example' },
         children: [
           {
             path: 'message_list',
@@ -378,7 +378,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/setting_manage/group_user',
         name: 'setting_manage',
-        meta: { title: '设置' },
+        meta: { title: '设置', icon: 'example' },
         children: [
           {
             path: 'group_user',
@@ -423,7 +423,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/project_manage/defect_requir_manage/defect_manages',
         name: 'defect_requir_manage',
-        meta: { title: '缺陷与需求' },
+        meta: { title: '缺陷与需求', icon: 'example' },
         children: [
           {
             path: 'defect_manages',
@@ -444,7 +444,7 @@ export const constantRoutes = [
         component: Center,
         redirect: '/project_manage/bata_entrance_manage/clms_project',
         name: 'bata_entrance_manage',
-        meta: { title: '报工公测入口' },
+        meta: { title: '报工公测入口', icon: 'example' },
         children: [
           {
             path: 'clms_project',
@@ -459,6 +459,7 @@ export const constantRoutes = [
 
   {
     path: '/test_manage',
+    redirect: '/test_manage/test_daily',
     name: 'test_manage',
     component: Layout,
     meta: { title: '测试管理', icon: 'example' },
@@ -466,12 +467,13 @@ export const constantRoutes = [
       path: 'test_daily',
       name: 'test_daily',
       component: () => import('@/views/table/index'),
-      meta: { title: '测试日报' }
+      meta: { title: '测试日报', icon: 'example' }
     }]
   },
 
   {
     path: '/statistic_manage',
+    redirect: '/statistic_manage/monthly_data_statistics',
     name: 'statistic_manage',
     component: Layout,
     meta: { title: '统计管理', icon: 'example' },
@@ -479,7 +481,7 @@ export const constantRoutes = [
       path: 'monthly_data_statistics',
       name: 'monthly_data_statistics',
       component: () => import('@/views/table/index'),
-      meta: { title: '月报数据统计' }
+      meta: { title: '月报数据统计', icon: 'example' }
     }]
   },
 
@@ -493,7 +495,7 @@ export const constantRoutes = [
       path: 'permission',
       name: 'permission',
       component: () => import('@/views/main/permission_manage/permission_manage'),
-      meta: { title: '权限管理' }
+      meta: { title: '权限管理', icon: 'example' }
     }]
   },
 
