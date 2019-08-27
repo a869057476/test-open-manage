@@ -100,7 +100,7 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="测试周报信息列表" name="component-two">
-        <el-collapse value="1">
+        <el-collapse ref="weekFormSearchCollapse" value="1" @change="toggleCollapseWeek">
           <el-collapse-item title="展开/收起搜索条件" name="1">
             <el-form ref="weekFormSearch" :inline="true" :model="weekFormSearch" label-width="100px">
               <el-form-item label="系统名称" prop="sysName">
@@ -1010,6 +1010,7 @@ export default {
     //   trigger: 'change'
     // }
     return {
+      weekSearchHeight: 0,
       autoHeightRequirement: 200,
       activeName: 'component-one',
       isAddMeeingByWeek: false,
@@ -1317,7 +1318,6 @@ export default {
       this.autoHeightRequirement = this.$root.$el.clientHeight - 380
       this.weekDialogObj.height = this.$root.$el.clientHeight - 280
       this.meetingDialogObj.height = this.$root.$el.clientHeight - 200
-
       window.onresize = () => {
         this.sysObj.height = this.$el.parentNode.clientHeight - this.$refs['sysFormSearch'].$el.clientHeight - 100
         this.autoHeightRequirement = this.$root.$el.clientHeight - 380
@@ -1402,11 +1402,24 @@ export default {
       }
       if (tab.name === 'component-two') {
         this.onSearchWeek()
+        this.$nextTick(() => {
+          this.weekSearchHeight = this.$refs['weekFormSearchCollapse'].$el.clientHeight
+        })
       } else if (tab.name === 'component-three') {
         this.onSearchMeeting()
       }
       this.$nextTick(() => {
+        const weekObjHeight = document.body.clientHeight - this.$refs['weekFormSearchCollapse'].$el.clientHeight - 240
+        this.weekObj.height = weekObjHeight > 280 ? weekObjHeight : 280
         this.meetingObj.height = this.$el.parentNode.clientHeight - this.$refs['meetingFormSearch'].$el.clientHeight - 160
+      })
+    },
+    // 切换周报搜索条件
+    toggleCollapseWeek(activeNames) {
+      console.log(activeNames)
+      this.$nextTick(() => {
+        const weekObjHeight = document.body.clientHeight - (activeNames.length === 0 ? 60 : this.weekSearchHeight) - 240
+        this.weekObj.height = weekObjHeight > 280 ? weekObjHeight : 280
       })
     },
     // 周报 设置列表选中的数据
