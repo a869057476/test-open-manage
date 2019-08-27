@@ -48,8 +48,14 @@ export const constantRoutes = [
 
   {
     path: '/',
-    redirect: '/dashboard',
-    name: '',
+    redirect: { name: 'index'},
+    hidden: true
+  },
+
+  {
+    path: '/index',
+    redirect: '/index/dashboard',
+    name: 'index',
     component: Layout,
     meta: { title: '主页', icon: 'dashboard' },
     children: [{
