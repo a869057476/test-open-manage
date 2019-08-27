@@ -34,27 +34,29 @@ import Center from '@/layout/center'
 export const constantRoutes = [
   {
     path: '/login',
+    name: 'login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
 
   {
     path: '/404',
+    name: '404',
     component: () => import('@/views/404'),
     hidden: true
   },
 
   {
     path: '/',
-    component: Layout,
     redirect: '/dashboard',
-    name: 'dashboard',
-    hidden: true,
+    name: '',
+    component: Layout,
+    meta: { title: '主页', icon: 'dashboard' },
     children: [{
       path: 'dashboard',
       name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: 'Dashboard' }
     }]
   },
 

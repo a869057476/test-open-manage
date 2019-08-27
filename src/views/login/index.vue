@@ -50,7 +50,7 @@
             </span>
           </el-form-item>
           <el-button class="login-form-btn" :loading="loading" type="primary" @click.native.prevent="handleLogin">Login</el-button>
-          <a class="login-form-a" href="#">测试周报超链接></a>
+          <a class="login-form-a" href="#" @click="toPage">测试周报超链接></a>
         </el-form>
         <div class="login-tips">
           <p>使用过程中，如遇到问题，联系方式如：</p>
@@ -106,6 +106,9 @@ export default {
     }
   },
   methods: {
+    toPage() {
+      this.$router.push({ name: 'weekly_info_manage' })
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
