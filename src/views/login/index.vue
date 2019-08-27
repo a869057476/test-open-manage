@@ -107,7 +107,22 @@ export default {
   },
   methods: {
     toPage() {
-      this.$router.push({ name: 'weekly_info_manage' })
+      this.loading = true
+      const params = {
+        username: 'taolong_dj',
+        password: '123456'
+      }
+      this.$store.dispatch('user/login', params).then(() => {
+        this.$router.push({ name: 'weekly_info_manage' })
+        this.loading = false
+      }).catch(error => {
+        this.loading = false
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
+      // this.$router.push({ name: 'weekly_info_manage' })
     },
     showPwd() {
       if (this.passwordType === 'password') {

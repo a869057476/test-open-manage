@@ -48,7 +48,7 @@ export const constantRoutes = [
 
   {
     path: '/',
-    redirect: { name: 'index'},
+    redirect: { name: 'index' },
     hidden: true
   },
 

@@ -1,7 +1,12 @@
 <template>
-  <div class="app-container">
-    <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateWeek('add')">新增</el-button>
-    <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperateMeeting('add')">新增</el-button>
+  <div class="app-container" :class="{ visitor: isVisitor }">
+    <template v-if="!isVisitor">
+      <el-button v-if="activeName !== 'component-three'" class="add" type="info" size="small" @click="onOperateWeek('add')">新增</el-button>
+      <el-button v-if="activeName === 'component-three'" class="add" type="info" size="small" @click="onOperateMeeting('add')">新增</el-button>
+    </template>
+    <template v-if="isVisitor">
+      <el-button class="add" type="info" size="small" @click="logout">登出</el-button>
+    </template>
     <el-tabs v-model="activeName" type="card" @tab-click="onToggleTab">
       <el-tab-pane label="联测主系统列表" name="component-one">
         <el-form ref="sysFormSearch" :inline="true" :model="sysFormSearch">
@@ -995,6 +1000,7 @@ import weekApi from '@/api/week_manage'
 import { Calendar, parseTime } from '@/utils'
 import echarts from 'echarts'
 import { download } from '@/utils'
+import { getUserInfo } from '@/utils/auth'
 
 export default {
   data() {
@@ -1010,6 +1016,8 @@ export default {
     //   trigger: 'change'
     // }
     return {
+      userInfo: JSON.parse(getUserInfo()),
+      isVisitor: JSON.parse(getUserInfo()).usernameZh === '陶龙',
       weekSearchHeight: 0,
       autoHeightRequirement: 200,
       activeName: 'component-one',
@@ -1328,6 +1336,11 @@ export default {
     })
   },
   methods: {
+    // 登出
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
     // 导出主系统列表
     onExportWeekMain() {
       download(document.documentElement.innerHTML, '联测主系统列表.html')
@@ -2488,5 +2501,15 @@ export default {
     margin: 20px;
     float: right;
   }
+}
+.visitor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999999999999;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  overflow: auto;
 }
 </style>
