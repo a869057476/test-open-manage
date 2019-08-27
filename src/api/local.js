@@ -1,7 +1,7 @@
-import axios from 'axios'
+import request from '@/utils/request'
 
 export function getTestList(params) {
-  return axios({
+  return request({
     url: '/mock-api/test/list',
     method: 'get',
     params
@@ -10,7 +10,7 @@ export function getTestList(params) {
 
 // 周报信息管理 联测主系统列表
 export function getWeekReportList(params) {
-  return axios({
+  return request({
     url: '/mock-api/week-report/list',
     method: 'get',
     params

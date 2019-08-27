@@ -283,7 +283,7 @@ export const constantRoutes = [
       },
       {
         path: 'version_plan_manage',
-        component: Layout,
+        component: Center,
         redirect: '/version_plan_manage/version_plan',
         name: 'version_plan_manage',
         meta: { title: '版本计划' },
@@ -310,7 +310,7 @@ export const constantRoutes = [
       },
       {
         path: 'workload_calendar_manage',
-        component: Layout,
+        component: Center,
         redirect: '/workload_calendar_manage/workload_calendar',
         name: 'workload_calendar_manage',
         meta: { title: '工作日历' },
@@ -331,7 +331,7 @@ export const constantRoutes = [
       },
       {
         path: 'version_staff_manage',
-        component: Layout,
+        component: Center,
         redirect: '/version_staff_manage/staff_manage',
         name: 'version_staff_manage',
         meta: { title: '版本人员管理' },
@@ -367,7 +367,7 @@ export const constantRoutes = [
       },
       {
         path: 'setting_manage',
-        component: Layout,
+        component: Center,
         redirect: '/setting_manage/group_user',
         name: 'setting_manage',
         meta: { title: '设置' },

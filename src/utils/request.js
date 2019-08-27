@@ -14,6 +14,9 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    if (config.url.indexOf('mock-api') >= 0) {
+      config.baseURL = ''
+    }
     // do something before request is sent
 
     // if (store.getters.token) {
