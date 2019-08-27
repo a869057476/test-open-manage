@@ -333,6 +333,10 @@ export default {
     },
     // 查询 子系统名称列表
     onChangeSysName(val) {
+      if (val === null) {
+        this.requireFormSearch.item_req_realize_sys_son = null
+        return
+      }
       const params = {
         sysName: val
       }
