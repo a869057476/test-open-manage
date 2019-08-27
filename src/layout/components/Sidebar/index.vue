@@ -12,7 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item v-for="route in routes.children" :key="route.path" :item="route" :base-path="routes.parent + '/' + route.path" />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -31,7 +31,13 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      const parent = this.$router.options.routes.filter(e => {
+        return !e.hidden && e.name === this.$route.matched[0].name
+      })
+      return {
+        parent: parent[0].name,
+        children: parent[0].children
+      }
     },
     activeMenu() {
       const route = this.$route

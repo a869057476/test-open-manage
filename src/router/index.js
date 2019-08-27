@@ -49,6 +49,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/dashboard',
     name: 'dashboard',
+    hidden: true,
     children: [{
       path: 'dashboard',
       name: 'dashboard',
@@ -449,17 +450,29 @@ export const constantRoutes = [
   },
 
   {
-    path: 'test_manage',
+    path: '/test_manage',
     name: 'test_manage',
-    component: () => import('@/views/table/index'),
-    meta: { title: '测试管理', icon: 'example' }
+    component: Layout,
+    meta: { title: '测试管理', icon: 'example' },
+    children: [{
+      path: 'test_daily',
+      name: 'test_daily',
+      component: () => import('@/views/table/index'),
+      meta: { title: '测试日报' }
+    }]
   },
 
   {
-    path: 'statistic_analyze',
-    name: 'statistic_analyze',
-    component: () => import('@/views/table/index'),
-    meta: { title: '统计分析', icon: 'example' }
+    path: '/statistic_manage',
+    name: 'statistic_manage',
+    component: Layout,
+    meta: { title: '统计管理', icon: 'example' },
+    children: [{
+      path: 'monthly_data_statistics',
+      name: 'monthly_data_statistics',
+      component: () => import('@/views/table/index'),
+      meta: { title: '月报数据统计' }
+    }]
   },
 
   {
