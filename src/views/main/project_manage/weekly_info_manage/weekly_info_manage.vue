@@ -750,8 +750,8 @@
     </el-dialog>
     <el-dialog title="需求条目信息" :visible.sync="requirementDialogObj.visible" width="800px">
       <el-table :data="requirementDialogObj.list" :max-height="autoHeightRequirement">
-        <el-table-column property="item_req_list_id" label="需求条目编号" min-width="200"></el-table-column>
-        <el-table-column property="item_req_title" label="需求条目主题" min-width="200"></el-table-column>
+        <el-table-column prop="item_sj_list_id" label="需求设计编号" min-width="200"></el-table-column>
+        <el-table-column prop="item_req_title" label="需求条目主题" min-width="200"></el-table-column>
       </el-table>
     </el-dialog>
     <el-dialog title="系统关系树状图" :visible.sync="treeDialogObj.visible" :fullscreen="true">
@@ -996,7 +996,8 @@
 </template>
 
 <script>
-import weekApi from '@/api/week_manage'
+import weekApi from '@/api/week_manage_api'
+import requireManageApi from '@/api/require_manage_api'
 import { Calendar, parseTime } from '@/utils'
 import echarts from 'echarts'
 import { download } from '@/utils'
@@ -1657,27 +1658,21 @@ export default {
           })
         })
       } else if (type === 'detail') {
+        this.listLoading = true
+        const params = {
+          item_system_id: row.itemSystemId,
+          test_version: row.versionNum
+        }
+        requireManageApi.getRequireList(params).then(response => {
+          this.requirementDialogObj.list = response.data.list
+          this.listLoading = false
+        }).catch(error => {
+          this.$message({
+            type: 'error',
+            message: error
+          })
+        })
         this.requirementDialogObj.visible = true
-        this.requirementDialogObj.list = [
-          {
-            'item_req_list_id': 'XQTM1808270068',
-            'item_req_title': '基准系统新增一个栏目“国际货币经纪外汇期权实时报价”',
-            'flag': 1
-          },
-          {
-            'item_req_list_id': 'XQTM1808270069',
-            'item_req_title': '基准通过DEP订阅货币经纪外汇期权实时报价',
-            'flag': 1
-          },
-          {
-            'item_req_list_id': 'XQTM1808270072',
-            'item_req_title': '外汇期权成交明细中增加修正波动率等字段',
-            'flag': 1
-          }
-        ]
-        // getRequirementEntryInfoReq().then(response => {
-        //   this.requirementDialogObj.list = response.data
-        // })
       } else if (type === 'tree') {
         this.treeDialogObj.visible = true
         const params = row.uuid
