@@ -51,7 +51,7 @@
         </el-form>
       </el-collapse-item>
     </el-collapse>
-    <el-table v-loading="listLoading" :data="requireObj.list" element-loading-text="Loading" border fit highlight-current-row :max-height="requireObj.height" @cell-dblclick="cellDbclick">
+    <el-table v-loading="listLoading" :data="requireObj.list" element-loading-text="Loading" border fit highlight-current-row :max-height="requireObj.height">
       <!-- <el-table-column
         type="selection"
         width="55">
@@ -133,16 +133,19 @@
       </el-table-column>
       <el-table-column label="测试版本" min-width="100" align="center">
         <template slot-scope="scope">
-          <span v-if="!scope.row.isEditTestVersion">{{ scope.row.test_version }}</span>
-          <el-input v-if="scope.row.isEditTestVersion" v-model="scope.row.test_version" placeholder="请输入" clearable @blur="blurTestVersion"></el-input>
+          {{ scope.row.test_version }}
         </template>
       </el-table-column>
-      <!-- <el-table-column label="项目名称" min-width="100" align="center">
+      <el-table-column label="项目名称" min-width="100" align="center">
         <template slot-scope="scope">
-          <span v-if="!scope.row.isEdit">{{ scope.row.ITEM_DESC }}</span>
-          <el-input v-if="scope.row.isEdit" v-model="scope.row.ITEM_DESC" placeholder="请输入" clearable @blur="blurDesc"></el-input>
+          {{ scope.row.redmine_project_name }}
         </template>
-      </el-table-column> -->
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" plain @click="onOperateRequire('edit', scope.row)">修改</el-button>
+          </template>
+        </el-table-column>
     </el-table>
     <el-pagination
       class="mt20"
@@ -155,6 +158,28 @@
       @current-change="handleCurrentChange"
     >
     </el-pagination>
+    <el-dialog title="修改" :visible.sync="requireDialogObj.visible" width="1200px">
+      <el-form ref="weekForm" :model="requireDialogObj.form" :rules="requireDialogObj.rules" label-width="100px">
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="测试版本" prop="test_version">
+              <el-input v-model="requireDialogObj.form.test_version" placeholder="请输入" clearable></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="项目名称" prop="redmine_project_id">
+              <el-select v-model="requireDialogObj.form.redmine_project_id" placeholder="请选择" clearable>
+                <el-option v-for="item in requireDialogObj.projectList" :key="item.id" :label="item.item_system_name + item.item_app_name_son + item.version_no" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="requireDialogObj.visible = false">取 消</el-button>
+        <el-button type="primary" @click="onOperateRequire('submit')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -174,6 +199,11 @@ export default {
     }
   },
   data() {
+    const requiredTrue = {
+      required: true,
+      message: '此为必填项',
+      trigger: 'change'
+    }
     return {
       currentRow: {},
       // 需求条目 搜索条件
@@ -200,6 +230,19 @@ export default {
         pageIndex: 1,
         pageSize: 20,
         total: 0
+      },
+      // 需求条目 dialog
+      requireDialogObj: {
+        visible: false,
+        height: 200,
+        projectList: [],
+        form: {
+          test_version: '',
+          redmine_project_id: ''
+        },
+        rules: {
+          test_version: [requiredTrue]
+        }
       },
       listLoading: true
     }
@@ -241,42 +284,102 @@ export default {
       })
     },
     // 双击修改
-    cellDbclick(row, column, cell, event) {
-      if (column.label === '测试版本') {
-        this.currentRow = row
-        this.requireObj.list.forEach((current, index, arr) => {
-          if (current.item_req_list_id === row.item_req_list_id) {
-            this.requireObj.list[index].isEditTestVersion = true
-            return
-          }
-        })
-      }
-    },
+    // cellDbclick(row, column, cell, event) {
+    //   if (column.label === '测试版本') {
+    //     this.currentRow = row
+    //     this.requireObj.list.forEach((current, index, arr) => {
+    //       if (current.item_req_list_id === row.item_req_list_id) {
+    //         this.requireObj.list[index].isEditTestVersion = true
+    //         return
+    //       }
+    //     })
+    //   } else if (column.label === '测试版本') {
+    //     this.currentRow = row
+    //     this.requireObj.list.forEach((current, index, arr) => {
+    //       if (current.item_req_list_id === row.item_req_list_id) {
+    //         this.requireObj.list[index].isEditPrjName = true
+    //         return
+    //       }
+    //     })
+    //   }
+    // },
     // 失去焦点 测试版本
-    blurTestVersion(event) {
-      this.listLoading = true
-      const params = {
-        item_req_list_id: this.currentRow.item_req_list_id,
-        test_version: event.target.value
-      }
-      requireManageApi.updateRequireVersion(params).then(response => {
-        this.requireObj.list.forEach((current, index, arr) => {
-          if (current.item_req_list_id === this.currentRow.item_req_list_id) {
-            this.requireObj.list[index].isEditTestVersion = false
-            return
+    // blurTestVersion(event) {
+    //   this.listLoading = true
+    //   const params = {
+    //     item_req_list_id: this.currentRow.item_req_list_id,
+    //     test_version: event.target.value
+    //   }
+    //   requireManageApi.updateRequireVersion(params).then(response => {
+    //     this.requireObj.list.forEach((current, index, arr) => {
+    //       if (current.item_req_list_id === this.currentRow.item_req_list_id) {
+    //         this.requireObj.list[index].isEditTestVersion = false
+    //         return
+    //       }
+    //       this.$message({
+    //         type: 'success',
+    //         message: response.message
+    //       })
+    //     })
+    //     this.listLoading = false
+    //   }).catch(error => {
+    //     this.$message({
+    //       type: 'error',
+    //       message: error
+    //     })
+    //   })
+    // },
+    /** 需求条目列表 操作
+     * @method onOperateRequire
+     * @param {String} type edit: 修改;submit: 提交
+     * @param {Object} row 当前行数据
+     * @return 无
+     */
+    onOperateRequire(type, row) {
+      if (type === 'edit') {
+        this.currentRow = row
+        this.requireDialogObj.form.test_version = row.test_version || ''
+        this.requireDialogObj.form.redmine_project_id = row.redmine_project_id || ''
+        const params = {}
+        requireManageApi.getProjectList(params).then(response => {
+          this.requireDialogObj.projectList = response.data.list
+          this.requireDialogObj.visible = true
+        })
+      } else if (type === 'submit') {
+        this.$refs['weekForm'].validate((valid) => {
+          if (valid) {
+            const paramsTest = {
+              item_req_list_id: this.currentRow.item_req_list_id,
+              test_version: this.requireDialogObj.form.test_version || ''
+            }
+            requireManageApi.updateRequireVersion(paramsTest).then(response => {
+              const paramsPrjName = {
+                item_req_list_id: this.currentRow.item_req_list_id,
+                redmine_project_id: this.requireDialogObj.form.redmine_project_id || ''
+              }
+              requireManageApi.updateRedmineProject(paramsPrjName).then(response => {
+                this.$message({
+                  type: 'success',
+                  message: '修改成功'
+                })
+                this.requireDialogObj.visible = false
+                this.listLoading = false
+                this.initRequire()
+              }).catch(error => {
+                this.$message({
+                  type: 'error',
+                  message: error
+                })
+              })
+            }).catch(error => {
+              this.$message({
+                type: 'error',
+                message: error
+              })
+            })
           }
-          this.$message({
-            type: 'success',
-            message: response.message
-          })
         })
-        this.listLoading = false
-      }).catch(error => {
-        this.$message({
-          type: 'error',
-          message: error
-        })
-      })
+      }
     },
     // 需求条目列表 每页条数选择
     handleSizeChange(val) {
@@ -307,10 +410,7 @@ export default {
       }
       Object.assign(params, this.requireFormSearch)
       requireManageApi.getRequireList(params).then(response => {
-        this.requireObj.list = response.data.list.map(e => {
-          e.isEditTestVersion = false
-          return e
-        })
+        this.requireObj.list = response.data.list
         this.requireObj.total = response.data.total
         this.listLoading = false
       }).catch(error => {

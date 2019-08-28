@@ -32,6 +32,14 @@ function getRequireList(data) {
   })
 }
 
+function getProjectList(data) {
+  return request({
+    url: '/pf/requirement/redmineProject/list',
+    method: 'post',
+    data
+  })
+}
+
 function updateRedmineProject(data) {
   return request({
     url: '/pf/requirement/updateRedmineProject',
@@ -53,6 +61,7 @@ export default {
   getSysNameList,
   getSysSonNameList,
   getRequireList,
+  getProjectList,
   updateRedmineProject,
   updateRequireVersion
 }
