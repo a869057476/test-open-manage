@@ -22,9 +22,11 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "socket.io-client": "^2.2.0",
     "vue": "2.6.10",
     "vue-date-pick": "^1.2.1",
     "vue-router": "3.0.6",
+    "vue-socket.io": "^3.0.7",
     "vuex": "3.1.0"
   },
   "devDependencies": {

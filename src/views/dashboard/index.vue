@@ -178,6 +178,18 @@ export default {
     this.fetchData()
   },
   mounted() {
+    // 发送信息给服务端
+    this.$socket.emit('login', { username: 'admin', password: '123456' })
+    
+    // 接收服务端的信息
+    this.sockets.subscribe('relogin', (data) => {
+      console.log(data)
+    })
+
+    // 接收服务端的信息
+    this.sockets.subscribe('test1', (data) => {
+      console.log(data)
+    })
   },
   methods: {
     // 查询
