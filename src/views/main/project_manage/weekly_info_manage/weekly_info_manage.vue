@@ -221,7 +221,7 @@
               <div class="mb20">
                 <el-button type="primary" size="small" @click="initWeek">查询</el-button>
                 <el-button type="success" size="small" @click="resetWeek('weekFormSearch')">重置</el-button>
-                <el-button type="warning" size="small" @click="initWeek">导出Excel</el-button>
+                <el-button type="warning" size="small" @click="onExportWeekInfo">导出Excel</el-button>
                 <el-button type="danger" size="small" @click="onOperateWeek('deleteMultiple')">删除</el-button>
               </div>
             </el-form>
@@ -1344,7 +1344,43 @@ export default {
     },
     // 导出主系统列表
     onExportWeekMain() {
-      download(document.documentElement.innerHTML, '联测主系统列表.html')
+      this.listLoading = true
+      const params = {
+        planTimeStart: this.weekFormSearch.planTime === null ? this.weekFormSearch.planTime : this.weekFormSearch.planTime[0],
+        planTimeEnd: this.weekFormSearch.planTime === null ? this.weekFormSearch.planTime : this.weekFormSearch.planTime[1],
+        updateDateStart: this.weekFormSearch.updateDate === null ? this.weekFormSearch.updateDate : this.weekFormSearch.updateDate[0],
+        updateDateEnd: this.weekFormSearch.updateDate === null ? this.weekFormSearch.updateDate : this.weekFormSearch.updateDate[1]
+      }
+      Object.assign(params, this.weekFormSearch)
+      delete params.planTime
+      delete params.updateDate
+      weekApi.downloadWeekMain(params).then(response => {
+        download(response, '联测主系统列表.xls')
+        this.listLoading = false
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
+    },
+    // 导出周报列表
+    onExportWeekInfo() {
+      this.listLoading = true
+      const params = {
+        searchStr: this.sysFormSearch.searchStr,
+        planTimeStart: this.sysFormSearch.planTime === null ? this.sysFormSearch.planTime : this.sysFormSearch.planTime[0],
+        planTimeEnd: this.sysFormSearch.planTime === null ? this.sysFormSearch.planTime : this.sysFormSearch.planTime[1]
+      }
+      weekApi.downloadWeekInfo(params).then(response => {
+        download(response, '周报信息列表.xls')
+        this.listLoading = false
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: error
+        })
+      })
     },
     // 选择主系统版本号
     handleCommandWeekMainOperate(value) {

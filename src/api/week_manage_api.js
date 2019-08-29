@@ -107,6 +107,24 @@ export function getProgress(uuid) {
   })
 }
 
+function downloadWeekMain(data) {
+  return request({
+    url: `/pf/report/weekreports/list/download`,
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
+function downloadWeekInfo(data) {
+  return request({
+    url: `/pf/report/weekreports/relationList/download`,
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
 export default {
   getWeekReportList,
   addWeekReport,
@@ -121,5 +139,7 @@ export default {
   getAllSysName,
   getSonSysNames,
   getWeekReportRelationList,
-  getProgress
+  getProgress,
+  downloadWeekMain,
+  downloadWeekInfo
 }
